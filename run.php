@@ -20,13 +20,13 @@ foreach ($timecode as $idx => $diapo) {
     $output = "vid-$idx.avi";
     $vidname[] = $output;
     shell_exec("ffmpeg -y -framerate 30 -loop 1 -i diapo-$idx.png -t $delta -c:v huffyuv $output");
-    unlink("./diapo-            $idx.png");
 }
 
 shell_exec('ffmpeg -y -i "concat:' . implode('|', $vidname) . '" sans-son.mp4');
 shell_exec("ffmpeg -y -i sans-son.mp4 -i $voix -shortest -strict -2 -c:v copy -c:a aac result.mp4");
 shell_exec("rm vid*.avi");
 shell_exec("rm sans-son.mp4");
+shell_exec("rm diapo-*.png");
 
 //////////
 function getNbPage($fch) {
