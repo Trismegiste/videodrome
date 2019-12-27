@@ -6,6 +6,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Process\Process;
 
 /**
  * Presentation video generator
@@ -14,6 +15,37 @@ class Conference extends Command {
 
     // the name of the command
     protected static $defaultName = 'video:conf';
+
+    protected function initialize(InputInterface $input, OutputInterface $output) {
+
+        // LibreOffice
+        $check = new Process(['libreoffice6.0', '--version']);
+        $check->run();
+        if (!$check->isSuccessful()) {
+            throw new \RuntimeException('LibreOffice is missing');
+        }
+
+        // Plopper  
+        $check = new Process(['pdfinfo', '-v']);
+        $check->run();
+        if (!$check->isSuccessful()) {
+            throw new \RuntimeException('Plopper is missing');
+        }
+
+        // ImageMagick
+        $check = new Process(['convert', '-version']);
+        $check->run();
+        if (!$check->isSuccessful()) {
+            throw new \RuntimeException('ImageMagick is missing');
+        }
+
+        // ffmpeg  
+        $check = new Process(['ffmpeg', '-L']);
+        $check->run();
+        if (!$check->isSuccessful()) {
+            throw new \RuntimeException('ffmpeg is missing');
+        }
+    }
 
     protected function configure() {
         $this->setDescription("Generates a video from an Impress document, a recorded voice and a timecode file from Audacity")
