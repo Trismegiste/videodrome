@@ -60,19 +60,25 @@ class Conference extends Command {
         $marqueur = $input->getArgument('marker');
 
         $output->writeln("Conference Video Generator");
-
-        $pdfTask = new \Trismegiste\Videodrome\Conference\ImpressToPdf($impress);
-        $pdfTask->exec();
-        $pdf = $pdfTask->getPdf();
-
         $timecode = file($marqueur);
 
-        $diapoTask = new \Trismegiste\Videodrome\Conference\PdfToPng($pdf);
+        $progressBar = new \Symfony\Component\Console\Helper\ProgressBar($output, 5);
+        $progressBar->start();
+
+        // PDF generator
+        $pdfTask = new \Trismegiste\Videodrome\Conference\ImpressToPdf($impress);
+        $pdfTask->exec();
+        $progressBar->advance();
+
+        // PNG generator
+        $diapoTask = new \Trismegiste\Videodrome\Conference\PdfToPng($pdfTask->getPdf());
         if (count($timecode) !== $diapoTask->getPdfPageCount()) {
             throw new \Exception("Page count mismatch");
         }
         $diapoTask->exec();
+        $progressBar->advance();
 
+        // Convert to AVI
         $vidname = [];
         $vidGen = new \Trismegiste\Videodrome\LoopTask();
         foreach ($diapoTask->getDiapoName() as $idx => $diapo) {
@@ -83,13 +89,19 @@ class Conference extends Command {
             $vidname[] = $obj->getOutputName();
         }
         $vidGen->exec();
+        $progressBar->advance();
 
+        // Concat & sound
         $concat = new \Trismegiste\Videodrome\Conference\VideoConcat($vidname, $voix);
         $concat->exec();
+        $progressBar->advance();
+
+        // Cleaning
         $concat->clean();
         $vidGen->clean();
         $pdfTask->clean();
         $diapoTask->clean();
+        $progressBar->finish();
 
         return 0;
     }
