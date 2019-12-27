@@ -27,7 +27,7 @@ class Conference extends Command {
         $voix = $input->getArgument('voice');
         $marqueur = $input->getArgument('marker');
 
-        $output->writeln("YOLO 2");
+        $output->writeln("Conference Video Generator");
 
         $pdfTask = new \Trismegiste\Videodrome\Conference\ImpressToPdf($impress);
         $pdfTask->exec();
@@ -37,7 +37,7 @@ class Conference extends Command {
 
         $diapoTask = new \Trismegiste\Videodrome\Conference\PdfToPng($pdf);
         if (count($timecode) !== $diapoTask->getPdfPageCount()) {
-            throw new \Exception("page count mismatch");
+            throw new \Exception("Page count mismatch");
         }
         $diapoTask->exec();
 
