@@ -9,6 +9,9 @@ spl_autoload_register(function ($class) {
 // QUICK N UGLY presentation video generator
 // syntax: php impress2yt presentation.odp audacity-markers.txt sound.wav
 
+if (4 !== count($argv)) {
+    throw new Exception("Bad parameters count");
+}
 generateVideo($argv[1], $argv[2], $argv[3]);
 
 //////////
@@ -20,8 +23,9 @@ function getNbPage($fch) {
 }
 
 function generateVideo($impress, $marqueur, $voix) {
-    shell_exec("libreoffice6.0 --convert-to pdf $impress");
-    $pdf = preg_replace('/(^|.+\/)([^\/]+)\.odp$/', '\\2.pdf', $impress);
+    $obj = new videodrome\ImpressToPdf($impress);
+    $obj->exec();
+    $pdf = $obj->getPdf();
 
     $timecode = file($marqueur);
     if (count($timecode) !== getNbPage($pdf)) {
@@ -44,5 +48,5 @@ function generateVideo($impress, $marqueur, $voix) {
     shell_exec("rm vid*.avi");
     shell_exec("rm sans-son.mp4");
     shell_exec("rm diapo-*.png");
-    shell_exec("rm $pdf");
+    $obj->clean();
 }

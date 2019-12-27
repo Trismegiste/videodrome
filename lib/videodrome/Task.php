@@ -7,7 +7,7 @@ namespace videodrome;
  */
 interface Task {
 
-    public function exec(array $param);
+    public function exec();
 
     public function clean();
 }

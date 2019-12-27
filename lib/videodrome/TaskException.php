@@ -5,6 +5,6 @@ namespace videodrome;
 /**
  * Description of TaskException
  */
-class TaskException extends \ErrorException {
+class TaskException extends \Exception {
     
 }

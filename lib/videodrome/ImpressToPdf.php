@@ -7,12 +7,24 @@ namespace videodrome;
  */
 class ImpressToPdf implements Task {
 
-    public function exec(array $param) {
-        echo "coucou";
+    private $pdf;
+    private $impress;
+
+    public function __construct($fch) {
+        $this->impress = $fch;
+        $this->pdf = preg_replace('/(^|.+\/)([^\/]+)\.odp$/', '\\2.pdf', $this->impress);
+    }
+
+    public function exec() {
+        shell_exec("libreoffice6.0 --convert-to pdf {$this->impress}");
     }
 
     public function clean() {
-        echo "clean";
+        shell_exec("rm {$this->pdf}");
+    }
+
+    public function getPdf() {
+        return $this->pdf;
     }
 
 }
