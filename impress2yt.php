@@ -39,9 +39,12 @@ function generateVideo($impress, $marqueur, $voix) {
     }
     $vidGen->exec();
 
-    shell_exec('ffmpeg -y -i "concat:' . implode('|', $vidname) . '" sans-son.mp4');
-    shell_exec("ffmpeg -y -i sans-son.mp4 -i $voix -shortest -strict -2 -c:v copy -c:a aac result.mp4");
-    shell_exec("rm sans-son.mp4");
+    $concat = new \videodrome\VideoConcat($vidname);
+    $concat->exec();
+    $muxing = new \videodrome\Muxing('sans-son.mp4', $voix);
+    $muxing->exec();
+    $muxing->clean();
+    $concat->clean();
     $vidGen->clean();
     $pdfTask->clean();
     $diapoTask->clean();
