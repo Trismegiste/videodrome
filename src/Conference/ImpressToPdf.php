@@ -1,6 +1,8 @@
 <?php
 
-namespace videodrome;
+namespace Trismegiste\Videodrome\Conference;
+
+use Trismegiste\Videodrome\Task;
 
 /**
  * ImpressToPdf convert an Impress file to a PDF

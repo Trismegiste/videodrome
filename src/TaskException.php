@@ -1,9 +1,9 @@
 <?php
 
-namespace videodrome;
+namespace Trismegiste\Videodrome;
 
 /**
- * Description of TaskException
+ * Exception for Task
  */
 class TaskException extends \Exception {
     

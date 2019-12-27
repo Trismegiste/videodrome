@@ -1,9 +1,9 @@
 <?php
 
-namespace videodrome;
+namespace Trismegiste\Videodrome;
 
 /**
- * Description of LoopTask
+ * A loop of Task
  */
 class LoopTask implements Task {
 

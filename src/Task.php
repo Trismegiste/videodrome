@@ -1,6 +1,6 @@
 <?php
 
-namespace videodrome;
+namespace Trismegiste\Videodrome;
 
 /**
  * A Task with cleaning
