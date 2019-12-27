@@ -6,8 +6,12 @@ spl_autoload_register(function ($class) {
     include './lib/' . $class . '.php';
 });
 
-// QUICK N UGLY presentation video generator
-// syntax: php impress2yt presentation.odp audacity-markers.txt sound.wav
+/* Presentation video generator
+ * 
+ * syntax: php impress2yt presentation.odp audacity-markers.txt sound.wav
+ * 
+ * @todo use symfony/console
+ */
 
 if (4 !== count($argv)) {
     throw new Exception("Bad parameters count");

@@ -9,6 +9,7 @@ class PngToVideo implements Task {
 
     private $image;
     private $duration;
+    private $framerate = 3;
 
     public function __construct($image, $duration) {
         $this->image = $image;
@@ -20,7 +21,7 @@ class PngToVideo implements Task {
     }
 
     public function exec() {
-        shell_exec("ffmpeg -y -framerate 3 -loop 1 -i {$this->image} -t {$this->duration} -c:v huffyuv " . $this->getOutputName());
+        shell_exec("ffmpeg -y -framerate {$this->framerate} -loop 1 -i {$this->image} -t {$this->duration} -c:v huffyuv " . $this->getOutputName());
     }
 
     public function getOutputName() {

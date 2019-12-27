@@ -9,6 +9,8 @@ class PdfToPng implements Task {
 
     private $pdf;
     private $pageCount = null;
+    private $format = '1920x1080';
+    private $dpi = 200;
 
     public function __construct($fch) {
         $this->pdf = $fch;
@@ -19,7 +21,7 @@ class PdfToPng implements Task {
     }
 
     public function exec() {
-        shell_exec("convert -density 200 {$this->pdf} -resize 1920x1080 diapo.png");
+        shell_exec("convert -density {$this->dpi} {$this->pdf} -resize {$this->format} diapo.png");
     }
 
     public function getPdfPageCount() {
@@ -35,7 +37,7 @@ class PdfToPng implements Task {
     public function getDiapoName() {
         $r = [];
         for ($k = 0; $k < $this->getPdfPageCount(); $k++) {
-            $r[] = "diapo-$k.png";
+            $r[] = "diapo-$k.png"; // @todo this could potentially bug after 9, need further investigation how convert generates names
         }
 
         return $r;
