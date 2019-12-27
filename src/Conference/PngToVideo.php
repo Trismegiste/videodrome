@@ -23,7 +23,19 @@ class PngToVideo implements Task {
     }
 
     public function exec() {
-        shell_exec("ffmpeg -y -framerate {$this->framerate} -loop 1 -i {$this->image} -t {$this->duration} -c:v huffyuv " . $this->getOutputName());
+        $animate = new \Symfony\Component\Process\Process([
+            'ffmpeg', '-y',
+            '-framerate', $this->framerate,
+            '-loop', 1,
+            '-i', $this->image,
+            '-t', $this->duration,
+            '-c:v', 'huffyuv',
+            $this->getOutputName()
+        ]);
+        $animate->run();
+        if (!$animate->isSuccessful()) {
+            throw new \Trismegiste\Videodrome\TaskException("Error when generating " . $this->getOutputName());
+        }
     }
 
     public function getOutputName() {

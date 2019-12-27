@@ -5,6 +5,6 @@ namespace Trismegiste\Videodrome;
 /**
  * Exception for Task
  */
-class TaskException extends \Exception {
+class TaskException extends \RuntimeException {
     
 }
