@@ -2,9 +2,12 @@
 
 $rep = "/home/flo/Bureau/";
 
-$pdf = $rep . "Présentation-SaWo.pdf";
+$impress = $rep . "Présentation-SaWo.odp";
 $marqueur = $rep . "Présentation-SaWo.txt";
 $voix = $rep . "Présentation-SaWo.wav";
+
+shell_exec("libreoffice6.0 --convert-to pdf $impress");
+$pdf = preg_replace('/(^|.+\/)([^\/]+)\.odp$/', '\\2.pdf', $impress);
 
 $timecode = file($marqueur);
 if (count($timecode) !== getNbPage($pdf)) {
@@ -19,7 +22,7 @@ foreach ($timecode as $idx => $diapo) {
     $delta = $detail[1] - $detail[0];
     $output = "vid-$idx.avi";
     $vidname[] = $output;
-    shell_exec("ffmpeg -y -framerate 30 -loop 1 -i diapo-$idx.png -t $delta -c:v huffyuv $output");
+    shell_exec("ffmpeg -y -framerate 3 -loop 1 -i diapo-$idx.png -t $delta -c:v huffyuv $output");
 }
 
 shell_exec('ffmpeg -y -i "concat:' . implode('|', $vidname) . '" sans-son.mp4');
@@ -27,6 +30,7 @@ shell_exec("ffmpeg -y -i sans-son.mp4 -i $voix -shortest -strict -2 -c:v copy -c
 shell_exec("rm vid*.avi");
 shell_exec("rm sans-son.mp4");
 shell_exec("rm diapo-*.png");
+shell_exec("rm $pdf");
 
 //////////
 function getNbPage($fch) {
@@ -35,4 +39,3 @@ function getNbPage($fch) {
     $nbPage = (int) $result[1];
     return $nbPage;
 }
-
