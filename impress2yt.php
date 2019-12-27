@@ -1,5 +1,11 @@
 <?php
 
+// autoload
+spl_autoload_register(function ($class) {
+    $class = str_replace('\\', '/', $class);
+    include './lib/' . $class . '.php';
+});
+
 // QUICK N UGLY presentation video generator
 // syntax: php impress2yt presentation.odp audacity-markers.txt sound.wav
 
