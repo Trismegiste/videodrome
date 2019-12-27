@@ -23,9 +23,9 @@ function getNbPage($fch) {
 }
 
 function generateVideo($impress, $marqueur, $voix) {
-    $obj = new \videodrome\ImpressToPdf($impress);
-    $obj->exec();
-    $pdf = $obj->getPdf();
+    $pdfTask = new \videodrome\ImpressToPdf($impress);
+    $pdfTask->exec();
+    $pdf = $pdfTask->getPdf();
 
     $timecode = file($marqueur);
     if (count($timecode) !== getNbPage($pdf)) {
@@ -36,18 +36,21 @@ function generateVideo($impress, $marqueur, $voix) {
     $diapoTask->exec();
 
     $vidname = [];
+    $vidGen = new \videodrome\LoopTask();
     foreach ($timecode as $idx => $diapo) {
         $detail = preg_split('/[\s]+/', $diapo);
         $delta = $detail[1] - $detail[0];
         $output = "vid-$idx.avi";
         $vidname[] = $output;
-        shell_exec("ffmpeg -y -framerate 3 -loop 1 -i diapo-$idx.png -t $delta -c:v huffyuv $output");
+        $obj = new videodrome\PngToVideo("diapo-$idx.png", $delta, $output);
+        $vidGen->push($obj);
     }
+    $vidGen->exec();
 
     shell_exec('ffmpeg -y -i "concat:' . implode('|', $vidname) . '" sans-son.mp4');
     shell_exec("ffmpeg -y -i sans-son.mp4 -i $voix -shortest -strict -2 -c:v copy -c:a aac result.mp4");
-    shell_exec("rm vid*.avi");
     shell_exec("rm sans-son.mp4");
-    $obj->clean();
+    $vidGen->clean();
+    $pdfTask->clean();
     $diapoTask->clean();
 }
