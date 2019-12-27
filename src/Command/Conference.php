@@ -40,7 +40,7 @@ class Conference extends Command {
         }
 
         // ffmpeg  
-        $check = new Process(['ffmpeg', '-L']);
+        $check = new Process(['ffmpeg', '-version']);
         $check->run();
         if (!$check->isSuccessful()) {
             throw new \RuntimeException('ffmpeg is missing');
