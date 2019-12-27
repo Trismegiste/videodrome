@@ -32,18 +32,14 @@ function generateVideo($impress, $marqueur, $voix) {
     foreach ($diapoTask->getDiapoName() as $idx => $diapo) {
         $detail = preg_split('/[\s]+/', $timecode[$idx]);
         $delta = $detail[1] - $detail[0];
-        $output = "vid-$idx.avi";
-        $vidname[] = $output;
-        $obj = new videodrome\PngToVideo($diapo, $delta, $output);
+        $obj = new videodrome\PngToVideo($diapo, $delta);
         $vidGen->push($obj);
+        $vidname[] = $obj->getOutputName();
     }
     $vidGen->exec();
 
-    $concat = new \videodrome\VideoConcat($vidname);
+    $concat = new \videodrome\VideoConcat($vidname, $voix);
     $concat->exec();
-    $muxing = new \videodrome\Muxing('sans-son.mp4', $voix);
-    $muxing->exec();
-    $muxing->clean();
     $concat->clean();
     $vidGen->clean();
     $pdfTask->clean();

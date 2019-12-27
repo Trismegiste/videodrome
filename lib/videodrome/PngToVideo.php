@@ -9,20 +9,22 @@ class PngToVideo implements Task {
 
     private $image;
     private $duration;
-    private $output;
 
-    public function __construct($image, $duration, $output) {
+    public function __construct($image, $duration) {
         $this->image = $image;
         $this->duration = $duration;
-        $this->output = $output;
     }
 
     public function clean() {
-        shell_exec("rm {$this->output}");
+        shell_exec("rm " . $this->getOutputName());
     }
 
     public function exec() {
-        shell_exec("ffmpeg -y -framerate 3 -loop 1 -i {$this->image} -t {$this->duration} -c:v huffyuv {$this->output}");
+        shell_exec("ffmpeg -y -framerate 3 -loop 1 -i {$this->image} -t {$this->duration} -c:v huffyuv " . $this->getOutputName());
+    }
+
+    public function getOutputName() {
+        return $this->image . '.avi';
     }
 
 }
