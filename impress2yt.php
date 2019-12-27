@@ -1,10 +1,11 @@
 <?php
 
-$rep = "/home/flo/Bureau/";
+// QUICK N UGLY presentation video generator
+// syntax: php impress2yt presentation.odp audacity-markers.txt sound.wav
 
-$impress = $rep . "Présentation-SaWo.odp";
-$marqueur = $rep . "Présentation-SaWo.txt";
-$voix = $rep . "Présentation-SaWo.wav";
+$impress = $argv[1];
+$marqueur = $argv[2];
+$voix = $argv[3];
 
 shell_exec("libreoffice6.0 --convert-to pdf $impress");
 $pdf = preg_replace('/(^|.+\/)([^\/]+)\.odp$/', '\\2.pdf', $impress);
