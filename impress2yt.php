@@ -23,7 +23,7 @@ function getNbPage($fch) {
 }
 
 function generateVideo($impress, $marqueur, $voix) {
-    $obj = new videodrome\ImpressToPdf($impress);
+    $obj = new \videodrome\ImpressToPdf($impress);
     $obj->exec();
     $pdf = $obj->getPdf();
 
@@ -32,7 +32,8 @@ function generateVideo($impress, $marqueur, $voix) {
         throw new Exception("page count mismatch");
     }
 
-    shell_exec("convert -density 200 $pdf -resize 1920x1080 diapo.png");
+    $diapoTask = new \videodrome\PdfToPng($pdf);
+    $diapoTask->exec();
 
     $vidname = [];
     foreach ($timecode as $idx => $diapo) {
@@ -47,6 +48,6 @@ function generateVideo($impress, $marqueur, $voix) {
     shell_exec("ffmpeg -y -i sans-son.mp4 -i $voix -shortest -strict -2 -c:v copy -c:a aac result.mp4");
     shell_exec("rm vid*.avi");
     shell_exec("rm sans-son.mp4");
-    shell_exec("rm diapo-*.png");
     $obj->clean();
+    $diapoTask->clean();
 }
