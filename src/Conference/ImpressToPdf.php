@@ -3,6 +3,7 @@
 namespace Trismegiste\Videodrome\Conference;
 
 use Trismegiste\Videodrome\Task;
+use Symfony\Component\Process\Process;
 
 /**
  * ImpressToPdf convert an Impress file to a PDF
@@ -18,7 +19,8 @@ class ImpressToPdf implements Task {
     }
 
     public function exec() {
-        shell_exec("libreoffice6.0 --convert-to pdf {$this->impress}");
+        $libre = new Process(['libreoffice6.0', '--convert-to', 'pdf', $this->impress]);
+        $libre->mustRun();
     }
 
     public function clean() {

@@ -3,6 +3,7 @@
 namespace Trismegiste\Videodrome\Conference;
 
 use Trismegiste\Videodrome\Task;
+use Symfony\Component\Process\Process;
 
 /**
  * Description of PdfToPng
@@ -23,7 +24,8 @@ class PdfToPng implements Task {
     }
 
     public function exec() {
-        shell_exec("convert -density {$this->dpi} {$this->pdf} -resize {$this->format} diapo.png");
+        $magick = new Process("convert -density {$this->dpi} {$this->pdf} -resize {$this->format} diapo.png");
+        $magick->mustRun();
     }
 
     public function getPdfPageCount() {
