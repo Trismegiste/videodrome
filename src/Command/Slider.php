@@ -26,7 +26,7 @@ class Slider extends Command {
 
     protected function execute(InputInterface $input, OutputInterface $output) {
         $picture = $input->getArgument('picture');
-        $duration = $input->getArgument('duration');
+        $duration = (float) $input->getArgument('duration');
 
         $info = getimagesize($picture);
         $width = $info[0];
@@ -44,14 +44,13 @@ class Slider extends Command {
         } else {
             $resize = $nw . 'x' . $this->outputFormat['h'];
             $direction = ">";
-            $speed = ($nw - $this->outputFormat['w']) / $duration;
+            $speed = -($nw - $this->outputFormat['w']) / $duration;
             $equation = "x=$speed*t";
         }
-        $output->writeln("format $resize $direction $speed");
 
         shell_exec("convert $picture -resize $resize resized.png");
         shell_exec("ffmpeg -y -f lavfi -i color=c=blue:s={$this->outputFormat['w']}x{$this->outputFormat['h']}:d=$duration:r=30 -c:v huffyuv yolo.avi");
-        shell_exec("ffmpeg -y -i yolo.avi -i resized.png -filter_complex \"[0:v][1:v]overlay=$equation:enable='between(t,0,$duration)'\" -c:v huffyuv result.avi");
+        shell_exec("ffmpeg -y -i yolo.avi -i resized.png -filter_complex \"[0:v][1:v]overlay=$equation:enable='between(t,0,$duration)'\" result.mp4");
     }
 
 }
