@@ -16,6 +16,7 @@ class Slider extends Command {
     // the name of the command
     protected static $defaultName = 'slider:build';
     protected $outputFormat = ['w' => 1920, 'h' => 1080];
+    protected $framerate = 30;
 
     protected function configure() {
         $this->setDescription("Generates a video slide from a picture")
@@ -32,17 +33,25 @@ class Slider extends Command {
         $height = $info[1];
         $ratio = $width / $height;
 
-        $nh = $this->outputFormat['w'] / $ratio;
-        $nw = $this->outputFormat['h'] * $ratio;
+        $nh = round($this->outputFormat['w'] / $ratio);
+        $nw = round($this->outputFormat['h'] * $ratio);
 
         if ($nh >= $this->outputFormat['h']) {
-            $resize = $this->outputFormat['w'] . 'x' . (int) $nh;
+            $resize = $this->outputFormat['w'] . 'x' . $nh;
             $direction = "v";
+            $speed = -($nh - $this->outputFormat['h']) / $duration;
+            $equation = "y=$speed*t";
         } else {
-            $resize = (int) $nw . 'x' . $this->outputFormat['h'];
+            $resize = $nw . 'x' . $this->outputFormat['h'];
             $direction = ">";
+            $speed = ($nw - $this->outputFormat['w']) / $duration;
+            $equation = "x=$speed*t";
         }
-        $output->writeln("format $resize $direction");
+        $output->writeln("format $resize $direction $speed");
+
+        shell_exec("convert $picture -resize $resize resized.png");
+        shell_exec("ffmpeg -y -f lavfi -i color=c=blue:s={$this->outputFormat['w']}x{$this->outputFormat['h']}:d=$duration:r=30 -c:v huffyuv yolo.avi");
+        shell_exec("ffmpeg -y -i yolo.avi -i resized.png -filter_complex \"[0:v][1:v]overlay=$equation:enable='between(t,0,$duration)'\" -c:v huffyuv result.avi");
     }
 
 }
