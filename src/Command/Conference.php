@@ -14,7 +14,7 @@ use Symfony\Component\Process\Process;
 class Conference extends Command {
 
     // the name of the command
-    protected static $defaultName = 'video:conf';
+    protected static $defaultName = 'conference:build';
 
     protected function initialize(InputInterface $input, OutputInterface $output) {
 
