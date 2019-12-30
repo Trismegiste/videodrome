@@ -11,5 +11,6 @@ $application = new Application();
 // register commands
 $application->add(new \Trismegiste\Videodrome\Command\Conference());
 $application->add(new \Trismegiste\Videodrome\Command\Slider());
+$application->add(new \Trismegiste\Videodrome\Command\Trailer());
 
 $application->run();
