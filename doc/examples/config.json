@@ -2,6 +2,7 @@
     "output": "yolo",
     "file": {
         "background": "/home/flo/Vidéos/Trailer BK/slide/",
+        "title": "/home/flo/Vidéos/Trailer BK/title/",
         "sound": "/home/flo/Vidéos/Trailer BK/inception.flac",
         "marker": "/home/flo/Develop/videodrome/doc/examples/marker.txt"
     }

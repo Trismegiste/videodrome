@@ -52,7 +52,7 @@ class PictureToPanning implements Task {
         ]);
         $ffmpeg->mustRun();
 
-
+        $equation = $this->getEquation();
         $ffmpeg = new Process("ffmpeg -y -i {$this->blankVideo} -i {$this->picture} -filter_complex \"[0:v][1:v]overlay=$equation:enable='between(t,0,{$this->duration})'\" -c:v huffyuv {$this->picture}.avi");
         $ffmpeg->mustRun();
     }
