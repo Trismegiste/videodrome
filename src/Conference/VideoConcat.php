@@ -26,6 +26,7 @@ class VideoConcat implements Task {
 
     public function exec() {
         $ffmpeg = new Process('ffmpeg -y -i "concat:' . implode('|', $this->filename) . '" ' . $this->tmpwosound);
+        $ffmpeg->setTimeout(null);
         $ffmpeg->run();
         if (!$ffmpeg->isSuccessful()) {
             throw new TaskException('Fail to concat ' . implode('|', $this->filename));
