@@ -16,6 +16,7 @@ class PictureToPanning implements Task {
     private $duration;
     private $framerate;
     private $picture;
+    private $blackCanvas = "tmp-canvas.png";
     private $blankVideo = "tmp-blank.avi";
     private $direction;
 
@@ -30,12 +31,37 @@ class PictureToPanning implements Task {
 
     //put your code here
     public function clean() {
+        shell_exec("rm " . $this->blackCanvas);
         shell_exec("rm " . $this->blankVideo);
     }
 
     public function exec() {
-        $ffmpeg = new Process("ffmpeg -y -f lavfi -i color=c=black:s={$this->width}x{$this->height}:d={$this->duration}:r={$this->framerate} -c:v huffyuv " . $this->blankVideo);
+        // creating the canvas
+        $imagick = new Process("convert -size {$this->width}x{$this->height} canvas:black " . $this->blackCanvas);
+        $imagick->mustRun();
+
+        // Animating the black canvas
+        // Why I don't use the lavfi filter ? Because there are some duration problems (probably rounding timeframe)
+        $ffmpeg = new Process(["ffmpeg", "-y",
+            "-framerate", 30,
+            "-loop", 1,
+            "-i", $this->blackCanvas,
+            "-t", $this->duration,
+            "-c:v", "huffyuv",
+            $this->blankVideo
+        ]);
         $ffmpeg->mustRun();
+
+
+        $ffmpeg = new Process("ffmpeg -y -i {$this->blankVideo} -i {$this->picture} -filter_complex \"[0:v][1:v]overlay=$equation:enable='between(t,0,{$this->duration})'\" -c:v huffyuv {$this->picture}.avi");
+        $ffmpeg->mustRun();
+    }
+
+    public function getFilename() {
+        return $this->picture . ".avi";
+    }
+
+    protected function getEquation() {
 
         $info = getimagesize($this->picture);
         $width = $info[0];
@@ -76,12 +102,7 @@ class PictureToPanning implements Task {
             throw new TaskException("Bad picture size for format");
         }
 
-        $ffmpeg = new Process("ffmpeg -y -i {$this->blankVideo} -i {$this->picture} -filter_complex \"[0:v][1:v]overlay=$equation:enable='between(t,0,{$this->duration})'\" -c:v huffyuv {$this->picture}.avi");
-        $ffmpeg->mustRun();
-    }
-
-    public function getFilename() {
-        return $this->picture . ".avi";
+        return $equation;
     }
 
 }
