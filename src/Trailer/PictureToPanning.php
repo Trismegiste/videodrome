@@ -17,13 +17,15 @@ class PictureToPanning implements Task {
     private $framerate;
     private $picture;
     private $blankVideo = "tmp-blank.avi";
+    private $direction;
 
-    public function __construct($w, $h, $t, $rate, $image) {
+    public function __construct($w, $h, $t, $rate, $image, $dir = '+') {
         $this->height = $h;
         $this->width = $w;
         $this->duration = $t;
         $this->framerate = $rate;
         $this->picture = $image;
+        $this->direction = $dir;
     }
 
     //put your code here
@@ -40,13 +42,33 @@ class PictureToPanning implements Task {
         $height = $info[1];
 
         if ($height > $this->height) {
-            // pan to the bottom of the picture
-            $speed = -($height - $this->height) / $this->duration;
-            $equation = "y=$speed*t";
+            $speed = ($height - $this->height) / $this->duration;
+            switch ($this->direction) {
+                case '+':
+                    // pan to the bottom of the picture
+                    $speed = -$speed;
+                    $equation = "y=$speed*t";
+                    break;
+                case '-':
+                    // pan to the top of the picture
+                    $delta = $height - $this->height;
+                    $equation = "y=$speed*t-$delta";
+                    break;
+            }
         } else if ($width > $this->width) {
-            // pan to the right of the picture
-            $speed = -($width - $this->width) / $this->duration;
-            $equation = "x=$speed*t";
+            $speed = ($width - $this->width) / $this->duration;
+            switch ($this->direction) {
+                case '+':
+                    // pan to the right of the picture
+                    $speed = -$speed;
+                    $equation = "x=$speed*t";
+                    break;
+                case '-';
+                    // pan to the left of the picture
+                    $delta = $width - $this->width;
+                    $equation = "x=$speed*t-$delta";
+                    break;
+            }
         } else {
             throw new TaskException("Bad picture size for format");
         }

@@ -31,7 +31,7 @@ class Slider extends Command {
 
         $resizing = new ImageResizeForPanning($picture, $this->outputFormat['w'], $this->outputFormat['h']);
         $resizing->exec();
-        $panning = new PictureToPanning($this->outputFormat['w'], $this->outputFormat['h'], $duration, $this->framerate, $resizing->getResizedName());
+        $panning = new PictureToPanning($this->outputFormat['w'], $this->outputFormat['h'], $duration, $this->framerate, $resizing->getResizedName(), '+');
         $panning->exec();
         $panning->clean();
         $resizing->clean();
