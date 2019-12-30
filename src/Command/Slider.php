@@ -3,10 +3,11 @@
 namespace Trismegiste\Videodrome\Command;
 
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Process\Process;
+use Trismegiste\Videodrome\Trailer\ImageResizeForPanning;
+use Trismegiste\Videodrome\Trailer\PictureToPanning;
 
 /**
  * Description of Slider
@@ -28,29 +29,12 @@ class Slider extends Command {
         $picture = $input->getArgument('picture');
         $duration = (float) $input->getArgument('duration');
 
-        $info = getimagesize($picture);
-        $width = $info[0];
-        $height = $info[1];
-        $ratio = $width / $height;
-
-        $nh = round($this->outputFormat['w'] / $ratio);
-        $nw = round($this->outputFormat['h'] * $ratio);
-
-        if ($nh >= $this->outputFormat['h']) {
-            $resize = $this->outputFormat['w'] . 'x' . $nh;
-            $direction = "v";
-            $speed = -($nh - $this->outputFormat['h']) / $duration;
-            $equation = "y=$speed*t";
-        } else {
-            $resize = $nw . 'x' . $this->outputFormat['h'];
-            $direction = ">";
-            $speed = -($nw - $this->outputFormat['w']) / $duration;
-            $equation = "x=$speed*t";
-        }
-
-        shell_exec("convert $picture -resize $resize resized.png");
-        shell_exec("ffmpeg -y -f lavfi -i color=c=blue:s={$this->outputFormat['w']}x{$this->outputFormat['h']}:d=$duration:r=30 -c:v huffyuv yolo.avi");
-        shell_exec("ffmpeg -y -i yolo.avi -i resized.png -filter_complex \"[0:v][1:v]overlay=$equation:enable='between(t,0,$duration)'\" result.mp4");
+        $resizing = new ImageResizeForPanning($picture, $this->outputFormat['w'], $this->outputFormat['h']);
+        $resizing->exec();
+        $panning = new PictureToPanning($this->outputFormat['w'], $this->outputFormat['h'], $duration, $this->framerate, $resizing->getResizedName());
+        $panning->exec();
+        $panning->clean();
+        $resizing->clean();
     }
 
 }
