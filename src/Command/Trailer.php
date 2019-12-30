@@ -19,6 +19,7 @@ class Trailer extends Command {
     protected $outputFormat = ['w' => 1920, 'h' => 1080];
     protected $framerate = 30;
     protected $config;
+    protected $timecode;
 
     protected function configure() {
         $this->setDescription("Generates a trailer-like video with pictures, timecode and sound")
@@ -27,10 +28,32 @@ class Trailer extends Command {
 
     protected function initialize(InputInterface $input, OutputInterface $output) {
         $this->config = json_decode(file_get_contents($input->getArgument('config')));
+        $timing = file($this->config->file->marker);
+        $this->timecode = [];
+        foreach ($timing as $clip) {
+            if (preg_match("/^([.0-9]+)\s([.0-9]+)\s([^\s]+)$/", $clip, $extract)) {
+                $this->timecode[] = [
+                    'start' => (float) $extract[1],
+                    'duration' => $extract[2] - $extract[1],
+                    'name' => $extract[3]
+                ];
+            }
+        }
     }
 
     protected function execute(InputInterface $input, OutputInterface $output) {
         var_dump($this->config);
+        var_dump($this->timecode);
+
+        foreach ($this->timecode as $seq) {
+            $bg = $this->config->file->background . $seq['name'] . '.jpg';
+            $resizing = new ImageResizeForPanning($bg, $this->outputFormat['w'], $this->outputFormat['h']);
+            $resizing->exec();
+            $panning = new PictureToPanning($this->outputFormat['w'], $this->outputFormat['h'], $seq['duration'], $this->framerate, $resizing->getResizedName());
+            $panning->exec();
+            $panning->clean();
+            $resizing->clean();
+        }
     }
 
 }

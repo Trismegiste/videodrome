@@ -15,7 +15,7 @@ class ImpressToPdf implements Task {
 
     public function __construct($fch) {
         $this->impress = $fch;
-        $this->pdf = preg_replace('/(^|.+\/)([^\/]+)\.odp$/', '\\2.pdf', $this->impress);
+        $this->pdf = preg_replace('/(^|.+\/)([^\/]+)\.odp$/', '\\2.pdf', $this->impress); // @todo use pathinfo FFS !
     }
 
     public function exec() {

@@ -35,7 +35,11 @@ class ImageResizeForPanning implements Task {
             $resize = $nw . 'x' . $this->height;
         }
 
-        $imagick = new Process("convert {$this->picture} -resize $resize " . $this->getResizedName());
+        $imagick = new Process([
+            "convert", $this->picture,
+            '-resize', $resize,
+            $this->getResizedName()
+        ]);
         $imagick->mustRun();
     }
 
@@ -44,7 +48,8 @@ class ImageResizeForPanning implements Task {
     }
 
     public function getResizedName() {
-        return "tmp-resized.png";
+        $info = pathinfo($this->picture);
+        return "tmp-" . $info['filename'] . '.png';
     }
 
 }

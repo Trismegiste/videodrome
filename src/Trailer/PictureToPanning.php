@@ -69,6 +69,9 @@ class PictureToPanning implements Task {
                     $equation = "x=$speed*t-$delta";
                     break;
             }
+        } else if (($width == $this->width) && ($height == $this->height)) {
+            // the picture has the same ratio : no panning
+            $equation = "x=0";
         } else {
             throw new TaskException("Bad picture size for format");
         }
