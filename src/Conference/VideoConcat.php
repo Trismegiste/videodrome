@@ -13,6 +13,7 @@ class VideoConcat implements Task {
 
     private $filename;
     private $sound;
+    private $tmpwosound = 'sans-son.mp4';
 
     public function __construct(array $filename, $sound) {
         $this->filename = $filename;
@@ -20,17 +21,25 @@ class VideoConcat implements Task {
     }
 
     public function clean() {
-        shell_exec("rm sans-son.mp4");
+        shell_exec("rm " . $this->tmpwosound);
     }
 
     public function exec() {
-        $ffmpeg = new Process('ffmpeg -y -i "concat:' . implode('|', $this->filename) . '" sans-son.mp4');
+        $ffmpeg = new Process('ffmpeg -y -i "concat:' . implode('|', $this->filename) . '" ' . $this->tmpwosound);
         $ffmpeg->run();
         if (!$ffmpeg->isSuccessful()) {
             throw new TaskException('Fail to concat ' . implode('|', $this->filename));
         }
 
-        $ffmpeg = new Process("ffmpeg -y -i sans-son.mp4 -i {$this->sound} -shortest -strict -2 -c:v copy -c:a aac result.mp4");
+        $ffmpeg = new Process(['ffmpeg', '-y',
+            '-i', 'sans-son.mp4',
+            '-i', $this->sound,
+            '-shortest',
+            '-strict', -2,
+            '-c:v', 'copy',
+            '-c:a', 'aac',
+            'result.mp4'
+        ]);
         $ffmpeg->run();
         if (!$ffmpeg->isSuccessful()) {
             throw new TaskException('Fail to combine with sound');

@@ -6,6 +6,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Trismegiste\Videodrome\Conference\VideoConcat;
 use Trismegiste\Videodrome\Trailer\ImageResizeForPanning;
 use Trismegiste\Videodrome\Trailer\PictureToPanning;
 
@@ -43,17 +44,22 @@ class Trailer extends Command {
 
     protected function execute(InputInterface $input, OutputInterface $output) {
         var_dump($this->config);
-        var_dump($this->timecode);
 
+        $clipname = [];
         foreach ($this->timecode as $seq) {
             $bg = $this->config->file->background . $seq['name'] . '.jpg';
             $resizing = new ImageResizeForPanning($bg, $this->outputFormat['w'], $this->outputFormat['h']);
             $resizing->exec();
             $panning = new PictureToPanning($this->outputFormat['w'], $this->outputFormat['h'], $seq['duration'], $this->framerate, $resizing->getResizedName());
             $panning->exec();
+            $clipname[] = $panning->getFilename();
             $panning->clean();
             $resizing->clean();
         }
+
+        $compil = new VideoConcat($clipname, $this->config->file->sound);
+        $compil->exec();
+        $compil->clean();
     }
 
 }
