@@ -6,7 +6,7 @@ use Trismegiste\Videodrome\Task;
 use Symfony\Component\Console\Helper\ProgressBar;
 
 /**
- * Description of PngToVideo
+ * PngToVideo creates a short video from a PNG
  */
 class PngToVideo implements Task {
 

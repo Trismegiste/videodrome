@@ -6,7 +6,7 @@ use Trismegiste\Videodrome\Task;
 use Symfony\Component\Process\Process;
 
 /**
- * Description of PdfToPng
+ * PdfToPng converts a PDF file to a set of PNG
  */
 class PdfToPng implements Task {
 

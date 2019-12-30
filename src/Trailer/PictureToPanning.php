@@ -29,7 +29,6 @@ class PictureToPanning implements Task {
         $this->direction = $dir;
     }
 
-    //put your code here
     public function clean() {
         shell_exec("rm " . $this->blackCanvas);
         shell_exec("rm " . $this->blankVideo);
@@ -61,6 +60,12 @@ class PictureToPanning implements Task {
         return $this->picture . ".avi";
     }
 
+    /**
+     * Gets the equation for panning a picture in a video for ffmpeg
+     * 
+     * @return string
+     * @throws TaskException
+     */
     protected function getEquation() {
 
         $info = getimagesize($this->picture);

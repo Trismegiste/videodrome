@@ -7,7 +7,13 @@ namespace Trismegiste\Videodrome;
  */
 interface Task {
 
+    /**
+     * Execute the task
+     */
     public function exec();
 
+    /**
+     * Cleaning temporary files
+     */
     public function clean();
 }

@@ -3,16 +3,26 @@
 namespace Trismegiste\Videodrome;
 
 /**
- * A loop of Task
+ * A loop of Tasks
  */
 class LoopTask implements Task {
 
     private $task;
 
+    /**
+     * Constructor for the loop
+     * 
+     * @param array $task an array of Tasks
+     */
     public function __construct(array $task = []) {
         $this->task = $task;
     }
 
+    /**
+     * Adds a Task
+     * 
+     * @param \Trismegiste\Videodrome\Task $t
+     */
     public function push(Task $t) {
         $this->task[] = $t;
     }

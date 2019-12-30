@@ -6,7 +6,7 @@ use Trismegiste\Videodrome\Task;
 use Symfony\Component\Process\Process;
 
 /**
- * ImpressToPdf convert an Impress file to a PDF
+ * ImpressToPdf convert a LibreOffice Impress file to a PDF
  */
 class ImpressToPdf implements Task {
 

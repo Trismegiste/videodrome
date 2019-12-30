@@ -7,7 +7,7 @@ use Symfony\Component\Process\Process;
 use Trismegiste\Videodrome\TaskException;
 
 /**
- * Description of VideoConcat
+ * VideoConcat concats a set of video into a single one
  */
 class VideoConcat implements Task {
 
