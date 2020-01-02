@@ -25,6 +25,7 @@ class PdfToPng implements Task {
 
     public function exec() {
         $magick = new Process("convert -density {$this->dpi} {$this->pdf} -resize {$this->format} diapo.png");
+        $magick->setTimeout(1000);
         $magick->mustRun();
     }
 
