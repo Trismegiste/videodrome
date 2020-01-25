@@ -1,7 +1,8 @@
 {
     "require": {
         "symfony/console": "^3.4",
-        "symfony/process": "^3.4"
+        "symfony/process": "^3.4",
+        "symfony/finder": "^3.4"
     },
     "autoload": {
         "psr-4": {

@@ -2,8 +2,10 @@
 
 namespace Trismegiste\Videodrome\Conference;
 
-use Trismegiste\Videodrome\Task;
 use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Process\Process;
+use Trismegiste\Videodrome\Task;
+use Trismegiste\Videodrome\TaskException;
 
 /**
  * PngToVideo creates a short video from a PNG
@@ -12,7 +14,7 @@ class PngToVideo implements Task {
 
     private $image;
     private $duration;
-    private $framerate = 3;
+    private $framerate = 6;
     private $progbar;
 
     public function __construct(ProgressBar $prog, $image, $duration) {
@@ -26,7 +28,7 @@ class PngToVideo implements Task {
     }
 
     public function exec() {
-        $animate = new \Symfony\Component\Process\Process([
+        $animate = new Process([
             'ffmpeg', '-y',
             '-framerate', $this->framerate,
             '-loop', 1,
@@ -37,7 +39,7 @@ class PngToVideo implements Task {
         ]);
         $animate->run();
         if (!$animate->isSuccessful()) {
-            throw new \Trismegiste\Videodrome\TaskException("Error when generating " . $this->getOutputName());
+            throw new TaskException("Error when generating " . $this->getOutputName());
         }
 
         $this->progbar->advance();
