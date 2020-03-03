@@ -51,7 +51,6 @@ class Panning extends Command {
             }
         }
 
-        var_dump($cfg);
         return $cfg;
     }
 
@@ -83,7 +82,7 @@ class Panning extends Command {
         $cor->execute($listing, [
             'duration' => $duration,
             'direction' => $direction,
-            'width' => 1000,
+            'width' => 450,
             'height' => 500,
         ]);
     }
