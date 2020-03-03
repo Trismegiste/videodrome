@@ -10,7 +10,7 @@ class ImagePanningTest extends TestCase {
         $sut = new ImagePanning(new ImageExtender());
         $ret = $sut->execute([__DIR__ . '/picture1.jpg'], ['width' => 800, 'height' => 400, 'duration' => ['picture1-extended.png' => 1]]);
         $this->assertEquals(['picture1-extended.avi'], $ret);
-        $this->assertTrue(file_exists($ret[0]));
+        $this->assertFileExists($ret[0]);
         unlink($ret[0]);
     }
 
