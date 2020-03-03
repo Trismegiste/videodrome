@@ -13,37 +13,24 @@ use Symfony\Component\Process\Process;
  */
 class Conference extends Command {
 
+    const dependencies = [
+        ['libreoffice6.0', '--version', 'LibreOffice'],
+        ['pdfinfo', '-v', 'Plopper'],
+        ['convert', '-version', 'ImageMagick'],
+        ['ffmpeg', '-version', 'ffmpeg'],
+    ];
+
     // the name of the command
     protected static $defaultName = 'conference:build';
 
     protected function initialize(InputInterface $input, OutputInterface $output) {
-
-        // LibreOffice
-        $check = new Process(['libreoffice6.0', '--version']);
-        $check->run();
-        if (!$check->isSuccessful()) {
-            throw new \RuntimeException('LibreOffice is missing');
-        }
-
-        // Plopper  
-        $check = new Process(['pdfinfo', '-v']);
-        $check->run();
-        if (!$check->isSuccessful()) {
-            throw new \RuntimeException('Plopper is missing');
-        }
-
-        // ImageMagick
-        $check = new Process(['convert', '-version']);
-        $check->run();
-        if (!$check->isSuccessful()) {
-            throw new \RuntimeException('ImageMagick is missing');
-        }
-
-        // ffmpeg  
-        $check = new Process(['ffmpeg', '-version']);
-        $check->run();
-        if (!$check->isSuccessful()) {
-            throw new \RuntimeException('ffmpeg is missing');
+        // check installed dependencies
+        foreach (self::dependencies as $app) {
+            $check = new Process([$app[0], $app[1]]);
+            $check->run();
+            if (!$check->isSuccessful()) {
+                throw new \RuntimeException($app[2] . ' is missing');
+            }
         }
     }
 
