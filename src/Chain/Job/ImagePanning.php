@@ -33,6 +33,7 @@ class ImagePanning extends FileJob {
     }
 
     protected function pan(string $picture, int $vidWidth, int $vidHeight, float $duration, string $dir): string {
+        $this->logger->info("Panning $picture");
         $output = pathinfo($picture, PATHINFO_FILENAME) . '.avi';
 
         // creating the canvas

@@ -51,20 +51,28 @@ class Panning extends Command {
         $cor->setLogger(new ConsoleLogger($output));
 
         $search = new Finder();
-        $iter = $search->in($imageFolder)
-                ->name('/\.(jpg|png)$/')
-                ->files()
-                ->filter(function (\SplFileInfo $n) use ($timecode) {
+        $iter = $search->in($imageFolder)->name('/\.(jpg|png)$/')->files();
+
+        $listing = [];
+        $duration = [];
+        $direction = [];
+        foreach ($iter as $picture) {
             foreach ($timecode as $detail) {
-                if (preg_match('/^' . $detail['name'] . "\\./", $n->getFilename())) {
-                    return true;
+                $key = $detail['name'];
+                if (preg_match('/^' . $key . "\\./", $picture->getFilename())) {
+                    $listing[] = (string) $picture;
+                    $duration[$key . '-extended.png'] = $detail['duration'];
+                    $direction[$key . '-extended.png'] = '+';
                 }
             }
-            return false;
-        });
-        foreach ($iter as $picture) {
-            $output->writeln($picture->getFilename());
         }
+
+        $cor->execute($listing, [
+            'duration' => $duration,
+            'direction' => $direction,
+            'width' => 1000,
+            'height' => 500,
+        ]);
     }
 
 }

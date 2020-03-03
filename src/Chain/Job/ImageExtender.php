@@ -16,6 +16,7 @@ class ImageExtender extends FileJob {
 
         $output = [];
         foreach ($filename as $picture) {
+            $this->logger->info("Extending $picture");
             $output[] = $this->resize($picture, $width, $height);
         }
 
