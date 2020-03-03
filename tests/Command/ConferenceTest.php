@@ -15,9 +15,9 @@ class ConferenceTest extends TestCase {
         $tester = new CommandTester($application->find('conference:build'));
 
         $this->assertEquals(0, $tester->execute([
-                    'impress' => dirname(__DIR__) . '/Chain/Job/fixtures1.odp',
-                    'voice' => dirname(__DIR__) . '/Chain/Job/sound1.ogg',
-                    'marker' => __DIR__ . '/sound1.txt'
+                    'impress' => __DIR__ . '/../fixtures/fixtures1.odp',
+                    'voice' => __DIR__ . '/../fixtures/sound1.ogg',
+                    'marker' => __DIR__ . '/../fixtures/sound1.txt'
         ]));
 
         $generated = 'fixtures1-0-compil-sound.mp4';

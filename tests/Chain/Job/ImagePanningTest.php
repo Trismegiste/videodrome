@@ -8,14 +8,14 @@ class ImagePanningTest extends TestCase {
 
     public function testExecute() {
         $sut = new ImagePanning(new ImageExtender());
-        $ret = $sut->execute([__DIR__ . '/picture1.jpg'], [
+        $ret = $sut->execute([__DIR__ . '/../../fixtures/picture1.jpg'], [
             'width' => 800, 'height' => 400,
             'duration' => ['picture1-extended.png' => 1],
             'direction' => ['picture1-extended.png' => '+']
         ]);
         $this->assertEquals(['picture1-extended.avi'], $ret);
         $this->assertFileExists($ret[0]);
-      //  unlink($ret[0]);
+        unlink($ret[0]);
     }
 
 }

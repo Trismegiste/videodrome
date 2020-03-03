@@ -7,6 +7,8 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Finder\Finder;
+use Trismegiste\Videodrome\Chain\ConsoleLogger;
 use Trismegiste\Videodrome\Chain\Job\ImageExtender;
 use Trismegiste\Videodrome\Chain\Job\ImagePanning;
 
@@ -19,18 +21,50 @@ class Panning extends Command {
 
     protected function configure() {
         $this->setDescription("Generates multiple pannings from a folder full of pictures and a marker for timing")
-                ->addArgument('folder', InputArgument::REQUIRED, "a folder full of pictures")
+                ->addArgument('folder', InputArgument::REQUIRED, "Folder full of pictures")
                 ->addArgument('marker', InputArgument::REQUIRED, "Audacity Timecode Marker from the sound file")
-                ->addOption('config', NULL, InputOption::VALUE_REQUIRED, "The config filenae in the folder for panning", "videodrome.cfg");
+                ->addOption('config', NULL, InputOption::VALUE_REQUIRED, "The config filename in the folder for panning", "videodrome.cfg");
+    }
+
+    protected function getTimecode(string $fch): array {
+        $timing = file($fch);
+        $timecode = [];
+        foreach ($timing as $clip) {
+            if (preg_match("/^([.0-9]+)\s([.0-9]+)\s([^\s]+)$/", $clip, $extract)) {
+                $timecode[] = [
+                    'start' => (float) $extract[1],
+                    'duration' => $extract[2] - $extract[1],
+                    'name' => $extract[3]
+                ];
+            }
+        }
+
+        return $timecode;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output) {
         $imageFolder = $input->getArgument('folder');
-        $markerFile = $input->getArgument('marker');
+        $timecode = $this->getTimecode($input->getArgument('marker'));
         $configFile = $input->getOption('config');
 
-
         $cor = new ImagePanning(new ImageExtender());
+        $cor->setLogger(new ConsoleLogger($output));
+
+        $search = new Finder();
+        $iter = $search->in($imageFolder)
+                ->name('/\.(jpg|png)$/')
+                ->files()
+                ->filter(function (\SplFileInfo $n) use ($timecode) {
+            foreach ($timecode as $detail) {
+                if (preg_match('/^' . $detail['name'] . "\\./", $n->getFilename())) {
+                    return true;
+                }
+            }
+            return false;
+        });
+        foreach ($iter as $picture) {
+            $output->writeln($picture->getFilename());
+        }
     }
 
 }
