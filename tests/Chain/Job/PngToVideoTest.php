@@ -11,7 +11,7 @@ class PngToVideoTest extends TestCase {
         $sut = new PngToVideo(new PdfToPng(new ImpressToPdf()));
         $ret = $sut->execute([__DIR__ . '/fixtures1.odp'], ['duration' => [1, 1, 1]]);
         foreach ($ret as $vid) {
-            $this->assertTrue(file_exists($vid));
+            $this->assertFileExists($vid);
         }
         // clean
         foreach ($ret as $vid) {

@@ -10,7 +10,7 @@ class PdfToPngTest extends TestCase {
         $sut = new PdfToPng(new ImpressToPdf());
         $ret = $sut->execute([__DIR__ . '/fixtures1.odp']);
         foreach ($ret as $png) {
-            $this->assertTrue(file_exists($png));
+            $this->assertFileExists($png);
         }
         // clean
         foreach ($ret as $png) {

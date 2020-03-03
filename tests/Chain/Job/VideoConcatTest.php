@@ -12,7 +12,7 @@ class VideoConcatTest extends TestCase {
         $sut = new VideoConcat(new PngToVideo(new PdfToPng(new ImpressToPdf())));
         $ret = $sut->execute([__DIR__ . '/fixtures1.odp'], ['duration' => [1, 1, 1]]);
         $this->assertEquals(['fixtures1-0-compil.mp4'], $ret);
-        $this->assertTrue(file_exists($ret[0]));
+        $this->assertFileExists($ret[0]);
         // clean
         unlink($ret[0]);
     }
