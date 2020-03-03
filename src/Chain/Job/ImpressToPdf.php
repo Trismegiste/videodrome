@@ -16,6 +16,9 @@ class ImpressToPdf extends FileJob {
         $pdf = $tmp['filename'] . '.pdf';
         $proc = new Process(['libreoffice6.0', '--convert-to', 'pdf', $impress]);
         $proc->mustRun();
+        if (!file_exists($pdf)) {
+            throw new JobException("ImpressToPdf : creation of $pdf failed");
+        }
 
         return [$pdf];
     }

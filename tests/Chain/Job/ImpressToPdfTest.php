@@ -9,6 +9,8 @@ class ImpressToPdfTest extends TestCase {
         $sut = new ImpressToPdf();
         $ret = $sut->execute([__DIR__ . '/fixtures1.odp']);
         $this->assertEquals(['fixtures1.pdf'], $ret);
+        $this->assertTrue(file_exists($ret[0]));
+        unlink($ret[0]);
     }
 
 }
