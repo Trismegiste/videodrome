@@ -16,19 +16,23 @@ class ImagePanning extends FileJob {
 
     protected function process(array $filename, array $context): array {
         $duration = $context['duration'];
+        $direction = $context['direction'];
         if (count($duration) !== count($filename)) {
             throw new JobException("ImagePanning : count mismatch between durations (" . count($duration) . ") and images (" . count($filename) . ')');
+        }
+        if (count($direction) !== count($filename)) {
+            throw new JobException("ImagePanning : count mismatch between directions (" . count($direction) . ") and images (" . count($filename) . ')');
         }
 
         $panned = [];
         foreach ($filename as $picture) {
-            $panned[] = $this->pan($picture, $context['width'], $context['height'], $duration[$picture]);
+            $panned[] = $this->pan($picture, $context['width'], $context['height'], $duration[$picture], $direction[$picture]);
         }
 
         return $panned;
     }
 
-    protected function pan(string $picture, int $vidWidth, int $vidHeight, float $duration): string {
+    protected function pan(string $picture, int $vidWidth, int $vidHeight, float $duration, string $dir): string {
         $output = pathinfo($picture, PATHINFO_FILENAME) . '.avi';
 
         // creating the canvas
@@ -48,7 +52,7 @@ class ImagePanning extends FileJob {
         $ffmpeg->mustRun();
         unlink($this->blankCanvas);
 
-        $equation = $this->getEquation($picture, $vidWidth, $vidHeight, $duration);
+        $equation = $this->getEquation($picture, $vidWidth, $vidHeight, $duration, $dir);
         $ffmpeg = new Process("ffmpeg -y -i {$this->blankVideo} -i $picture -filter_complex \"[0:v][1:v]overlay=$equation:enable='between(t,0,$duration)'\" -c:v huffyuv $output");
         $ffmpeg->mustRun();
         unlink($this->blankVideo);
