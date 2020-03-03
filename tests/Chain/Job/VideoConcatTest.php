@@ -14,7 +14,7 @@ class VideoConcatTest extends TestCase {
         $this->assertEquals(['fixtures1-0-compil.mp4'], $ret);
         $this->assertTrue(file_exists($ret[0]));
         // clean
-        //   unlink($ret[0]);
+        unlink($ret[0]);
     }
 
 }
