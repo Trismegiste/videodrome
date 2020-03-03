@@ -23,7 +23,9 @@ class Panning extends Command {
         $this->setDescription("Generates multiple pannings from a folder full of pictures and a marker for timing")
                 ->addArgument('folder', InputArgument::REQUIRED, "Folder full of pictures")
                 ->addArgument('marker', InputArgument::REQUIRED, "Audacity Timecode Marker from the sound file")
-                ->addOption('config', NULL, InputOption::VALUE_REQUIRED, "The config filename in the folder for panning", "videodrome.cfg");
+                ->addOption('config', NULL, InputOption::VALUE_REQUIRED, "The config filename in the folder for panning", "videodrome.cfg")
+                ->addOption('width', NULL, InputOption::VALUE_REQUIRED, "Video width in pixel", 1920)
+                ->addOption('height', NULL, InputOption::VALUE_REQUIRED, "Video height in pixel", 1080);
     }
 
     protected function getTimecode(string $fch): array {
@@ -55,12 +57,10 @@ class Panning extends Command {
     }
 
     protected function execute(InputInterface $input, OutputInterface $output) {
+        $output->write("Panning generator");
         $imageFolder = $input->getArgument('folder');
         $timecode = $this->getTimecode($input->getArgument('marker'));
         $config = $this->getOptionalConfig($imageFolder, $input->getOption('config'));
-
-        $cor = new ImagePanning(new ImageExtender());
-        $cor->setLogger(new ConsoleLogger($output));
 
         $search = new Finder();
         $iter = $search->in($imageFolder)->name('/\.(jpg|png)$/')->files();
@@ -79,11 +79,13 @@ class Panning extends Command {
             }
         }
 
+        $cor = new ImagePanning(new ImageExtender());
+        $cor->setLogger(new ConsoleLogger($output));
         $cor->execute($listing, [
             'duration' => $duration,
             'direction' => $direction,
-            'width' => 450,
-            'height' => 500,
+            'width' => $input->getOption('width'),
+            'height' => $input->getOption('height'),
         ]);
     }
 
