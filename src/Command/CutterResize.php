@@ -9,21 +9,20 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 use Trismegiste\Videodrome\Chain\ConsoleLogger;
-use Trismegiste\Videodrome\Chain\Job\ImageExtender;
-use Trismegiste\Videodrome\Chain\Job\ImagePanning;
+use Trismegiste\Videodrome\Chain\Job\Cutter;
 
 /**
- * Creates a panning from a folder full of image and a marker for timing
+ * Extracts a sequence of video and resizes it
  */
-class Panning extends Command {
+class CutterResize extends Command {
 
-    protected static $defaultName = 'trailer:panning';
+    protected static $defaultName = 'trailer:cutter';
 
     protected function configure() {
-        $this->setDescription("Generates multiple pannings from a folder full of pictures and a marker for timing")
+        $this->setDescription("Generates multiple extracts from a folder full of video and a marker for timing")
                 ->addArgument('folder', InputArgument::REQUIRED, "Folder full of pictures")
                 ->addArgument('marker', InputArgument::REQUIRED, "Audacity Timecode Marker from the sound file")
-                ->addOption('config', NULL, InputOption::VALUE_REQUIRED, "The config filename in the folder for panning", "panning.cfg")
+                ->addOption('config', NULL, InputOption::VALUE_REQUIRED, "The config filename in the folder for panning", "cutter.cfg")
                 ->addOption('width', NULL, InputOption::VALUE_REQUIRED, "Video width in pixel", 1920)
                 ->addOption('height', NULL, InputOption::VALUE_REQUIRED, "Video height in pixel", 1080);
     }
@@ -48,7 +47,7 @@ class Panning extends Command {
         $content = file($dir . '/' . $fch);
         $cfg = [];
         foreach ($content as $line) {
-            if (preg_match("/^([^\s]+)\s([\+|-])$/", $line, $extract)) {
+            if (preg_match("/^([^\s]+)\s([.0-9]+)$/", $line, $extract)) {
                 $cfg[$extract[1]] = $extract[2];
             }
         }
@@ -57,33 +56,33 @@ class Panning extends Command {
     }
 
     protected function execute(InputInterface $input, OutputInterface $output) {
-        $output->writeln("Panning generator");
+        $output->writeln("Video extractor");
         $imageFolder = $input->getArgument('folder');
         $timecode = $this->getTimecode($input->getArgument('marker'));
         $config = $this->getOptionalConfig($imageFolder, $input->getOption('config'));
 
         $search = new Finder();
-        $iter = $search->in($imageFolder)->name('/\.(jpg|png)$/')->files();
+        $iter = $search->in($imageFolder)->name('/\.(mkv|avi|webm|mp4)$/')->files();
 
         $listing = [];
         $duration = [];
-        $direction = [];
+        $starting = [];
         foreach ($iter as $picture) {
             foreach ($timecode as $detail) {
                 $key = $detail['name'];
                 if (preg_match('/^' . $key . "\\./", $picture->getFilename())) {
                     $listing[] = (string) $picture;
-                    $duration[$key . '-extended.png'] = $detail['duration'];
-                    $direction[$key . '-extended.png'] = (array_key_exists($key, $config)) ? $config[$key] : '+';
+                    $duration[(string) $picture] = $detail['duration'];
+                    $starting[(string) $picture] = (array_key_exists($key, $config)) ? $config[$key] : 0;
                 }
             }
         }
 
-        $cor = new ImagePanning(new ImageExtender());
+        $cor = new Cutter();
         $cor->setLogger(new ConsoleLogger($output));
         $cor->execute($listing, [
             'duration' => $duration,
-            'direction' => $direction,
+            'start' => $starting,
             'width' => $input->getOption('width'),
             'height' => $input->getOption('height'),
         ]);
