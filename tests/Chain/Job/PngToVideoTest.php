@@ -15,7 +15,7 @@ class PngToVideoTest extends TestCase {
         }
         // clean
         foreach ($ret as $vid) {
-            //unlink($vid);
+            unlink($vid);
         }
     }
 

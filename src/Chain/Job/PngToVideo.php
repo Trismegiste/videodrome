@@ -14,6 +14,9 @@ class PngToVideo extends FileJob {
     const framerate = 6;
 
     protected function process(array $filename, array $context): array {
+        if (!array_key_exists('duration', $context)) {
+            throw new JobException("PngToVideo : duration is not provided");
+        }
         $duration = $context['duration'];
         if (count($filename) !== count($duration)) {
             throw new JobException("PNG count mismatch with duration");
