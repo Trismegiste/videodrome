@@ -9,7 +9,7 @@ use Psr\Log\LoggerInterface;
  */
 interface JobInterface {
 
-    public function execute(array $filename): array;
+    public function execute(array $filename, array $context = []): array;
 
     public function setLogger(LoggerInterface $log);
 }

@@ -10,7 +10,7 @@ use Trismegiste\Videodrome\Chain\FileJob;
  */
 class ImpressToPdf extends FileJob {
 
-    protected function process(array $filename): array {
+    protected function process(array $filename, array $dummy): array {
         list($impress) = $filename;
         $tmp = pathinfo($impress);
         $pdf = $tmp['filename'] . '.pdf';

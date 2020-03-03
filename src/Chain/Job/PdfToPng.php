@@ -4,6 +4,7 @@ namespace Trismegiste\Videodrome\Chain\Job;
 
 use Symfony\Component\Process\Process;
 use Trismegiste\Videodrome\Chain\FileJob;
+use Trismegiste\Videodrome\Chain\JobException;
 
 /**
  * PdfToPng converts a PDF file to a set of PNG
@@ -13,7 +14,7 @@ class PdfToPng extends FileJob {
     const dpi = 200;
     const format = '1920x1080';
 
-    protected function process(array $filename): array {
+    protected function process(array $filename, array $notused): array {
         list($pdf) = $filename;
 
         $exportName = pathinfo($pdf, PATHINFO_FILENAME);
@@ -28,12 +29,16 @@ class PdfToPng extends FileJob {
         $magick->mustRun();
 
         $card = $this->getPdfPageCount($pdf);
-        $r = [];
+        $result = [];
         for ($k = 0; $k < $card; $k++) {
-            $r[] = $exportName . "-$k.png";
+            $tmpname = $exportName . "-$k.png";
+            if (!file_exists($tmpname)) {
+                throw new JobException("PdfToPng : creation of $tmpname failed");
+            }
+            $result[] = $tmpname;
         }
 
-        return $r;
+        return $result;
     }
 
     private function getPdfPageCount($pdf) {
