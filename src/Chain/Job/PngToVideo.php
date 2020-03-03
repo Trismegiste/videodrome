@@ -49,6 +49,7 @@ class PngToVideo extends FileJob {
         if (!$animate->isSuccessful()) {
             throw new JobException("PngToVideo : Error when generating " . $output);
         }
+        $this->logger->info("$output generated");
     }
 
 }

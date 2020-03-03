@@ -27,6 +27,7 @@ class VideoConcat extends FileJob {
         if (!file_exists($output)) {
             throw new JobException("VideoConcat : $output does not exist");
         }
+        $this->logger->info("Video concat $output generated");
 
         return [$output];
     }

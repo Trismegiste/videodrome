@@ -3,10 +3,17 @@
 namespace Trismegiste\Videodrome\Command;
 
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Exception\RuntimeException;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Process\Process;
+use Trismegiste\Videodrome\Chain\ConsoleLogger;
+use Trismegiste\Videodrome\Chain\Job\AddingSound;
+use Trismegiste\Videodrome\Chain\Job\ImpressToPdf;
+use Trismegiste\Videodrome\Chain\Job\PdfToPng;
+use Trismegiste\Videodrome\Chain\Job\PngToVideo;
+use Trismegiste\Videodrome\Chain\Job\VideoConcat;
 
 /**
  * Presentation video generator
@@ -29,7 +36,7 @@ class Conference extends Command {
             $check = new Process([$app[0], $app[1]]);
             $check->run();
             if (!$check->isSuccessful()) {
-                throw new \RuntimeException($app[2] . ' is missing');
+                throw new RuntimeException($app[2] . ' is missing');
             }
         }
     }
@@ -48,46 +55,15 @@ class Conference extends Command {
 
         $output->writeln("Conference Video Generator");
         $timecode = file($marqueur);
-
-        $progressBar = new \Symfony\Component\Console\Helper\ProgressBar($output, 5 * count($timecode));
-        $progressBar->start();
-
-        // PDF generator
-        $pdfTask = new \Trismegiste\Videodrome\Conference\ImpressToPdf($impress);
-        $pdfTask->exec();
-        $progressBar->advance(count($timecode));
-
-        // PNG generator
-        $diapoTask = new \Trismegiste\Videodrome\Conference\PdfToPng($pdfTask->getPdf());
-        if (count($timecode) !== $diapoTask->getPdfPageCount()) {
-            throw new \Exception("Page count mismatch");
+        $duration = [];
+        foreach ($timecode as $line) {
+            $detail = preg_split('/[\s]+/', $line);
+            $duration[] = $detail[1] - $detail[0];
         }
-        $diapoTask->exec();
-        $progressBar->advance(count($timecode));
 
-        // Convert to AVI
-        $vidname = [];
-        $vidGen = new \Trismegiste\Videodrome\LoopTask();
-        foreach ($diapoTask->getDiapoName() as $idx => $diapo) {
-            $detail = preg_split('/[\s]+/', $timecode[$idx]);
-            $delta = $detail[1] - $detail[0];
-            $obj = new \Trismegiste\Videodrome\Conference\PngToVideo($progressBar, $diapo, $delta);
-            $vidGen->push($obj);
-            $vidname[] = $obj->getOutputName();
-        }
-        $vidGen->exec();
-
-        // Concat & sound
-        $concat = new \Trismegiste\Videodrome\Conference\VideoConcat($vidname, $voix);
-        $concat->exec();
-        $progressBar->advance(count($timecode));
-
-        // Cleaning
-        $concat->clean();
-        $vidGen->clean();
-        $pdfTask->clean();
-        $diapoTask->clean();
-        $progressBar->finish();
+        $job = new AddingSound(new VideoConcat(new PngToVideo(new PdfToPng(new ImpressToPdf()))));
+        $job->setLogger(new ConsoleLogger($output));
+        $job->execute([$impress], ['duration' => $duration, 'sound' => $voix]);
 
         return 0;
     }

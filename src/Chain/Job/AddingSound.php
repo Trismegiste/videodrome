@@ -37,6 +37,7 @@ class AddingSound extends FileJob {
         if (!$ffmpeg->isSuccessful()) {
             throw new JobException('AddingSound : Fail to combine with sound');
         }
+        $this->logger->info("Video with sound $output generated");
 
         return [$output];
     }

@@ -16,7 +16,7 @@ class ConsoleLogger extends AbstractLogger {
         $this->output = $out;
     }
 
-    public function log($level, $message, array $context = array()): void {
+    public function log($level, $message, array $context = array()) {
         $this->output->writeln($message);
     }
 

@@ -19,6 +19,7 @@ class ImpressToPdf extends FileJob {
         if (!file_exists($pdf)) {
             throw new JobException("ImpressToPdf : creation of $pdf failed");
         }
+        $this->logger->info("$pdf generated");
 
         return [$pdf];
     }

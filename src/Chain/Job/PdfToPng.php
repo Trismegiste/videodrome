@@ -37,6 +37,7 @@ class PdfToPng extends FileJob {
             }
             $result[] = $tmpname;
         }
+        $this->logger->info(count($result) . " PNG generated");
 
         return $result;
     }
