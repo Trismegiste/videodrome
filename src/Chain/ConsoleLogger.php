@@ -16,6 +16,10 @@ class ConsoleLogger extends AbstractLogger {
         $this->output = $out;
     }
 
+    public function debug($message, array $context = array()) {
+        $this->output->writeln($message, OutputInterface::VERBOSITY_DEBUG);
+    }
+
     public function log($level, $message, array $context = array()) {
         $this->output->writeln($message);
     }
