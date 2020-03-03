@@ -42,10 +42,23 @@ class Panning extends Command {
         return $timecode;
     }
 
+    protected function getOptionalConfig(string $dir, string $fch): array {
+        $content = file($dir . '/' . $fch);
+        $cfg = [];
+        foreach ($content as $line) {
+            if (preg_match("/^([^\s]+)\s([\+|-])$/", $line, $extract)) {
+                $cfg[$extract[1]] = $extract[2];
+            }
+        }
+
+        var_dump($cfg);
+        return $cfg;
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output) {
         $imageFolder = $input->getArgument('folder');
         $timecode = $this->getTimecode($input->getArgument('marker'));
-        $configFile = $input->getOption('config');
+        $config = $this->getOptionalConfig($imageFolder, $input->getOption('config'));
 
         $cor = new ImagePanning(new ImageExtender());
         $cor->setLogger(new ConsoleLogger($output));
@@ -62,7 +75,7 @@ class Panning extends Command {
                 if (preg_match('/^' . $key . "\\./", $picture->getFilename())) {
                     $listing[] = (string) $picture;
                     $duration[$key . '-extended.png'] = $detail['duration'];
-                    $direction[$key . '-extended.png'] = '+';
+                    $direction[$key . '-extended.png'] = (array_key_exists($key, $config)) ? $config[$key] : '+';
                 }
             }
         }
