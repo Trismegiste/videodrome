@@ -3,6 +3,7 @@
 namespace Trismegiste\Videodrome\Chain;
 
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 
 /**
  * Abstract job
@@ -14,6 +15,7 @@ abstract class FileJob implements JobInterface {
 
     public function __construct(JobInterface $child = null) {
         $this->delegated = $child;
+        $this->logger = new NullLogger();
     }
 
     final public function setLogger(LoggerInterface $log) {
