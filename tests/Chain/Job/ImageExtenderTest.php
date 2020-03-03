@@ -1,11 +1,12 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
+use Trismegiste\Videodrome\Chain\Job\ImageExtender;
 
 class ImageExtenderTest extends TestCase {
 
     public function testExecute() {
-        $sut = new \Trismegiste\Videodrome\Chain\Job\ImageExtender();
+        $sut = new ImageExtender();
         $ret = $sut->execute([__DIR__ . '/picture1.jpg'], ['width' => 800, 'height' => 400]);
         $this->assertEquals(['picture1-extended.png'], $ret);
         $this->assertTrue(file_exists($ret[0]));
