@@ -11,6 +11,8 @@ use Trismegiste\Videodrome\Chain\JobException;
  */
 class ImagePanning extends FileJob {
 
+    const framerate = 30;
+
     private $blankCanvas = "tmp-canvas.png";
     private $blankVideo = "tmp-blank.avi";
 
@@ -43,7 +45,7 @@ class ImagePanning extends FileJob {
         // Animating the black canvas
         // Why I don't use the lavfi filter ? Because there are some duration problems (probably rounding timeframe)
         $ffmpeg = new Process(["ffmpeg", "-y",
-            "-framerate", 30,
+            "-framerate", self::framerate,
             "-loop", 1,
             "-i", $this->blankCanvas,
             "-t", $duration,
