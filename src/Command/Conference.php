@@ -20,32 +20,14 @@ use Trismegiste\Videodrome\Chain\Job\VideoConcat;
  */
 class Conference extends Command {
 
-    const dependencies = [
-        ['libreoffice6.0', '--version', 'LibreOffice'],
-        ['pdfinfo', '-v', 'Plopper'],
-        ['convert', '-version', 'ImageMagick'],
-        ['ffmpeg', '-version', 'ffmpeg'],
-    ];
-
     // the name of the command
     protected static $defaultName = 'conference:build';
 
-    protected function initialize(InputInterface $input, OutputInterface $output) {
-        // check installed dependencies
-        foreach (self::dependencies as $app) {
-            $check = new Process([$app[0], $app[1]]);
-            $check->run();
-            if (!$check->isSuccessful()) {
-                throw new RuntimeException($app[2] . ' is missing');
-            }
-        }
-    }
-
     protected function configure() {
-        $this->setDescription("Generates a video from an Impress document, a recorded voice and a timecode file from Audacity")
+        $this->setDescription("Generates a video from an Impress document, a recorded voice and a timecode file")
                 ->addArgument('impress', InputArgument::REQUIRED, "LibreOffice Impress document")
                 ->addArgument('voice', InputArgument::REQUIRED, "Sound file")
-                ->addArgument('marker', InputArgument::REQUIRED, "Audacity Timecode Marker from the sound file");
+                ->addArgument('marker', InputArgument::REQUIRED, "Audacity Timecode Marker for the sound file");
     }
 
     protected function execute(InputInterface $input, OutputInterface $output) {
