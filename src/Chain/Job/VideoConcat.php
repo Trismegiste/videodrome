@@ -5,19 +5,20 @@ namespace Trismegiste\Videodrome\Chain\Job;
 use Symfony\Component\Process\Process;
 use Trismegiste\Videodrome\Chain\FileJob;
 use Trismegiste\Videodrome\Chain\JobException;
+use Trismegiste\Videodrome\Chain\MetaFileInfo;
 
 /**
  * Concat a list of video into one mp4
  */
 class VideoConcat extends FileJob {
 
-    protected function process(array $filename, array $unused): array {
+    protected function process(array $filename): array {
         $this->logger->info("Concat " . count($filename) . " video");
 
         if (count($filename) <= 1) {
             throw new JobException("VideoConcat : Not enough video to concat");
         }
-        $output = pathinfo($filename[0], PATHINFO_FILENAME) . '-compil.mp4';
+        $output = $filename[0]->getFilenameNoExtension() . '-compil.mp4';
 
         $ffmpeg = new Process('ffmpeg -y -i "concat:' . implode('|', $filename) . '" ' . $output);
         $ffmpeg->setTimeout(null);
@@ -26,12 +27,15 @@ class VideoConcat extends FileJob {
         if (!$ffmpeg->isSuccessful()) {
             throw new JobException('VideoConcat : Fail to concat ' . implode('|', $filename));
         }
-        if (!file_exists($output)) {
+
+        try {
+            $generated = new MetaFileInfo($output, $filename[0]->getMetadata());  // @todo for duration meta, perhaps a good idea to sum all durations ?
+        } catch (RuntimeException $ex) {
             throw new JobException("VideoConcat : $output does not exist");
         }
         $this->logger->info("Video concat $output generated");
 
-        return [$output];
+        return [$generated];
     }
 
 }

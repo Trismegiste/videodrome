@@ -5,20 +5,17 @@ namespace Trismegiste\Videodrome\Chain\Job;
 use Symfony\Component\Process\Process;
 use Trismegiste\Videodrome\Chain\FileJob;
 use Trismegiste\Videodrome\Chain\JobException;
+use Trismegiste\Videodrome\Chain\MetaFileInfo;
 
 /**
  * Muxing
  */
 class AddingSound extends FileJob {
 
-    protected function process(array $filename, array $context): array {
-        if (!array_key_exists('sound', $context)) {
-            throw new JobException("AddingSound : no sound file provided");
-        }
+    protected function process(array $filename): array {
         list($video) = $filename;
-        $tmp = pathinfo($video);
-        $output = $tmp['filename'] . '-sound.' . $tmp['extension'];
-        $sound = $context['sound'];
+        $output = $video->getFilenameNoExtension() . '-sound.' . $video->getExtension();
+        $sound = $video->getData('sound');
         if (!file_exists($sound)) {
             throw new JobException("AddingSound : Sound file '$sound' does not exist");
         }
@@ -39,7 +36,7 @@ class AddingSound extends FileJob {
         }
         $this->logger->info("Video with sound $output generated");
 
-        return [$output];
+        return [new MetaFileInfo($output, $video->getMetadata())];
     }
 
 }

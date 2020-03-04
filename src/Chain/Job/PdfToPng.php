@@ -35,7 +35,9 @@ class PdfToPng extends FileJob {
             $result = [];
             for ($k = 0; $k < $card; $k++) {
                 $tmpname = $exportName . "-$k.png";
+                // manage metadata
                 $metadata = $pdf->getMetadata();
+                // explode duration metadata for each PNG
                 if (array_key_exists('duration', $metadata)) {
                     $metadata['duration'] = $metadata['duration'][$k];
                 }
