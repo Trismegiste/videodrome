@@ -70,27 +70,24 @@ class Panning extends Command {
         $iter = $search->in($imageFolder)->name('/\.(jpg|png)$/')->files();
 
         $listing = [];
-        $duration = [];
-        $direction = [];
         foreach ($iter as $picture) {
             foreach ($timecode as $detail) {
                 $key = $detail['name'];
                 if (preg_match('/^' . $key . "\\./", $picture->getFilename())) {
-                    $listing[] = (string) $picture;
-                    $duration[$key . '-extended.png'] = $detail['duration'];
-                    $direction[$key . '-extended.png'] = (array_key_exists($key, $config)) ? $config[$key] : '+';
+                    $metafile = new \Trismegiste\Videodrome\Chain\MetaFileInfo($picture, [
+                        'duration' => $detail['duration'],
+                        'direction' => array_key_exists($key, $config) ? $config[$key] : '+',
+                        'width' => $input->getOption('width'),
+                        'height' => $input->getOption('height')
+                    ]);
+                    $listing[] = $metafile;
                 }
             }
         }
 
         $cor = new ImagePanning(new ImageExtender());
         $cor->setLogger(new ConsoleLogger($output));
-        $cor->execute($listing, [
-            'duration' => $duration,
-            'direction' => $direction,
-            'width' => $input->getOption('width'),
-            'height' => $input->getOption('height'),
-        ]);
+        $cor->execute($listing);
     }
 
 }
