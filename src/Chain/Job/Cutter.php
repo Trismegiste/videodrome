@@ -32,6 +32,7 @@ class Cutter extends FileJob {
     }
 
     protected function cut(string $video, int $width, int $height, float $start, float $duration): string {
+        $this->logger->info("Cutting $video");
         $output = pathinfo($video, PATHINFO_FILENAME) . "-cut.avi";
         $ffmpeg = new Process("ffmpeg -y -i $video -ss $start -t $duration " .
                 "-map 0:v -vf scale={$width}x$height:flags=lanczos -r " . self::framerate . " -c:v huffyuv " . $output);
