@@ -4,7 +4,7 @@ namespace Trismegiste\Videodrome\Chain\Job;
 
 use Symfony\Component\Process\Process;
 use Trismegiste\Videodrome\Chain\FileJob;
-use Trismegiste\Videodrome\Chain\JobException;
+use Trismegiste\Videodrome\Chain\MetaFileInfo;
 
 /**
  * A cutter of video
@@ -13,19 +13,12 @@ class Cutter extends FileJob {
 
     const framerate = 30;
 
-    protected function process(array $filename, array $context): array {
-        $duration = $context['duration'];
-        $starting = $context['start'];
-        if (count($duration) !== count($filename)) {
-            throw new JobException("Cutter : count mismatch between durations (" . count($duration) . ") and images (" . count($filename) . ')');
-        }
-        if (count($starting) !== count($filename)) {
-            throw new JobException("Cutter : count mismatch between starting points (" . count($starting) . ") and images (" . count($filename) . ')');
-        }
-
+    protected function process(array $filename): array {
         $cutted = [];
         foreach ($filename as $video) {
-            $cutted[] = $this->cut($video, $context['width'], $context['height'], $starting[$video], $duration[$video]);
+            $meta = $video->getMetadata();
+            $ret = $this->cut($video, $meta['width'], $meta['height'], $meta['start'], $meta['duration']);
+            $cutted[] = new MetaFileInfo($ret, $meta);
         }
 
         return $cutted;

@@ -2,19 +2,23 @@
 
 use PHPUnit\Framework\TestCase;
 use Trismegiste\Videodrome\Chain\Job\Cutter;
+use Trismegiste\Videodrome\Chain\MetaFileInfo;
 
 class CutterTest extends TestCase {
 
     public function testExecute() {
         $video = __DIR__ . '/../../fixtures/cutter.mkv';
         $sut = new Cutter();
-        $ret = $sut->execute([$video], [
-            'width' => 480, 'height' => 270,
-            'duration' => [$video => 3],
-            'start' => [$video => 3]
-        ]);
-        $this->assertEquals(['cutter-cut.avi'], $ret);
-        $this->assertFileExists($ret[0]);
+        $ret = $sut->execute([new MetaFileInfo($video, [
+                'width' => 480, 'height' => 270,
+                'duration' => 3,
+                'start' => 3
+        ])]);
+
+        $this->assertCount(1, $ret);
+        $this->assertEquals('cutter-cut.avi', (string) $ret[0]);
+        $this->assertFileExists((string) $ret[0]);
+        $this->assertTrue($ret[0]->isVideo());
         unlink($ret[0]);
     }
 
