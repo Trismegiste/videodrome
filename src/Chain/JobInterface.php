@@ -9,7 +9,12 @@ use Psr\Log\LoggerInterface;
  */
 interface JobInterface {
 
-    public function execute(array $filename, array $context = []): array;
+    /**
+     * Do the job
+     * @param array $filename an array of MetaFileInfo
+     * @return array new files
+     */
+    public function execute(array $filename): array;
 
     public function setLogger(LoggerInterface $log);
 }

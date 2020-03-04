@@ -25,21 +25,21 @@ abstract class FileJob implements JobInterface {
         }
     }
 
-    final public function execute(array $filename, array $context = []): array {
+    final public function execute(array $filename): array {
         $this->logger->debug('Entering ' . get_class($this) . '::execute()');
         if (!is_null($this->delegated)) {
-            $input = $this->delegated->execute($filename, $context);
-            $output = $this->process($input, $context);
+            $input = $this->delegated->execute($filename);
+            $output = $this->process($input);
             $this->logger->debug('Exiting ' . get_class($this) . '::process()');
             foreach ($input as $fch) {
                 unlink($fch);
             }
         } else {
-            $output = $this->process($filename, $context);
+            $output = $this->process($filename);
         }
 
         return $output;
     }
 
-    abstract protected function process(array $filename, array $context): array;
+    abstract protected function process(array $filename): array;
 }

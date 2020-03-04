@@ -22,4 +22,15 @@ class MetaFileInfoTest extends TestCase {
         $this->assertEquals(555, $sut->getData('meta'));
     }
 
+    public function testNoExtension() {
+        $sut = new MetaFileInfo(__FILE__);
+        $this->assertEquals('MetaFileInfoTest', $sut->getFilenameNoExtension());
+    }
+
+    public function testType() {
+        $sut = new MetaFileInfo(__FILE__);
+        $this->assertFalse($sut->isVideo());
+        $this->assertFalse($sut->isPicture());
+    }
+
 }
