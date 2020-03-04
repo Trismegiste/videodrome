@@ -18,6 +18,10 @@ class MetaFileInfo extends \SplFileInfo {
     }
 
     public function getData(string $key) {
+        if (!array_key_exists($key, $this->metadata)) {
+            throw new \OutOfBoundsException("Unknown key '$key'");
+        }
+
         return $this->metadata[$key];
     }
 

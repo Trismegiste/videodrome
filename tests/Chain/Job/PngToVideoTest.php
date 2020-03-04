@@ -4,14 +4,16 @@ use PHPUnit\Framework\TestCase;
 use Trismegiste\Videodrome\Chain\Job\ImpressToPdf;
 use Trismegiste\Videodrome\Chain\Job\PdfToPng;
 use Trismegiste\Videodrome\Chain\Job\PngToVideo;
+use Trismegiste\Videodrome\Chain\MetaFileInfo;
 
 class PngToVideoTest extends TestCase {
 
     public function testExecute() {
         $sut = new PngToVideo(new PdfToPng(new ImpressToPdf()));
-        $ret = $sut->execute([__DIR__ . '/../../fixtures/fixtures1.odp'], ['duration' => [1, 1, 1]]);
+        $ret = $sut->execute([new MetaFileInfo(__DIR__ . '/../../fixtures/fixtures1.odp', ['duration' => [1, 1, 1]])]);
         foreach ($ret as $vid) {
-            $this->assertFileExists($vid);
+            $this->assertFileExists((string) $vid);
+            $this->assertTrue($vid->isVideo());
         }
         // clean
         foreach ($ret as $vid) {

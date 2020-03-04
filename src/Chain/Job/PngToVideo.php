@@ -5,6 +5,7 @@ namespace Trismegiste\Videodrome\Chain\Job;
 use Symfony\Component\Process\Process;
 use Trismegiste\Videodrome\Chain\FileJob;
 use Trismegiste\Videodrome\Chain\JobException;
+use Trismegiste\Videodrome\Chain\MetaFileInfo;
 
 /**
  * Convert PNG into Video
@@ -13,23 +14,12 @@ class PngToVideo extends FileJob {
 
     const framerate = 6;
 
-    protected function process(array $filename, array $context): array {
-        if (!array_key_exists('duration', $context)) {
-            throw new JobException("PngToVideo : duration is not provided");
-        }
-        $duration = $context['duration'];
-        if (count($filename) !== count($duration)) {
-            throw new JobException("PNG count mismatch with duration");
-        }
-
+    protected function process(array $filename): array {
         $result = [];
-        foreach ($filename as $idx => $png) {
-            $vidName = pathinfo($png, PATHINFO_FILENAME) . '.avi';
-            $this->createVid($png, $duration[$idx], $vidName);
-            if (!file_exists($vidName)) {
-                throw new JobException("PngToVideo : $vidName does not exist");
-            }
-            $result[] = $vidName;
+        foreach ($filename as $png) {
+            $vidName = $png->getFilenameNoExtension() . '.avi';
+            $this->createVid($png, $png->getData('duration'), $vidName);
+            $result[] = new MetaFileInfo($vidName, $png->getMetadata());
         }
 
         return $result;
