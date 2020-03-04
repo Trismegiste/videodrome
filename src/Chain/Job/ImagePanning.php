@@ -5,6 +5,7 @@ namespace Trismegiste\Videodrome\Chain\Job;
 use Symfony\Component\Process\Process;
 use Trismegiste\Videodrome\Chain\FileJob;
 use Trismegiste\Videodrome\Chain\JobException;
+use Trismegiste\Videodrome\Chain\MetaFileInfo;
 
 /**
  * This class creates a video panning from a picture
@@ -16,19 +17,12 @@ class ImagePanning extends FileJob {
     private $blankCanvas = "tmp-canvas.png";
     private $blankVideo = "tmp-blank.avi";
 
-    protected function process(array $filename, array $context): array {
-        $duration = $context['duration'];
-        $direction = $context['direction'];
-        if (count($duration) !== count($filename)) {
-            throw new JobException("ImagePanning : count mismatch between durations (" . count($duration) . ") and images (" . count($filename) . ')');
-        }
-        if (count($direction) !== count($filename)) {
-            throw new JobException("ImagePanning : count mismatch between directions (" . count($direction) . ") and images (" . count($filename) . ')');
-        }
-
+    protected function process(array $filename): array {
         $panned = [];
         foreach ($filename as $picture) {
-            $panned[] = $this->pan($picture, $context['width'], $context['height'], $duration[$picture], $direction[$picture]);
+            $meta = $picture->getMetadata();
+            $ret = $this->pan($picture, $meta['width'], $meta['height'], $meta['duration'], $meta['direction']);
+            $panned[] = new MetaFileInfo($ret, $meta);
         }
 
         return $panned;
