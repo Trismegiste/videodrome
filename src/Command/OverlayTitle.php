@@ -39,11 +39,13 @@ class OverlayTitle extends Command {
         $videoList = [];
         foreach ($iter as $svg) {
             $finder = new Finder();
-            $finder->in($videoFolder)->name("/^" . $svg->getBasename('.svg') . "$suffix.avi$/");
-            foreach ($finder->getIterator() as $video) {
+            $tmp = $finder->in($videoFolder)->name("/^" . $svg->getBasename('.svg') . "$suffix.avi$/")->getIterator();
+            $tmp->rewind();
+
+            if ($tmp->valid()) {
+                $video = $tmp->current();
                 $listing[] = (string) $svg;
                 $videoList[$svg->getBasename('.svg') . '.png'] = (string) $video;
-                break;
             }
         }
         $cor = new PngOverlay(new SvgToPng());
