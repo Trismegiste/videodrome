@@ -4,26 +4,25 @@ namespace Trismegiste\Videodrome\Chain\Job;
 
 use Symfony\Component\Process\Process;
 use Trismegiste\Videodrome\Chain\FileJob;
+use Trismegiste\Videodrome\Chain\MetaFileInfo;
 
 /**
  * Ths class resizes an image to be larger as an output format as this format fits into the extended image
  */
 class ImageExtender extends FileJob {
 
-    protected function process(array $filename, array $context): array {
-        $width = $context['width'];
-        $height = $context['height'];
-
+    protected function process(array $filename): array {
         $output = [];
         foreach ($filename as $picture) {
             $this->logger->info("Extending $picture");
-            $output[] = $this->resize($picture, $width, $height);
+            $ret = $this->resize($picture, $picture->getData('width'), $picture->getData('height'));
+            $output[] = new MetaFileInfo($ret, $picture->getMetadata());
         }
 
         return $output;
     }
 
-    private function resize($picture, $targetWidth, $targetHeight) {
+    private function resize(string $picture, int $targetWidth, int $targetHeight): string {
         $output = pathinfo($picture, PATHINFO_FILENAME) . '-extended.png';
         $info = getimagesize($picture);
         $width = $info[0];
