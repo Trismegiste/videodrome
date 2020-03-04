@@ -3,17 +3,16 @@
 namespace Trismegiste\Videodrome\Command;
 
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Process\Process;
 use Trismegiste\Videodrome\Chain\ConsoleLogger;
 use Trismegiste\Videodrome\Chain\Job\AddingSound;
 use Trismegiste\Videodrome\Chain\Job\ImpressToPdf;
 use Trismegiste\Videodrome\Chain\Job\PdfToPng;
 use Trismegiste\Videodrome\Chain\Job\PngToVideo;
 use Trismegiste\Videodrome\Chain\Job\VideoConcat;
+use Trismegiste\Videodrome\Chain\MetaFileInfo;
 
 /**
  * Presentation video generator
@@ -45,7 +44,7 @@ class Conference extends Command {
 
         $job = new AddingSound(new VideoConcat(new PngToVideo(new PdfToPng(new ImpressToPdf()))));
         $job->setLogger(new ConsoleLogger($output));
-        $job->execute([$impress], ['duration' => $duration, 'sound' => $voix]);
+        $job->execute([new MetaFileInfo($impress, ['duration' => $duration, 'sound' => $voix])]);
 
         return 0;
     }
