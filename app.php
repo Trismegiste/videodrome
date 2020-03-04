@@ -10,7 +10,6 @@ $application = new Application();
 
 // register commands
 $application->add(new \Trismegiste\Videodrome\Command\Conference());
-$application->add(new \Trismegiste\Videodrome\Command\Trailer());
 $application->add(new \Trismegiste\Videodrome\Command\SystemCheck());
 $application->add(new \Trismegiste\Videodrome\Command\Panning());
 $application->add(new \Trismegiste\Videodrome\Command\CutterResize());

@@ -20,6 +20,7 @@ class SystemCheck extends Command {
         ['pdfinfo', '-v', 'Plopper'],
         ['convert', '-version', 'ImageMagick'],
         ['ffmpeg', '-version', 'ffmpeg'],
+        ['inkscape', '--version', 'Inkscape'],
     ];
 
     protected function configure() {
@@ -29,11 +30,13 @@ class SystemCheck extends Command {
     protected function execute(InputInterface $input, OutputInterface $output) {
         // check installed dependencies
         foreach (self::dependencies as $app) {
+            $output->write("Checking for {$app[2]}...");
             $check = new Process([$app[0], $app[1]]);
             $check->run();
             if (!$check->isSuccessful()) {
                 throw new RuntimeException($app[2] . ' is missing');
             }
+            $output->writeln(" OK");
         }
 
         $output->writeln("Everything seems alright");
