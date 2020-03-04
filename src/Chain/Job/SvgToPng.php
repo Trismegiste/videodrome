@@ -5,16 +5,17 @@ namespace Trismegiste\Videodrome\Chain\Job;
 use Symfony\Component\Process\Process;
 use Trismegiste\Videodrome\Chain\FileJob;
 use Trismegiste\Videodrome\Chain\JobException;
+use Trismegiste\Videodrome\Chain\MetaFileInfo;
 
 /**
  * Convets SCG to PNG
  */
 class SvgToPng extends FileJob {
 
-    protected function process(array $filename, array $context): array {
+    protected function process(array $filename): array {
         $result = [];
         foreach ($filename as $vector) {
-            $result[] = $this->convert($vector);
+            $result[] = new MetaFileInfo($this->convert($vector), $vector->getMetadata());
         }
 
         return $result;
