@@ -3,7 +3,6 @@
 namespace Trismegiste\Videodrome\Command;
 
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -12,6 +11,7 @@ use Symfony\Component\Finder\Finder;
 use Trismegiste\Videodrome\Chain\ConsoleLogger;
 use Trismegiste\Videodrome\Chain\Job\ImageExtender;
 use Trismegiste\Videodrome\Chain\Job\ImagePanning;
+use Trismegiste\Videodrome\Chain\MetaFileInfo;
 
 /**
  * Creates a panning from a folder full of image and a marker for timing
@@ -74,7 +74,7 @@ class Panning extends Command {
             foreach ($timecode as $detail) {
                 $key = $detail['name'];
                 if (preg_match('/^' . $key . "\\./", $picture->getFilename())) {
-                    $metafile = new \Trismegiste\Videodrome\Chain\MetaFileInfo($picture, [
+                    $metafile = new MetaFileInfo($picture, [
                         'duration' => $detail['duration'],
                         'direction' => array_key_exists($key, $config) ? $config[$key] : '+',
                         'width' => $input->getOption('width'),

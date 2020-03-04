@@ -10,6 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 use Trismegiste\Videodrome\Chain\ConsoleLogger;
 use Trismegiste\Videodrome\Chain\Job\Cutter;
+use Trismegiste\Videodrome\Chain\MetaFileInfo;
 
 /**
  * Extracts a sequence of video and resizes it
@@ -65,27 +66,24 @@ class CutterResize extends Command {
         $iter = $search->in($imageFolder)->name('/\.(mkv|avi|webm|mp4)$/')->files();
 
         $listing = [];
-        $duration = [];
-        $starting = [];
-        foreach ($iter as $picture) {
+        foreach ($iter as $video) {
             foreach ($timecode as $detail) {
                 $key = $detail['name'];
-                if (preg_match('/^' . $key . "\\./", $picture->getFilename())) {
-                    $listing[] = (string) $picture;
-                    $duration[(string) $picture] = $detail['duration'];
-                    $starting[(string) $picture] = (array_key_exists($key, $config)) ? $config[$key] : 0;
+                if (preg_match('/^' . $key . "\\./", $video->getFilename())) {
+                    $metafile = new MetaFileInfo($video, [
+                        'duration' => $detail['duration'],
+                        'start' => array_key_exists($key, $config) ? $config[$key] : 0,
+                        'width' => $input->getOption('width'),
+                        'height' => $input->getOption('height')
+                    ]);
+                    $listing[] = $metafile;
                 }
             }
         }
 
         $cor = new Cutter();
         $cor->setLogger(new ConsoleLogger($output));
-        $cor->execute($listing, [
-            'duration' => $duration,
-            'start' => $starting,
-            'width' => $input->getOption('width'),
-            'height' => $input->getOption('height'),
-        ]);
+        $cor->execute($listing);
     }
 
 }
