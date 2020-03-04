@@ -17,7 +17,7 @@ use Trismegiste\Videodrome\Chain\Job\SvgToPng;
  */
 class OverlayTitle extends Command {
 
-    protected static $defaultName = 'trailer:cutter';
+    protected static $defaultName = 'trailer:overlay';
 
     protected function configure() {
         $this->setDescription("Adds overlay titles on video")
@@ -39,14 +39,13 @@ class OverlayTitle extends Command {
         $videoList = [];
         foreach ($iter as $svg) {
             $finder = new Finder();
-            $finder->in($videoFolder)->name("/^" . $svg->getFilename() . "$suffix.avi$/");
-            if ($finder->count() === 1) {
-                $video = iterator_to_array($finder);
+            $finder->in($videoFolder)->name("/^" . $svg->getBasename('.svg') . "$suffix.avi$/");
+            foreach ($finder->getIterator() as $video) {
                 $listing[] = (string) $svg;
-                $videoList[$svg->getFilename() . '.png'] = $video[0];
+                $videoList[$svg->getBasename('.svg') . '.png'] = (string) $video;
+                break;
             }
         }
-
         $cor = new PngOverlay(new SvgToPng());
         $cor->setLogger(new ConsoleLogger($output));
         $cor->execute($listing, ['video' => $videoList]);

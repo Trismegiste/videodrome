@@ -14,5 +14,6 @@ $application->add(new \Trismegiste\Videodrome\Command\Trailer());
 $application->add(new \Trismegiste\Videodrome\Command\SystemCheck());
 $application->add(new \Trismegiste\Videodrome\Command\Panning());
 $application->add(new \Trismegiste\Videodrome\Command\CutterResize());
+$application->add(new \Trismegiste\Videodrome\Command\OverlayTitle());
 
 $application->run();
