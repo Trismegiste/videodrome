@@ -33,7 +33,7 @@ class MetaFileInfo extends \SplFileInfo {
         return $this->metadata;
     }
 
-    public function getFilenameNoExtension() {
+    public function getFilenameNoExtension(): string {
         return $this->getBasename('.' . $this->getExtension());
     }
 

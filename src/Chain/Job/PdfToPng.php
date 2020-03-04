@@ -2,9 +2,11 @@
 
 namespace Trismegiste\Videodrome\Chain\Job;
 
+use RuntimeException;
 use Symfony\Component\Process\Process;
 use Trismegiste\Videodrome\Chain\FileJob;
 use Trismegiste\Videodrome\Chain\JobException;
+use Trismegiste\Videodrome\Chain\MetaFileInfo;
 
 /**
  * PdfToPng converts a PDF file to a set of PNG
@@ -14,10 +16,10 @@ class PdfToPng extends FileJob {
     const dpi = 200;
     const format = '1920x1080';
 
-    protected function process(array $filename, array $notused): array {
+    protected function process(array $filename): array {
         list($pdf) = $filename;
 
-        $exportName = pathinfo($pdf, PATHINFO_FILENAME);
+        $exportName = $pdf->getFilenameNoExtension();
         $magick = new Process([
             'convert',
             '-density', self::dpi,
@@ -29,14 +31,20 @@ class PdfToPng extends FileJob {
         $magick->mustRun();
 
         $card = $this->getPdfPageCount($pdf);
-        $result = [];
-        for ($k = 0; $k < $card; $k++) {
-            $tmpname = $exportName . "-$k.png";
-            if (!file_exists($tmpname)) {
-                throw new JobException("PdfToPng : creation of $tmpname failed");
+        try {
+            $result = [];
+            for ($k = 0; $k < $card; $k++) {
+                $tmpname = $exportName . "-$k.png";
+                $metadata = $pdf->getMetadata();
+                if (array_key_exists('duration', $metadata)) {
+                    $metadata['duration'] = $metadata['duration'][$k];
+                }
+                $result[] = new MetaFileInfo($tmpname, $metadata);
             }
-            $result[] = $tmpname;
+        } catch (RuntimeException $ex) {
+            throw new JobException("PdfToPng : " . $ex->getMessage());
         }
+
         $this->logger->info(count($result) . " PNG generated");
 
         return $result;
