@@ -12,6 +12,8 @@ use Trismegiste\Videodrome\Chain\JobException;
 class VideoConcat extends FileJob {
 
     protected function process(array $filename, array $unused): array {
+        $this->logger->info("Concat " . count($filename) . " video");
+
         if (count($filename) <= 1) {
             throw new JobException("VideoConcat : Not enough video to concat");
         }
