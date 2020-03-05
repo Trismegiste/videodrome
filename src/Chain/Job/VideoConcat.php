@@ -18,6 +18,13 @@ class VideoConcat extends FileJob {
         if (count($filename) <= 1) {
             throw new JobException("VideoConcat : Not enough video to concat");
         }
+        $firstMeta = $filename[0]->getMetadata();
+        // sorting ?
+        if (array_key_exists('start', $firstMeta)) {
+            usort($filename, function(MetaFileInfo $a, MetaFileInfo $b) {
+                return $a->getData('start') - $b->getData('start');
+            });
+        }
         $output = $filename[0]->getFilenameNoExtension() . '-compil.mp4';
 
         $ffmpeg = new Process('ffmpeg -y -i "concat:' . implode('|', $filename) . '" ' . $output);
@@ -29,7 +36,7 @@ class VideoConcat extends FileJob {
         }
 
         try {
-            $generated = new MetaFileInfo($output, $filename[0]->getMetadata());  // @todo for duration meta, perhaps a good idea to sum all durations ?
+            $generated = new MetaFileInfo($output, $firstMeta);  // @todo for duration meta, perhaps a good idea to sum all durations ?
         } catch (RuntimeException $ex) {
             throw new JobException("VideoConcat : $output does not exist");
         }

@@ -18,7 +18,26 @@ class VideoConcatTest extends TestCase {
         $this->assertEquals('fixtures1-0-compil.mp4', (string) $vid);
         $this->assertFileExists((string) $vid);
         $this->assertTrue($vid->isVideo());
-    //    $this->assertEquals(3, $vid->getData('duration'));
+        //    $this->assertEquals(3, $vid->getData('duration'));
+        // clean
+        unlink($vid);
+    }
+
+    public function testExecuteSimple() {
+        $clip = ['red-extended-over.avi', 'blue-cut-over.avi'];
+        $input = [];
+        foreach ($clip as $idx => $fch) {
+            $input[] = new MetaFileInfo(__DIR__ . '/../../fixtures/' . $fch, ['start' => 3 - $idx]);
+        }
+
+        $sut = new VideoConcat();
+        $ret = $sut->execute($input);
+
+        $this->assertCount(1, $ret);
+        $vid = $ret[0];
+        $this->assertEquals('blue-cut-over-compil.mp4', (string) $vid);
+        $this->assertFileExists((string) $vid);
+        $this->assertTrue($vid->isVideo());
         // clean
         unlink($vid);
     }
