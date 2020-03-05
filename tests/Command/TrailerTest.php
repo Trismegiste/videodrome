@@ -26,6 +26,8 @@ class TrailerTest extends TestCase {
         $this->assertRegExp("/Build a trailer/", $tester->getDisplay());
         $name = 'darkred-extended-over-compil-sound.mp4';
         $this->assertFileExists($name);
+        $probe = json_decode(shell_exec("ffprobe -v quiet -i $name -print_format json -show_entries format=duration"));
+        $this->assertEquals(3, $probe->format->duration);
         unlink($name);
     }
 
