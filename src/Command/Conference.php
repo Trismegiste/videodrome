@@ -13,6 +13,7 @@ use Trismegiste\Videodrome\Chain\Job\PdfToPng;
 use Trismegiste\Videodrome\Chain\Job\PngToVideo;
 use Trismegiste\Videodrome\Chain\Job\VideoConcat;
 use Trismegiste\Videodrome\Chain\MetaFileInfo;
+use Trismegiste\Videodrome\Util\AudacityMarker;
 
 /**
  * Presentation video generator
@@ -32,14 +33,12 @@ class Conference extends Command {
     protected function execute(InputInterface $input, OutputInterface $output) {
         $impress = $input->getArgument('impress');
         $voix = $input->getArgument('voice');
-        $marqueur = $input->getArgument('marker');
+        $timecode = new AudacityMarker($input->getArgument('marker'));
 
         $output->writeln("Conference Video Generator");
-        $timecode = file($marqueur);
         $duration = [];
-        foreach ($timecode as $line) {
-            $detail = preg_split('/[\s]+/', $line);
-            $duration[] = $detail[1] - $detail[0];
+        foreach ($timecode as $key => $detail) {
+            $duration[] = $timecode->getDuration($key);
         }
 
         $job = new AddingSound(new VideoConcat(new PngToVideo(new PdfToPng(new ImpressToPdf()))));
