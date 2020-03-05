@@ -8,10 +8,15 @@ use Trismegiste\Videodrome\Chain\JobException;
 use Trismegiste\Videodrome\Chain\MetaFileInfo;
 
 /**
- * Convets SCG to PNG
+ * Converts SVG to PNG
  */
 class SvgToPng extends FileJob {
 
+    /**
+     * Convert SVG to PNG
+     * @param array $filename an array of MetaFileInfo pointing to SVG
+     * @return array
+     */
     protected function process(array $filename): array {
         $result = [];
         foreach ($filename as $vector) {

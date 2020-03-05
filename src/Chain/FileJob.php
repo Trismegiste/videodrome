@@ -10,7 +10,7 @@ use Psr\Log\NullLogger;
  */
 abstract class FileJob implements JobInterface {
 
-    protected $delegated;
+    private $delegated;
     protected $logger;
 
     public function __construct(JobInterface $child = null) {
