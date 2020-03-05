@@ -37,7 +37,6 @@ class OverlayTitle extends Command {
         $iter = $search->in($vectorFolder)->name('*.svg')->files();
 
         $listing = [];
-        $videoList = [];
         foreach ($iter as $svg) {
             $finder = new Finder();
             $tmp = $finder->in($videoFolder)->name("/^" . $svg->getBasename('.svg') . "$suffix.avi$/")->getIterator();
