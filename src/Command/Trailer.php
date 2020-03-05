@@ -86,6 +86,7 @@ class Trailer extends Command {
             throw new RuntimeException("Marker has " . count($marker) . " clips and " . count($media) . " was found");
         }
 
+        $output->writeln("Build a trailer");
         $cor = new AddingSound(new VideoConcat(new SvgOverlay(new AggregateJob([
             new ImagePanning(new ImageExtender()),
             new Cutter()
