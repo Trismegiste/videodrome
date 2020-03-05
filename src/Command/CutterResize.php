@@ -11,6 +11,8 @@ use Symfony\Component\Finder\Finder;
 use Trismegiste\Videodrome\Chain\ConsoleLogger;
 use Trismegiste\Videodrome\Chain\Job\Cutter;
 use Trismegiste\Videodrome\Chain\MetaFileInfo;
+use Trismegiste\Videodrome\Util\AudacityMarker;
+use Trismegiste\Videodrome\Util\CutterCfg;
 
 /**
  * Extracts a sequence of video and resizes it
@@ -28,51 +30,22 @@ class CutterResize extends Command {
                 ->addOption('height', NULL, InputOption::VALUE_REQUIRED, "Video height in pixel", 1080);
     }
 
-    protected function getTimecode(string $fch): array {
-        $timing = file($fch);
-        $timecode = [];
-        foreach ($timing as $clip) {
-            if (preg_match("/^([.0-9]+)\s([.0-9]+)\s([^\s]+)$/", $clip, $extract)) {
-                $timecode[] = [
-                    'start' => (float) $extract[1],
-                    'duration' => $extract[2] - $extract[1],
-                    'name' => $extract[3]
-                ];
-            }
-        }
-
-        return $timecode;
-    }
-
-    protected function getOptionalConfig(string $dir, string $fch): array {
-        $content = file($dir . '/' . $fch);
-        $cfg = [];
-        foreach ($content as $line) {
-            if (preg_match("/^([^\s]+)\s([.0-9]+)$/", $line, $extract)) {
-                $cfg[$extract[1]] = $extract[2];
-            }
-        }
-
-        return $cfg;
-    }
-
     protected function execute(InputInterface $input, OutputInterface $output) {
         $output->writeln("Video extractor");
         $imageFolder = $input->getArgument('folder');
-        $timecode = $this->getTimecode($input->getArgument('marker'));
-        $config = $this->getOptionalConfig($imageFolder, $input->getOption('config'));
+        $timecode = new AudacityMarker($input->getArgument('marker'));
+        $config = new CutterCfg($imageFolder . '/' . $input->getOption('config'));
 
         $search = new Finder();
         $iter = $search->in($imageFolder)->name('/\.(mkv|avi|webm|mp4)$/')->files();
 
         $listing = [];
         foreach ($iter as $video) {
-            foreach ($timecode as $detail) {
-                $key = $detail['name'];
+            foreach ($timecode as $key => $detail) {
                 if (preg_match('/^' . $key . "\\./", $video->getFilename())) {
                     $metafile = new MetaFileInfo($video, [
-                        'duration' => $detail['duration'],
-                        'cutBefore' => array_key_exists($key, $config) ? $config[$key] : 0,
+                        'duration' => $timecode->getDuration($key),
+                        'cutBefore' => $config->getStart($key),
                         'width' => $input->getOption('width'),
                         'height' => $input->getOption('height')
                     ]);
