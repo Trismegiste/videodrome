@@ -23,7 +23,7 @@ class CutterResize extends Command {
         $this->setDescription("Generates multiple extracts from a folder full of video and a marker for timing")
                 ->addArgument('folder', InputArgument::REQUIRED, "Folder full of pictures")
                 ->addArgument('marker', InputArgument::REQUIRED, "Audacity Timecode Marker from the sound file")
-                ->addOption('config', NULL, InputOption::VALUE_REQUIRED, "The config filename in the folder for panning", "cutter.cfg")
+                ->addOption('config', NULL, InputOption::VALUE_REQUIRED, "The config filename in the folder for cutting", "cutter.cfg")
                 ->addOption('width', NULL, InputOption::VALUE_REQUIRED, "Video width in pixel", 1920)
                 ->addOption('height', NULL, InputOption::VALUE_REQUIRED, "Video height in pixel", 1080);
     }

@@ -14,6 +14,9 @@ class ImageExtender extends FileJob {
     protected function process(array $filename): array {
         $output = [];
         foreach ($filename as $picture) {
+            if (!$picture->isPicture()) {
+                continue;
+            }
             $this->logger->info("Extending $picture");
             $ret = $this->resize($picture, $picture->getData('width'), $picture->getData('height'));
             $output[] = new MetaFileInfo($ret, $picture->getMetadata());

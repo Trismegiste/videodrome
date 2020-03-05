@@ -16,6 +16,9 @@ class Cutter extends FileJob {
     protected function process(array $filename): array {
         $cutted = [];
         foreach ($filename as $video) {
+            if (!$video->isVideo()) {
+                continue;
+            }
             $meta = $video->getMetadata();
             $ret = $this->cut($video, $meta['width'], $meta['height'], $meta['start'], $meta['duration']);
             $cutted[] = new MetaFileInfo($ret, $meta);
