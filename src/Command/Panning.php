@@ -14,6 +14,7 @@ use Trismegiste\Videodrome\Chain\Job\ImageExtender;
 use Trismegiste\Videodrome\Chain\Job\ImagePanning;
 use Trismegiste\Videodrome\Chain\MetaFileInfo;
 use Trismegiste\Videodrome\Util\AudacityMarker;
+use Trismegiste\Videodrome\Util\PanningCfg;
 
 /**
  * Creates a panning from a folder full of image and a marker for timing
@@ -31,26 +32,11 @@ class Panning extends Command {
                 ->addOption('height', NULL, InputOption::VALUE_REQUIRED, "Video height in pixel", 1080);
     }
 
-    protected function getOptionalConfig(string $dir, string $fch): array {
-        if (!file_exists($dir . '/' . $fch)) {
-            throw new RuntimeException("No config file for panning");
-        }
-        $content = file($dir . '/' . $fch);
-        $cfg = [];
-        foreach ($content as $line) {
-            if (preg_match("/^([^\s]+)\s([\+|-])$/", $line, $extract)) {
-                $cfg[$extract[1]] = $extract[2];
-            }
-        }
-
-        return $cfg;
-    }
-
     protected function execute(InputInterface $input, OutputInterface $output) {
         $output->writeln("Panning generator");
         $imageFolder = $input->getArgument('folder');
         $timecode = new AudacityMarker($input->getArgument('marker'));
-        $config = $this->getOptionalConfig($imageFolder, $input->getOption('config'));
+        $config = new PanningCfg($imageFolder . '/' . $input->getOption('config'));
 
         $search = new Finder();
         $iter = $search->in($imageFolder)->name('/\.(jpg|png)$/')->files();
@@ -61,7 +47,7 @@ class Panning extends Command {
                 if (preg_match('/^' . $key . "\\./", $picture->getFilename())) {
                     $metafile = new MetaFileInfo($picture, [
                         'duration' => $timecode->getDuration($key),
-                        'direction' => array_key_exists($key, $config) ? $config[$key] : '+',
+                        'direction' => $config->getDirection($key),
                         'width' => $input->getOption('width'),
                         'height' => $input->getOption('height')
                     ]);
