@@ -72,7 +72,7 @@ class CutterResize extends Command {
                 if (preg_match('/^' . $key . "\\./", $video->getFilename())) {
                     $metafile = new MetaFileInfo($video, [
                         'duration' => $detail['duration'],
-                        'start' => array_key_exists($key, $config) ? $config[$key] : 0,
+                        'cutBefore' => array_key_exists($key, $config) ? $config[$key] : 0,
                         'width' => $input->getOption('width'),
                         'height' => $input->getOption('height')
                     ]);

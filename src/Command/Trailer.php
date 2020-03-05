@@ -55,31 +55,27 @@ class Trailer extends Command {
             if ($iter->valid()) {
                 $found = $iter->current();
                 $ext = $found->getExtension();
-                $meta = [];
+                $meta = [
+                    'start' => $marker->getStart($key),
+                    'duration' => $marker->getDuration($key),
+                    'width' => $input->getOption('width'),
+                    'height' => $input->getOption('height')
+                ];
+                // meta depending on video or picture :
                 if (in_array($ext, ['jpg', 'png'])) {
-                    $meta = [
-                        'duration' => $marker->getDuration($key),
-                        'direction' => $panningCfg->getDirection($key),
-                        'width' => $input->getOption('width'),
-                        'height' => $input->getOption('height')
-                    ];
+                    $meta['direction'] = $panningCfg->getDirection($key);
                 }
                 if (in_array($ext, ['mkv', 'avi', 'webm', 'mp4'])) {
-                    $meta = [
-                        'duration' => $marker->getDuration($key),
-                        'start' => $cutterCfg->getStart($key),
-                        'width' => $input->getOption('width'),
-                        'height' => $input->getOption('height')
-                    ];
+                    $meta['cutBefore'] = $cutterCfg->getStart($key);
                 }
-                // search for SVG overlay
+                // search for SVG overlay :
                 $svgOverlay = $input->getArgument('vector') . "/$key.svg";
                 if (file_exists($svgOverlay)) {
                     $meta['svg'] = $svgOverlay;
                 } else {
                     throw new RuntimeException("No SVG found for key '$key");
                 }
-                // adding sound file
+                // adding sound file :
                 $meta['sound'] = $input->getArgument('sound');
                 // create MetaFileInfo
                 $media[] = new MetaFileInfo((string) $found, $meta);

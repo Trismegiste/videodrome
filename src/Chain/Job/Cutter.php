@@ -20,7 +20,7 @@ class Cutter extends FileJob {
                 continue;
             }
             $meta = $video->getMetadata();
-            $ret = $this->cut($video, $meta['width'], $meta['height'], $meta['start'], $meta['duration']);
+            $ret = $this->cut($video, $meta['width'], $meta['height'], $meta['cutBefore'], $meta['duration']);
             $cutted[] = new MetaFileInfo($ret, $meta);
         }
 

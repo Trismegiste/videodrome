@@ -12,7 +12,7 @@ class CutterTest extends TestCase {
         $ret = $sut->execute([new MetaFileInfo($video, [
                 'width' => 480, 'height' => 270,
                 'duration' => 3,
-                'start' => 3
+                'cutBefore' => 3
         ])]);
 
         $this->assertCount(1, $ret);
