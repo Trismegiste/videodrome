@@ -11,6 +11,7 @@ use Symfony\Component\Finder\Finder;
 use Trismegiste\Videodrome\Chain\ConsoleLogger;
 use Trismegiste\Videodrome\Chain\Job\PngOverlay;
 use Trismegiste\Videodrome\Chain\Job\SvgToPng;
+use Trismegiste\Videodrome\Chain\MetaFileInfo;
 
 /**
  * Adds a SVG title on videos in a folder
@@ -43,14 +44,12 @@ class OverlayTitle extends Command {
             $tmp->rewind();
 
             if ($tmp->valid()) {
-                $video = $tmp->current();
-                $listing[] = (string) $svg;
-                $videoList[$svg->getBasename('.svg') . '.png'] = (string) $video;
+                $listing[] = new MetaFileInfo((string) $svg, ['video' => $tmp->current()]);
             }
         }
         $cor = new PngOverlay(new SvgToPng());
         $cor->setLogger(new ConsoleLogger($output));
-        $cor->execute($listing, ['video' => $videoList]);
+        $cor->execute($listing);
     }
 
 }
