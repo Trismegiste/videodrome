@@ -3,12 +3,14 @@
 namespace Trismegiste\Videodrome\Command;
 
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 use Trismegiste\Videodrome\Chain\AggregateJob;
+use Trismegiste\Videodrome\Chain\ConsoleLogger;
 use Trismegiste\Videodrome\Chain\Job\AddingSound;
 use Trismegiste\Videodrome\Chain\Job\Cutter;
 use Trismegiste\Videodrome\Chain\Job\ImageExtender;
@@ -70,25 +72,32 @@ class Trailer extends Command {
                         'height' => $input->getOption('height')
                     ];
                 }
+                // search for SVG overlay
                 $svgOverlay = $input->getArgument('vector') . "/$key.svg";
                 if (file_exists($svgOverlay)) {
                     $meta['svg'] = $svgOverlay;
+                } else {
+                    throw new RuntimeException("No SVG found for key '$key");
                 }
-                $media[] = new MetaFileInfo((string) $found, $media);
+                // adding sound file
+                $meta['sound'] = $input->getArgument('sound');
+                // create MetaFileInfo
+                $media[] = new MetaFileInfo((string) $found, $meta);
             }
         }
 
+        if (count($media) !== count($marker->getIterator())) {
+            throw new RuntimeException("Marker has " . count($marker) . " clips and " . count($media) . " was found");
+        }
 
         $cor = new AddingSound(new VideoConcat(new SvgOverlay(new AggregateJob([
             new ImagePanning(new ImageExtender()),
-            new Cutter
+            new Cutter()
         ]))));
+        $cor->setLogger(new ConsoleLogger($output));
+        $cor->execute($media);
 
-        $output->writeln(count($media));
-        foreach ($media as $f) {
-            $output->writeln((string) $f);
-        }
-        //    $cor->execute($media);
+        return 0;
     }
 
 }

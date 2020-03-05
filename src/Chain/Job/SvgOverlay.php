@@ -25,6 +25,7 @@ class SvgOverlay extends FileJob {
             $vector[] = new MetaFileInfo($vid->getData('svg'));
         }
         $cor = new SvgToPng();
+        $cor->setLogger($this->logger);
         $pixeled = $cor->execute($vector);
 
         // now overlay the generated PNG on the video : the indexed order is kept unchanged
