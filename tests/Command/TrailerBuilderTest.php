@@ -3,14 +3,14 @@
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
-use Trismegiste\Videodrome\Command\Trailer;
+use Trismegiste\Videodrome\Command\TrailerBuilder;
 
-class TrailerTest extends TestCase {
+class TrailerBuilderTest extends TestCase {
 
     public function testExecute() {
         $application = new Application();
         $application->setAutoExit(false);
-        $command = new Trailer();
+        $command = new TrailerBuilder();
         $application->add($command);
         $tester = new CommandTester($application->find('trailer:build'));
 

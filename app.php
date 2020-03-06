@@ -16,7 +16,8 @@ $application->add(new \Trismegiste\Videodrome\Command\CutterResize());
 $application->add(new \Trismegiste\Videodrome\Command\OverlayTitle());
 $application->add(new \Trismegiste\Videodrome\Command\Concatenator());
 $application->add(new \Trismegiste\Videodrome\Command\MuxingSound());
-$application->add(new \Trismegiste\Videodrome\Command\Trailer());
+$application->add(new \Trismegiste\Videodrome\Command\TrailerBuilder());
+$application->add(new \Trismegiste\Videodrome\Command\TrailerCheck());
 $application->add(new \Trismegiste\Videodrome\Command\ConferenceGif());
 
 $application->run();
