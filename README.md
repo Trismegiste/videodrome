@@ -12,8 +12,10 @@ This is a PHP symfony console command line interface that uses extensively many 
 like LibreOffice, Plopper, ImageMagick, ffmpeg and Inkscape, depending of what do you want to run.
 
 ## Installation
-``` flo@spin5:~$ git clone https://github.com/Trismegiste/videodrome
-``` flo@spin5:~$ composer.phar install
+```
+flo@spin5:~$ git clone https://github.com/Trismegiste/videodrome
+flo@spin5:~$ composer.phar install
+```
 
 ## Documentation
 
