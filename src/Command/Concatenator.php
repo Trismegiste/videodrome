@@ -21,7 +21,7 @@ class Concatenator extends Command {
     protected static $defaultName = 'trailer:concat';
 
     protected function configure() {
-        $this->setDescription("Concat video")
+        $this->setDescription("Concatenation of multiple video clips")
                 ->addArgument('video', InputArgument::REQUIRED, "Folder full of video")
                 ->addArgument('marker', InputArgument::REQUIRED, "Audacity Timecode Marker from the sound file");
     }

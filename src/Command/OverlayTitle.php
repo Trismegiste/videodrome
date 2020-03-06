@@ -21,7 +21,7 @@ class OverlayTitle extends Command {
     protected static $defaultName = 'trailer:overlay';
 
     protected function configure() {
-        $this->setDescription("Adds overlay titles on video")
+        $this->setDescription("Adds overlay titles on video. Titles are SVG files stored in a folder")
                 ->addArgument('video', InputArgument::REQUIRED, "Folder full of video")
                 ->addArgument('vector', InputArgument::REQUIRED, "Folder full of SVG")
                 ->addOption('suffix', NULL, InputOption::VALUE_REQUIRED, "Suffix between filename key and extension", "-(extended|cut)");

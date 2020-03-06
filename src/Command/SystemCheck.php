@@ -23,7 +23,7 @@ class SystemCheck extends Command {
     ];
 
     protected function configure() {
-        $this->setDescription("Check if software component are avaliable");
+        $this->setDescription("Check if software components are avaliable");
     }
 
     protected function execute(InputInterface $input, OutputInterface $output) {

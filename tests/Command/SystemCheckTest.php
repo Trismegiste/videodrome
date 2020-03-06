@@ -16,7 +16,7 @@ class SystemCheckTest extends TestCase {
         $tester = new CommandTester($application->find('system:check'));
 
         $this->assertEquals(0, $tester->execute([]));
-        $this->assertRegExp("/alright/", $tester->getDisplay());
+        $this->assertRegExp("/Checking/", $tester->getDisplay());
     }
 
 }

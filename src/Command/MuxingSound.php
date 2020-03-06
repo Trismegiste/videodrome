@@ -18,7 +18,7 @@ class MuxingSound extends Command {
     protected static $defaultName = 'trailer:muxing';
 
     protected function configure() {
-        $this->setDescription("Mixing video and sound")
+        $this->setDescription("Mixing video file and sound file into a new video file")
                 ->addArgument('video', InputArgument::REQUIRED, "a video file")
                 ->addArgument('sound', InputArgument::REQUIRED, "a sound file");
     }
