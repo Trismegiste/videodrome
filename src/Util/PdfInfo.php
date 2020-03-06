@@ -31,15 +31,23 @@ class PdfInfo {
         }
     }
 
-    public function getPageCount() {
+    public function getPageCount(): int {
         return $this->pages;
     }
 
-    public function getWidth() {
+    /**
+     * Gets width of pdf
+     * @return float width in pts
+     */
+    public function getWidth(): float {
         return $this->width;
     }
 
-    public function getHeight() {
+    /**
+     * Gets height of pdf
+     * @return float height in pts
+     */
+    public function getHeight(): float {
         return $this->height;
     }
 
