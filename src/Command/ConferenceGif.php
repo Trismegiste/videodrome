@@ -24,7 +24,9 @@ class ConferenceGif extends Command {
     protected function configure() {
         $this->setDescription("Generates a animated GIF from an Impress document")
                 ->addArgument('impress', InputArgument::REQUIRED, "LibreOffice Impress document")
-                ->addOption('delay', null, InputOption::VALUE_REQUIRED, "Delay (in seconds) between each slide", 5);
+                ->addOption('delay', null, InputOption::VALUE_REQUIRED, "Delay (in seconds) between each slide", 5)
+                ->addOption('width', null, InputOption::VALUE_REQUIRED, "Width of the video", 1920)
+                ->addOption('height', null, InputOption::VALUE_REQUIRED, "Height of the video", 1080);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output) {
@@ -35,7 +37,11 @@ class ConferenceGif extends Command {
         $job = new AnimatedGif(new PdfToPng(new ImpressToPdf()));
         //  $job = new PdfToPng(new ImpressToPdf());
         $job->setLogger(new ConsoleLogger($output));
-        $job->execute([new MetaFileInfo($impress, ['delay' => (float) $input->getOption('delay')])]);
+        $job->execute([new MetaFileInfo($impress, [
+                'delay' => (float) $input->getOption('delay'),
+                'width' => $input->getOption('width'),
+                'height' => $input->getOption('height')
+        ])]);
 
         return 0;
     }
