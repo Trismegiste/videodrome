@@ -15,8 +15,9 @@ class AddingSoundTest extends TestCase {
         $ret = $sut->execute([
             new MetaFileInfo(__DIR__ . '/../../fixtures/fixtures1.odp', [
                 'duration' => [1, 1, 1],
-                'sound' => __DIR__ . '/../../fixtures/sound1.ogg']
-            )
+                'sound' => __DIR__ . '/../../fixtures/sound1.ogg',
+                'width' => 1920,
+                'height' => 1080])
         ]);
 
         $this->assertCount(1, $ret);

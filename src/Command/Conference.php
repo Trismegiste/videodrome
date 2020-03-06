@@ -5,6 +5,7 @@ namespace Trismegiste\Videodrome\Command;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Trismegiste\Videodrome\Chain\ConsoleLogger;
 use Trismegiste\Videodrome\Chain\Job\AddingSound;
@@ -27,7 +28,9 @@ class Conference extends Command {
         $this->setDescription("Generates a video from an Impress document, a recorded voice and a timecode file")
                 ->addArgument('impress', InputArgument::REQUIRED, "LibreOffice Impress document")
                 ->addArgument('voice', InputArgument::REQUIRED, "Sound file")
-                ->addArgument('marker', InputArgument::REQUIRED, "Audacity Timecode Marker for the sound file");
+                ->addArgument('marker', InputArgument::REQUIRED, "Audacity Timecode Marker for the sound file")
+                ->addOption('width', null, InputOption::VALUE_REQUIRED, "Width of the video", 1920)
+                ->addOption('height', null, InputOption::VALUE_REQUIRED, "Height of the video", 1080);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output) {
@@ -43,7 +46,12 @@ class Conference extends Command {
 
         $job = new AddingSound(new VideoConcat(new PngToVideo(new PdfToPng(new ImpressToPdf()))));
         $job->setLogger(new ConsoleLogger($output));
-        $job->execute([new MetaFileInfo($impress, ['duration' => $duration, 'sound' => $voix])]);
+        $job->execute([new MetaFileInfo($impress, [
+                'duration' => $duration,
+                'sound' => $voix,
+                'width' => $input->getOption('width'),
+                'height' => $input->getOption('height')
+        ])]);
 
         return 0;
     }
