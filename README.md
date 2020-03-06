@@ -20,10 +20,14 @@ flo@spin5:~$ composer.phar install
 ## Documentation
 
 ### List of available commands
-``` flo@spin5:~$ php app.php list
+```
+flo@spin5:~$ php app.php list
+```
 
 ### Check for installed software
-``` flo@spin5:~$ php app.php system:check
+```
+flo@spin5:~$ php app.php system:check
+```
 
 ### Conference
 This command build a mpeg4 movie with low framerate from 3 files :
@@ -31,13 +35,17 @@ This command build a mpeg4 movie with low framerate from 3 files :
 * a sound file with a recorded voice for example
 * an Audacity marker file for timing each slide
 
-``` flo@spin5:~$ php app.php conference:build presentation.odp myvoice.mp3 timecode.txt
+```
+flo@spin5:~$ php app.php conference:build presentation.odp myvoice.mp3 timecode.txt
+```
 
 ### Advertisement
 This command is almost the same that Conference except it generates a animated GIF. 
 No sound nor timecode are required. Each frame has a default duration of 5 seconds.
 
-``` flo@spin5:~$ php app.php conference:gif --delay=10 --width=600 --height=400 presentation.odp
+```
+flo@spin5:~$ php app.php conference:gif --delay=10 --width=600 --height=400 presentation.odp
+```
 
 ### Trailer
 This set of commands are inteded to rapidly build a trailer-like movie with pictures, movie clips, sound and captions.
@@ -50,7 +58,9 @@ You need to provide 7 assets :
 * a sound file (any format readable by ffmpeg)
 * an Audacity marker file for time each sequence
 
-``` flo@spin5:~$ php app.php trailer:build ./clip ./slide ./svg epicmusic.ogg timecode.txt
+```
+flo@spin5:~$ php app.php trailer:build ./clip ./slide ./svg epicmusic.ogg timecode.txt
+```
 
 Launch the command and wait. You need a lot of temporary disk space as I use uncompressed video codec to ensure
 the best quality before final encoding into mpeg4.
