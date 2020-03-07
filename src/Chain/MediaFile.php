@@ -5,7 +5,7 @@ namespace Trismegiste\Videodrome\Chain;
 /**
  * An existing file with metadata
  */
-class MetaFileInfo extends \SplFileInfo {
+class MediaFile extends \SplFileInfo implements Media {
 
     protected $metadata;
 
@@ -15,14 +15,6 @@ class MetaFileInfo extends \SplFileInfo {
         }
         parent::__construct($file_name);
         $this->metadata = $meta;
-    }
-
-    public function getData(string $key) {
-        if (!array_key_exists($key, $this->metadata)) {
-            throw new \OutOfBoundsException("Unknown key '$key'");
-        }
-
-        return $this->metadata[$key];
     }
 
     public function isPicture(): bool {
@@ -37,12 +29,28 @@ class MetaFileInfo extends \SplFileInfo {
         return $this->getBasename('.' . $this->getExtension());
     }
 
-    public function createChild(string $filename, array $override = []): MetaFileInfo {
-        return new MetaFileInfo($filename, array_merge($this->metadata, $override));
+    public function getMeta(string $key) {
+        if (!array_key_exists($key, $this->metadata)) {
+            throw new \OutOfBoundsException("Unknown key '$key'");
+        }
+
+        return $this->metadata[$key];
     }
 
-    public function hasData(string $key): bool {
+    public function getMetadataSet(): array {
+        return $this->metadata;
+    }
+
+    public function hasMeta(string $key): bool {
         return array_key_exists($key, $this->metadata);
+    }
+
+    public function isLeaf(): bool {
+        return true;
+    }
+
+    public function unlink() {
+        unlink($this);
     }
 
 }

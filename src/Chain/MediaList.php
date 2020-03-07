@@ -3,16 +3,16 @@
 namespace Trismegiste\Videodrome\Chain;
 
 /**
- * A group of MetaFileInfo with metadata
+ * A group of Media with metadata
  */
-class MediaList implements \ArrayAccess, \Countable, \IteratorAggregate {
+class MediaList implements \ArrayAccess, \Countable, \IteratorAggregate, Media {
 
     protected $list;
     protected $metadata;
 
     public function __construct(array $group = [], array $metadata = []) {
         foreach ($group as $key => $fch) {
-            if (!($fch instanceof MetaFileInfo)) {
+            if (!($fch instanceof MediaFile)) {
                 throw new \UnexpectedValueException("File with key '$key' is not a MetaFileInfo");
             }
             $this->list[] = $fch;
@@ -33,7 +33,7 @@ class MediaList implements \ArrayAccess, \Countable, \IteratorAggregate {
     }
 
     public function offsetSet($offset, $value) {
-        if (!($value instanceof MetaFileInfo)) {
+        if (!($value instanceof MediaFile)) {
             throw new \UnexpectedValueException("File with key '$offset' is not a MetaFileInfo");
         }
         $this->list[$offset] = $value;
@@ -47,7 +47,7 @@ class MediaList implements \ArrayAccess, \Countable, \IteratorAggregate {
         return new \ArrayIterator($this->list);
     }
 
-    public function getData(string $key) {
+    public function getMeta(string $key) {
         if (!array_key_exists($key, $this->metadata)) {
             throw new \OutOfBoundsException("Unknown metadata '$key'");
         }
@@ -55,12 +55,22 @@ class MediaList implements \ArrayAccess, \Countable, \IteratorAggregate {
         return $this->metadata[$key];
     }
 
-    public function createChild(array $group, array $override = []): MediaList {
-        return new MediaList($group, array_merge($this->metadata, $override));
+    public function hasMeta(string $key): bool {
+        return array_key_exists($key, $this->metadata);
     }
 
-    public function hasData(string $key): bool {
-        return array_key_exists($key, $this->metadata);
+    public function getMetadataSet(): array {
+        return $this->metadata;
+    }
+
+    public function isLeaf(): bool {
+        return false;
+    }
+
+    public function unlink() {
+        foreach ($this->list as $fch) {
+            $fch->unlink();
+        }
     }
 
 }

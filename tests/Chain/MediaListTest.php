@@ -1,13 +1,13 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
+use Trismegiste\Videodrome\Chain\MediaFile;
 use Trismegiste\Videodrome\Chain\MediaList;
-use Trismegiste\Videodrome\Chain\MetaFileInfo;
 
 class MediaListTest extends TestCase {
 
     public function simpleFixture() {
-        return [[new MetaFileInfo(__FILE__)]];
+        return [[new MediaFile(__FILE__)]];
     }
 
     public function testEmptyCreation() {
@@ -54,29 +54,21 @@ class MediaListTest extends TestCase {
     /** @dataProvider simpleFixture */
     public function testMetadataGetter($file) {
         $sut = new MediaList([$file], ['width' => 1920]);
-        $this->assertEquals(1920, $sut->getData('width'));
+        $this->assertEquals(1920, $sut->getMeta('width'));
     }
 
     /** @dataProvider simpleFixture 
-     * @expectedException \OutOfBoundsException */
+     * @expectedException OutOfBoundsException */
     public function testUnknownMetadata($file) {
         $sut = new MediaList([$file]);
-        $sut->getData('width');
+        $sut->getMeta('width');
     }
 
     /** @dataProvider simpleFixture */
     public function testHasMetadata($file) {
         $sut = new MediaList([$file], ['width' => 1920]);
-        $this->assertTrue($sut->hasData('width'));
-        $this->assertFalse($sut->hasData('height'));
-    }
-
-    /** @dataProvider simpleFixture */
-    public function testCreateChild($file) {
-        $sut = new MediaList([$file], ['height' => 1080, 'width' => 1920]);
-        $child = $sut->createChild([$file], ['width' => 2500]);
-        $this->assertEquals(2500, $child->getData('width'));
-        $this->assertEquals(1080, $child->getData('height'));
+        $this->assertTrue($sut->hasMeta('width'));
+        $this->assertFalse($sut->hasMeta('height'));
     }
 
     /** @expectedException \UnexpectedValueException */
