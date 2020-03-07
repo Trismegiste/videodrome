@@ -25,7 +25,7 @@ abstract class FileJob implements JobInterface {
         }
     }
 
-    final public function execute(array $filename): array {
+    final public function execute(MediaList $filename): MediaList {
         $this->logger->debug('Entering ' . get_class($this) . '::execute()');
         if (!is_null($this->delegated)) {
             $input = $this->delegated->execute($filename);
@@ -41,5 +41,5 @@ abstract class FileJob implements JobInterface {
         return $output;
     }
 
-    abstract protected function process(array $filename): array;
+    abstract protected function process(MediaList $filename): MediaList;
 }

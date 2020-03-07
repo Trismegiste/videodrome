@@ -5,6 +5,7 @@ namespace Trismegiste\Videodrome\Chain\Job;
 use Symfony\Component\Process\Process;
 use Trismegiste\Videodrome\Chain\FileJob;
 use Trismegiste\Videodrome\Chain\JobException;
+use Trismegiste\Videodrome\Chain\MediaList;
 use Trismegiste\Videodrome\Chain\MetaFileInfo;
 
 /**
@@ -12,7 +13,7 @@ use Trismegiste\Videodrome\Chain\MetaFileInfo;
  */
 class AddingSound extends FileJob {
 
-    protected function process(array $filename): array {
+    protected function process(MediaList $filename): MediaList {
         list($video) = $filename;
         $output = $video->getFilenameNoExtension() . '-sound.' . $video->getExtension();
         $sound = $video->getData('sound');
@@ -36,7 +37,7 @@ class AddingSound extends FileJob {
         }
         $this->logger->info("Video with sound $output generated");
 
-        return [new MetaFileInfo($output, $video->getMetadata())];
+        return new MediaList([new MetaFileInfo($output, $video->getMetadata())]);
     }
 
 }
