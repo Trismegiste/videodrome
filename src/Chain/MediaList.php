@@ -48,11 +48,19 @@ class MediaList implements \ArrayAccess, \Countable, \IteratorAggregate {
     }
 
     public function getData(string $key) {
+        if (!array_key_exists($key, $this->metadata)) {
+            throw new \OutOfBoundsException("Unknown metadata '$key'");
+        }
+
         return $this->metadata[$key];
     }
 
     public function createChild(array $group, array $override): MediaList {
         return new MediaList($group, array_merge($this->metadata, $override));
+    }
+
+    public function hasData(string $key): bool {
+        return array_key_exists($key, $this->metadata);
     }
 
 }
