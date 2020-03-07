@@ -6,8 +6,9 @@ use RuntimeException;
 use Symfony\Component\Process\Process;
 use Trismegiste\Videodrome\Chain\FileJob;
 use Trismegiste\Videodrome\Chain\JobException;
+use Trismegiste\Videodrome\Chain\Media;
+use Trismegiste\Videodrome\Chain\MediaFile;
 use Trismegiste\Videodrome\Chain\MediaList;
-use Trismegiste\Videodrome\Chain\MetaFileInfo;
 use Trismegiste\Videodrome\Util\PdfInfo;
 
 /**
@@ -17,17 +18,20 @@ class PdfToPng extends FileJob {
 
     const antialiasFactor = 1.3;
 
-    protected function process(MediaList $filename): MediaList {
-        list($pdf) = $filename;
+    protected function process(Media $pdf): Media {
+        if (!$pdf->isLeaf()) {
+            throw new JobException("Not a single file");
+        }
+
         $info = new PdfInfo($pdf);
-        $dpi = $info->getMinDensityFor($pdf->getData('width'), $pdf->getData('height')) * self::antialiasFactor;
+        $dpi = $info->getMinDensityFor($pdf->getMeta('width'), $pdf->getMeta('height')) * self::antialiasFactor;
 
         $exportName = $pdf->getFilenameNoExtension();
         $magick = new Process([
             'convert',
             '-density', $dpi,
             $pdf,
-            '-resize', $pdf->getData('width') . 'x' . $pdf->getData('height') . '!', // discard aspect ratio
+            '-resize', $pdf->getMeta('width') . 'x' . $pdf->getMeta('height') . '!', // discard aspect ratio
             $exportName . '.png'
         ]);
         $magick->setTimeout(null);
@@ -35,18 +39,16 @@ class PdfToPng extends FileJob {
 
         $card = $info->getPageCount();
         try {
-            $result = [];
+            $metadataPdf = $pdf->getMetadataSet();
+            $result = new MediaList([], $metadataPdf);
             for ($k = 0; $k < $card; $k++) {
                 $tmpname = $exportName . "-$k.png";
-                // manage metadata
-                $metadata = $pdf->getMetadata(); FAIL => Où placer les metadata de durée ? Dans le MetaFileInfo ou le MediaList ?
-                EN fait, les classes partagent des points communs et on peut se demander s'ils'agit d'un Tree ?
-                    Les createChild sont liés et l'héritage des metadata aussi
                 // explode duration metadata for each PNG
-                if (array_key_exists('duration', $metadata)) {
-                    $metadata['duration'] = $metadata['duration'][$k];
+                $metadataPng = $metadataPdf;
+                if ($pdf->hasMeta('duration')) {
+                    $metadataPng['duration'] = $metadataPdf['duration'][$k];
                 }
-                $result[] = new MetaFileInfo($tmpname, $metadata);
+                $result[] = new MediaFile($tmpname, $metadataPng);
             }
         } catch (RuntimeException $ex) {
             throw new JobException("PdfToPng : " . $ex->getMessage());

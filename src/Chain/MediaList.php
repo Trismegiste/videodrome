@@ -13,7 +13,7 @@ class MediaList implements \ArrayAccess, \Countable, \IteratorAggregate, Media {
     public function __construct(array $group = [], array $metadata = []) {
         foreach ($group as $key => $fch) {
             if (!($fch instanceof MediaFile)) {
-                throw new \UnexpectedValueException("File with key '$key' is not a MetaFileInfo");
+                throw new \UnexpectedValueException("File with key '$key' is not a MediaFile");
             }
             $this->list[] = $fch;
         }
@@ -34,9 +34,13 @@ class MediaList implements \ArrayAccess, \Countable, \IteratorAggregate, Media {
 
     public function offsetSet($offset, $value) {
         if (!($value instanceof MediaFile)) {
-            throw new \UnexpectedValueException("File with key '$offset' is not a MetaFileInfo");
+            throw new \UnexpectedValueException("File with key '$offset' is not a MediaFile");
         }
-        $this->list[$offset] = $value;
+        if (is_null($offset)) {
+            $this->list[] = $value;
+        } else {
+            $this->list[$offset] = $value;
+        }
     }
 
     public function offsetUnset($offset) {

@@ -19,7 +19,9 @@ class MediaListTest extends TestCase {
     public function testPushing($file) {
         $sut = new MediaList();
         $sut[] = $file;
-        $this->assertCount(1, $sut);
+        $sut[] = $file;
+        $sut[] = $file;
+        $this->assertCount(3, $sut);
     }
 
     /** @dataProvider simpleFixture */
