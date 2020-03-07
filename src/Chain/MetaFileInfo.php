@@ -33,12 +33,16 @@ class MetaFileInfo extends \SplFileInfo {
         return in_array($this->getExtension(), ['avi', 'mkv', 'mp4', 'webm']);
     }
 
-    public function getMetadata(): array {
-        return $this->metadata;
-    }
-
     public function getFilenameNoExtension(): string {
         return $this->getBasename('.' . $this->getExtension());
+    }
+
+    public function createChild(string $filename, array $override = []): MetaFileInfo {
+        return new MetaFileInfo($filename, array_merge($this->metadata, $override));
+    }
+
+    public function hasData(string $key): bool {
+        return array_key_exists($key, $this->metadata);
     }
 
 }

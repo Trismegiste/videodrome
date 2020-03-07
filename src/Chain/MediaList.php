@@ -55,7 +55,7 @@ class MediaList implements \ArrayAccess, \Countable, \IteratorAggregate {
         return $this->metadata[$key];
     }
 
-    public function createChild(array $group, array $override): MediaList {
+    public function createChild(array $group, array $override = []): MediaList {
         return new MediaList($group, array_merge($this->metadata, $override));
     }
 

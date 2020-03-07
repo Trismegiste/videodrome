@@ -15,11 +15,10 @@ class MetaFileInfoTest extends TestCase {
         new MetaFileInfo('zogzog');
     }
 
-    public function testUnmutable() {
+    public function testChild() {
         $sut = new MetaFileInfo(__FILE__, ['meta' => 555]);
-        $arr = $sut->getMetadata();
-        $arr['meta'] = 333;
-        $this->assertEquals(555, $sut->getData('meta'));
+        $child = $sut->createChild(__FILE__, ['meta' => 333]);
+        $this->assertEquals(333, $child->getData('meta'));
     }
 
     public function testNoExtension() {
