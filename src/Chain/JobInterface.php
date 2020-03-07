@@ -11,10 +11,8 @@ interface JobInterface {
 
     /**
      * Do the job
-     * @param MediaList $filename a MediaList of MetaFileInfo
-     * @return array new files
      */
-    public function execute(MediaList $filename): MediaList;
+    public function execute(Media $filename): Media;
 
     public function setLogger(LoggerInterface $log);
 }
