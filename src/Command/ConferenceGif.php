@@ -11,7 +11,7 @@ use Trismegiste\Videodrome\Chain\ConsoleLogger;
 use Trismegiste\Videodrome\Chain\Job\AnimatedGif;
 use Trismegiste\Videodrome\Chain\Job\ImpressToPdf;
 use Trismegiste\Videodrome\Chain\Job\PdfToPng;
-use Trismegiste\Videodrome\Chain\MetaFileInfo;
+use Trismegiste\Videodrome\Chain\MediaFile;
 
 /**
  * Presentation GIF generator
@@ -37,11 +37,11 @@ class ConferenceGif extends Command {
         $job = new AnimatedGif(new PdfToPng(new ImpressToPdf()));
         //  $job = new PdfToPng(new ImpressToPdf());
         $job->setLogger(new ConsoleLogger($output));
-        $job->execute([new MetaFileInfo($impress, [
+        $job->execute(new MediaFile($impress, [
                 'delay' => (float) $input->getOption('delay'),
                 'width' => $input->getOption('width'),
                 'height' => $input->getOption('height')
-        ])]);
+        ]));
 
         return 0;
     }

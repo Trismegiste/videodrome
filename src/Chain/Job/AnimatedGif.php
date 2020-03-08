@@ -4,13 +4,17 @@ namespace Trismegiste\Videodrome\Chain\Job;
 
 use Symfony\Component\Process\Process;
 use Trismegiste\Videodrome\Chain\FileJob;
-use Trismegiste\Videodrome\Chain\MetaFileInfo;
+use Trismegiste\Videodrome\Chain\JobException;
+use Trismegiste\Videodrome\Chain\Media;
+use Trismegiste\Videodrome\Chain\MediaFile;
 
 class AnimatedGif extends FileJob {
 
-    protected function process(array $filename): array {
-        $firstMeta = $filename[0]->getMetadata();
-        $delay = $filename[0]->getData("delay");
+    protected function process(Media $filename): Media {
+        if ($filename->isLeaf()) {
+            throw new JobException("Multiple pictures must be provided");
+        }
+        $delay = $filename->getMeta('delay');
         $output = "generated.gif";
 
         foreach ($filename as $idx => $picture) {
@@ -31,7 +35,7 @@ class AnimatedGif extends FileJob {
             unlink("tmp-{$idx}.png");
         }
 
-        return [new MetaFileInfo($output, $firstMeta)];
+        return new MediaFile($output, $filename->getMetadataSet());
     }
 
 }
