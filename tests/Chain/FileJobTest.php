@@ -2,25 +2,35 @@
 
 use PHPUnit\Framework\TestCase;
 use Trismegiste\Videodrome\Chain\FileJob;
+use Trismegiste\Videodrome\Chain\Media;
+use Trismegiste\Videodrome\Chain\MediaFile;
 
 class FileJobTest extends TestCase {
 
     public function testEndProcessing() {
+        $input = $this->getMockForAbstractClass(Media::class);
+        $output = $this->getMockForAbstractClass(Media::class);
+
         $sut = $this->getMockForAbstractClass(FileJob::class);
         $sut->expects($this->once())
                 ->method('process')
-                ->willReturn(['return']);
+                ->with($input)
+                ->willReturn($output);
 
-        $ret = $sut->execute(['dummy']);
-        $this->assertEquals(['return'], $ret);
+        $ret = $sut->execute($input);
+        $this->assertEquals($output, $ret);
     }
 
     public function testDelegateProcessing() {
+        $input = $this->getMockForAbstractClass(Media::class);
+        $middle = $this->getMockForAbstractClass(Media::class);
+        $output = $this->getMockForAbstractClass(Media::class);
+
         $delegate = $this->getMockForAbstractClass(FileJob::class);
         $delegate->expects($this->once())
                 ->method('process')
-                ->with(['dummy'])
-                ->willReturn(['return']);
+                ->with($input)
+                ->willReturn($middle);
 
         $sut = $this->getMockBuilder(FileJob::class)
                 ->setConstructorArgs([$delegate])
@@ -29,12 +39,11 @@ class FileJobTest extends TestCase {
 
         $sut->expects($this->once())
                 ->method('process')
-                ->with(['return'])
-                ->willReturn(['final']);
+                ->with($middle)
+                ->willReturn($output);
 
-        shell_exec("touch return");
-        $ret = $sut->execute(['dummy']);
-        $this->assertEquals(['final'], $ret);
+        $ret = $sut->execute($input);
+        $this->assertEquals($output, $ret);
     }
 
 }
