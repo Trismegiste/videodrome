@@ -19,5 +19,6 @@ $application->add(new \Trismegiste\Videodrome\Command\MuxingSound());
 $application->add(new \Trismegiste\Videodrome\Command\TrailerBuilder());
 $application->add(new \Trismegiste\Videodrome\Command\TrailerCheck());
 $application->add(new \Trismegiste\Videodrome\Command\ConferenceGif());
+$application->add(new \Trismegiste\Videodrome\Command\TrailerDummy());
 
 $application->run();

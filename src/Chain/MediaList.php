@@ -7,7 +7,7 @@ namespace Trismegiste\Videodrome\Chain;
  */
 class MediaList implements \ArrayAccess, \Countable, \IteratorAggregate, Media {
 
-    protected $list;
+    protected $list = [];
     protected $metadata;
 
     public function __construct(array $group = [], array $metadata = []) {

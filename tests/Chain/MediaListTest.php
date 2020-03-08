@@ -13,6 +13,7 @@ class MediaListTest extends TestCase {
     public function testEmptyCreation() {
         $sut = new MediaList();
         $this->assertCount(0, $sut);
+        $this->assertInstanceOf(\Traversable::class, $sut->getIterator());
     }
 
     /** @dataProvider simpleFixture */
