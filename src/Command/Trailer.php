@@ -12,8 +12,7 @@ use Symfony\Component\Console\Input\InputOption;
 abstract class Trailer extends Command {
 
     protected function configure() {
-        $this->setDescription("Build a trailer from a lot of assets : videos, sound, config files, marker...")
-                ->addArgument('video', InputArgument::REQUIRED, "Folder full of video to extract clips")
+        $this->addArgument('video', InputArgument::REQUIRED, "Folder full of video to extract clips")
                 ->addOption('vidcfg', NULL, InputOption::VALUE_REQUIRED, "The config filename in the video folder for cutting clips", "cutter.cfg")
                 ->addArgument('picture', InputArgument::REQUIRED, "Folder full of picture for making panning")
                 ->addOption('pixcfg', NULL, InputOption::VALUE_REQUIRED, "The config filename in the picture folder for panning", "panning.cfg")

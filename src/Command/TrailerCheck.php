@@ -17,6 +17,11 @@ class TrailerCheck extends Trailer {
 
     protected static $defaultName = 'trailer:check';
 
+    protected function configure() {
+        parent::configure();
+        $this->setDescription("Check all assets for building a trailer video");
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output) {
         $error = 0;
         $output->writeln("Check for all assets...");

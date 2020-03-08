@@ -28,6 +28,11 @@ class TrailerBuilder extends Trailer {
 
     protected static $defaultName = 'trailer:build';
 
+    protected function configure() {
+        parent::configure();
+        $this->setDescription("Build a trailer from a lot of assets : videos, sound, config files, marker...");
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output) {
         $marker = new AudacityMarker($input->getArgument('marker'));
         $panningCfg = new PanningCfg($input->getArgument('picture') . '/' . $input->getOption('pixcfg'));
