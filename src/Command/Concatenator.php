@@ -10,7 +10,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 use Trismegiste\Videodrome\Chain\ConsoleLogger;
 use Trismegiste\Videodrome\Chain\Job\VideoConcat;
-use Trismegiste\Videodrome\Chain\MetaFileInfo;
+use Trismegiste\Videodrome\Chain\MediaFile;
+use Trismegiste\Videodrome\Chain\MediaList;
 use Trismegiste\Videodrome\Util\AudacityMarker;
 
 /**
@@ -32,20 +33,20 @@ class Concatenator extends Command {
         $finder->in($input->getArgument('video'))->files()->name('/-(cut|extended)-over.avi$/');
         $video = iterator_to_array($finder);
 
-        $concat = [];
+        $concat = new MediaList();
         foreach ($marker as $key => $timecode) {
             $found = array_filter($video, function ($v) use ($key) {
                 return preg_match("/^$key-(cut|extended)-over.avi$/", $v->getFilename());
             });
             if (count($found) === 1) {
                 $found = array_shift($found);
-                $concat[] = new MetaFileInfo($found, ['start' => $timecode['start']]);
+                $concat[] = new MediaFile($found, ['start' => $timecode['start']]);
             } else {
                 throw new RuntimeException("The key '$key' has " . count($found) . " video file(s)");
             }
         }
 
-        $output->writeln("Concat video");
+        $output->writeln("Concatenation of video");
         $cor = new VideoConcat();
         $cor->setLogger(new ConsoleLogger($output));
         $cor->execute($concat);
