@@ -26,16 +26,24 @@ class TrailerCheck extends Trailer {
         $error = 0;
         $output->writeln("Check for all assets...");
 
+        // check sound file
+        if (!file_exists($input->getArgument('sound'))) {
+            throw new RuntimeException("No sound file found");
+        }
+        
+        // check marker
         if (!file_exists($input->getArgument('marker'))) {
             throw new RuntimeException("No marker file found");
         }
         $marker = new AudacityMarker($input->getArgument('marker'));
 
+        // check panning config
         if (!file_exists($input->getArgument('picture') . '/' . $input->getOption('pixcfg'))) {
             throw new RuntimeException("No panning config file found");
         }
         $panningCfg = new PanningCfg($input->getArgument('picture') . '/' . $input->getOption('pixcfg'));
 
+        // check cutting config
         if (!file_exists($input->getArgument('video') . '/' . $input->getOption('vidcfg'))) {
             throw new RuntimeException("No cutting config file found");
         }
