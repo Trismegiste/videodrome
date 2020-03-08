@@ -10,7 +10,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 use Trismegiste\Videodrome\Chain\ConsoleLogger;
 use Trismegiste\Videodrome\Chain\Job\Cutter;
-use Trismegiste\Videodrome\Chain\MetaFileInfo;
+use Trismegiste\Videodrome\Chain\MediaFile;
+use Trismegiste\Videodrome\Chain\MediaList;
 use Trismegiste\Videodrome\Util\AudacityMarker;
 use Trismegiste\Videodrome\Util\CutterCfg;
 
@@ -39,11 +40,11 @@ class CutterResize extends Command {
         $search = new Finder();
         $iter = $search->in($imageFolder)->name('/\.(mkv|avi|webm|mp4)$/')->files();
 
-        $listing = [];
+        $listing = new MediaList();
         foreach ($iter as $video) {
             foreach ($timecode as $key => $detail) {
                 if (preg_match('/^' . $key . "\\./", $video->getFilename())) {
-                    $metafile = new MetaFileInfo($video, [
+                    $metafile = new MediaFile($video, [
                         'duration' => $timecode->getDuration($key),
                         'cutBefore' => $config->getStart($key),
                         'width' => $input->getOption('width'),
