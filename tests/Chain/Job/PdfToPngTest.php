@@ -19,6 +19,8 @@ class PdfToPngTest extends TestCase {
         foreach ($ret as $png) {
             $this->assertFileExists((string) $png);
             $this->assertEquals(1, $png->getMeta('duration'));
+            $this->assertEquals(1920, $png->getMeta('width'));
+            $this->assertEquals(1080, $png->getMeta('height'));
             $this->assertTrue($png->isPicture());
         }
         // clean
