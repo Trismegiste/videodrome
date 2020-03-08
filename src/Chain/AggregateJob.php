@@ -7,7 +7,7 @@ use Psr\Log\NullLogger;
 use Trismegiste\Videodrome\Chain\JobInterface;
 
 /**
- * Aggregation of multiple Job
+ * Aggregation of multiple Job (parallel)
  */
 class AggregateJob implements JobInterface {
 

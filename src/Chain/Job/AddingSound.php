@@ -9,7 +9,7 @@ use Trismegiste\Videodrome\Chain\Media;
 use Trismegiste\Videodrome\Chain\MediaFile;
 
 /**
- * Muxing
+ * Muxing video and sound
  */
 class AddingSound extends FileJob {
 

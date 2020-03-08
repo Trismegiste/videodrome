@@ -9,7 +9,7 @@ use Trismegiste\Videodrome\Chain\MediaFile;
 use Trismegiste\Videodrome\Chain\MediaList;
 
 /**
- * Ths class resizes an image to be larger as an output format as this format fits into the extended image
+ * Ths class resizes an image to be larger as an output format as its format fits into the extended image
  */
 class ImageExtender extends FileJob {
 

@@ -3,7 +3,7 @@
 namespace Trismegiste\Videodrome\Util;
 
 /**
- * Meta & info on PDF using Plopper
+ * Meta & info of a PDF using Plopper
  */
 class PdfInfo {
 

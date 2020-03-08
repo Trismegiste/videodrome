@@ -39,5 +39,8 @@ abstract class FileJob implements JobInterface {
         return $output;
     }
 
+    /**
+     * Template Method Design Pattern
+     */
     abstract protected function process(Media $filename): Media;
 }

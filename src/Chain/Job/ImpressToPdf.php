@@ -10,7 +10,7 @@ use Trismegiste\Videodrome\Chain\Media;
 use Trismegiste\Videodrome\Chain\MediaFile;
 
 /**
- * ImpressToPdf convert a LibreOffice Impress file to a PDF
+ * ImpressToPdf convert a LibreOffice Impress file into a PDF
  */
 class ImpressToPdf extends FileJob {
 

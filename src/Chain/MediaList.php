@@ -20,18 +20,22 @@ class MediaList implements \ArrayAccess, \Countable, \IteratorAggregate, Media {
         $this->metadata = $metadata;
     }
 
+    /** @see \Countable */
     public function count(): int {
         return count($this->list);
     }
 
+    /** @see \ArrayAccess */
     public function offsetExists($offset): bool {
         return array_key_exists($offset, $this->list);
     }
 
+    /** @see \ArrayAccess */
     public function offsetGet($offset) {
         return $this->list[$offset];
     }
 
+    /** @see \ArrayAccess */
     public function offsetSet($offset, $value) {
         if (!($value instanceof MediaFile)) {
             throw new \UnexpectedValueException("File with key '$offset' is not a MediaFile");
@@ -43,10 +47,12 @@ class MediaList implements \ArrayAccess, \Countable, \IteratorAggregate, Media {
         }
     }
 
+    /** @see \ArrayAccess */
     public function offsetUnset($offset) {
         unset($this->list[$offset]);
     }
 
+    /** @see \IteratorAggregate */
     public function getIterator(): \Traversable {
         return new \ArrayIterator($this->list);
     }
@@ -59,18 +65,22 @@ class MediaList implements \ArrayAccess, \Countable, \IteratorAggregate, Media {
         return $this->metadata[$key];
     }
 
+    /** @see Media */
     public function hasMeta(string $key): bool {
         return array_key_exists($key, $this->metadata);
     }
 
+    /** @see Media */
     public function getMetadataSet(): array {
         return $this->metadata;
     }
 
+    /** @see Media */
     public function isLeaf(): bool {
         return false;
     }
 
+    /** @see Media */
     public function unlink() {
         foreach ($this->list as $fch) {
             $fch->unlink();

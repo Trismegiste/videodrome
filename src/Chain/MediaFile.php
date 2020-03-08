@@ -17,18 +17,31 @@ class MediaFile extends \SplFileInfo implements Media {
         $this->metadata = $meta;
     }
 
+    /**
+     * Is this Media a picture ?
+     * @return bool
+     */
     public function isPicture(): bool {
         return in_array($this->getExtension(), ['png', 'jpg', 'jpeg']);
     }
 
+    /**
+     * Is this Media a video ?
+     * @return bool
+     */
     public function isVideo(): bool {
         return in_array($this->getExtension(), ['avi', 'mkv', 'mp4', 'webm']);
     }
 
+    /**
+     * Gets the filename of Media without extension
+     * @return string
+     */
     public function getFilenameNoExtension(): string {
         return $this->getBasename('.' . $this->getExtension());
     }
 
+    /** @see Media */
     public function getMeta(string $key) {
         if (!array_key_exists($key, $this->metadata)) {
             throw new \OutOfBoundsException("Unknown key '$key'");
@@ -37,18 +50,22 @@ class MediaFile extends \SplFileInfo implements Media {
         return $this->metadata[$key];
     }
 
+    /** @see Media */
     public function getMetadataSet(): array {
         return $this->metadata;
     }
 
+    /** @see Media */
     public function hasMeta(string $key): bool {
         return array_key_exists($key, $this->metadata);
     }
 
+    /** @see Media */
     public function isLeaf(): bool {
         return true;
     }
 
+    /** @see Media */
     public function unlink() {
         unlink($this);
     }

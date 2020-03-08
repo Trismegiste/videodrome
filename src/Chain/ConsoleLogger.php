@@ -6,7 +6,8 @@ use Psr\Log\AbstractLogger;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Logger for Job to Console
+ * Logger to Symfony Console
+ * Design pattern : Adapter
  */
 class ConsoleLogger extends AbstractLogger {
 
