@@ -3,7 +3,6 @@
 namespace Trismegiste\Videodrome\Command;
 
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -12,7 +11,8 @@ use Symfony\Component\Finder\Finder;
 use Trismegiste\Videodrome\Chain\ConsoleLogger;
 use Trismegiste\Videodrome\Chain\Job\ImageExtender;
 use Trismegiste\Videodrome\Chain\Job\ImagePanning;
-use Trismegiste\Videodrome\Chain\MetaFileInfo;
+use Trismegiste\Videodrome\Chain\MediaFile;
+use Trismegiste\Videodrome\Chain\MediaList;
 use Trismegiste\Videodrome\Util\AudacityMarker;
 use Trismegiste\Videodrome\Util\PanningCfg;
 
@@ -41,11 +41,11 @@ class Panning extends Command {
         $search = new Finder();
         $iter = $search->in($imageFolder)->name('/\.(jpg|png)$/')->files();
 
-        $listing = [];
+        $listing = new MediaList();
         foreach ($iter as $picture) {
             foreach ($timecode as $key => $detail) {
                 if (preg_match('/^' . $key . "\\./", $picture->getFilename())) {
-                    $metafile = new MetaFileInfo($picture, [
+                    $metafile = new MediaFile($picture, [
                         'duration' => $timecode->getDuration($key),
                         'direction' => $config->getDirection($key),
                         'width' => $input->getOption('width'),
