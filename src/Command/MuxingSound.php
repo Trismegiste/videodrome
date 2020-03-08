@@ -8,7 +8,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Trismegiste\Videodrome\Chain\ConsoleLogger;
 use Trismegiste\Videodrome\Chain\Job\AddingSound;
-use Trismegiste\Videodrome\Chain\MetaFileInfo;
+use Trismegiste\Videodrome\Chain\MediaFile;
 
 /**
  * Adds soundtrack to a video
@@ -30,7 +30,7 @@ class MuxingSound extends Command {
         $output->writeln("Mixing video and sound");
         $cor = new AddingSound();
         $cor->setLogger(new ConsoleLogger($output));
-        $cor->execute([new MetaFileInfo($video, ['sound' => $sound])]);
+        $cor->execute(new MediaFile($video, ['sound' => $sound]));
     }
 
 }

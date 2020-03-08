@@ -13,7 +13,7 @@ use Trismegiste\Videodrome\Chain\Job\ImpressToPdf;
 use Trismegiste\Videodrome\Chain\Job\PdfToPng;
 use Trismegiste\Videodrome\Chain\Job\PngToVideo;
 use Trismegiste\Videodrome\Chain\Job\VideoConcat;
-use Trismegiste\Videodrome\Chain\MetaFileInfo;
+use Trismegiste\Videodrome\Chain\MediaFile;
 use Trismegiste\Videodrome\Util\AudacityMarker;
 
 /**
@@ -46,12 +46,12 @@ class Conference extends Command {
 
         $job = new AddingSound(new VideoConcat(new PngToVideo(new PdfToPng(new ImpressToPdf()))));
         $job->setLogger(new ConsoleLogger($output));
-        $job->execute([new MetaFileInfo($impress, [
-                'duration' => $duration,
-                'sound' => $voix,
-                'width' => $input->getOption('width'),
-                'height' => $input->getOption('height')
-        ])]);
+        $job->execute(new MediaFile($impress, [
+            'duration' => $duration,
+            'sound' => $voix,
+            'width' => $input->getOption('width'),
+            'height' => $input->getOption('height')
+        ]));
 
         return 0;
     }
