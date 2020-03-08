@@ -5,19 +5,20 @@ namespace Trismegiste\Videodrome\Chain\Job;
 use Symfony\Component\Process\Process;
 use Trismegiste\Videodrome\Chain\FileJob;
 use Trismegiste\Videodrome\Chain\JobException;
-use Trismegiste\Videodrome\Chain\MetaFileInfo;
+use Trismegiste\Videodrome\Chain\Media;
+use Trismegiste\Videodrome\Chain\MediaFile;
+use Trismegiste\Videodrome\Chain\MediaList;
 
 /**
  * Overelay a PNG above a video
  */
 class PngOverlay extends FileJob {
 
-    protected function process(array $filename): array {
-        $result = [];
+    protected function process(Media $filename): Media {
+        $result = new MediaList([], $filename->getMetadataSet());
         foreach ($filename as $png) {
-            $meta = $png->getMetadata();
-            $ret = $this->overlay($png, $meta['video']);
-            $result[] = new MetaFileInfo($ret, $meta);
+            $ret = $this->overlay($png, $png->getMeta('video'));
+            $result[] = new MediaFile($ret, $png->getMetadataSet());
         }
 
         return $result;

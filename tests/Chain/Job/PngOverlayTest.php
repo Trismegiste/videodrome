@@ -3,7 +3,8 @@
 use PHPUnit\Framework\TestCase;
 use Trismegiste\Videodrome\Chain\Job\PngOverlay;
 use Trismegiste\Videodrome\Chain\Job\SvgToPng;
-use Trismegiste\Videodrome\Chain\MetaFileInfo;
+use Trismegiste\Videodrome\Chain\MediaFile;
+use Trismegiste\Videodrome\Chain\MediaList;
 
 class PngOverlayTest extends TestCase {
 
@@ -11,14 +12,16 @@ class PngOverlayTest extends TestCase {
         $sut = new PngOverlay(new SvgToPng());
         $over = __DIR__ . '/../../fixtures/picture1.svg';
         $video = __DIR__ . '/../../fixtures/cutter.mkv';
-        $ret = $sut->execute([new MetaFileInfo($over, ['video' => $video])]);
+        $ret = $sut->execute(new MediaList([
+            new MediaFile($over, ['video' => $video])
+        ]));
 
         $this->assertCount(1, $ret);
         $vid = $ret[0];
         $this->assertEquals('cutter-over.avi', (string) $vid);
         $this->assertFileExists((string) $vid);
         $this->assertTrue($vid->isVideo());
-        unlink($vid);
+        $ret->unlink();
     }
 
 }
