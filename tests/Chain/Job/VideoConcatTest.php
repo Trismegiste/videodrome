@@ -5,45 +5,46 @@ use Trismegiste\Videodrome\Chain\Job\ImpressToPdf;
 use Trismegiste\Videodrome\Chain\Job\PdfToPng;
 use Trismegiste\Videodrome\Chain\Job\PngToVideo;
 use Trismegiste\Videodrome\Chain\Job\VideoConcat;
-use Trismegiste\Videodrome\Chain\MetaFileInfo;
+use Trismegiste\Videodrome\Chain\MediaFile;
+use Trismegiste\Videodrome\Chain\MediaList;
 
 class VideoConcatTest extends TestCase {
 
     public function testExecute() {
         $sut = new VideoConcat(new PngToVideo(new PdfToPng(new ImpressToPdf())));
-        $ret = $sut->execute([new MetaFileInfo(__DIR__ . '/../../fixtures/fixtures1.odp', [
-                'duration' => [1, 1, 1],
-                'width' => 1920,
-                'height' => 1080
-        ])]);
+        $vid = $sut->execute(new MediaFile(__DIR__ . '/../../fixtures/fixtures1.odp', [
+            'duration' => [1, 1, 1],
+            'width' => 1920,
+            'height' => 1080
+        ]));
 
-        $this->assertCount(1, $ret);
-        $vid = $ret[0];
+        $this->assertTrue($vid->isLeaf());
         $this->assertEquals('fixtures1-0-compil.mp4', (string) $vid);
         $this->assertFileExists((string) $vid);
         $this->assertTrue($vid->isVideo());
+        $this->assertEquals(1920, $vid->getMeta('width'));
+
         //    $this->assertEquals(3, $vid->getData('duration'));
         // clean
-        unlink($vid);
+        $vid->unlink();
     }
 
-    public function testExecuteSimple() {
+    public function testExecuteSorted() {
         $clip = ['red-extended-over.avi', 'blue-cut-over.avi'];
-        $input = [];
+        $input = new MediaList();
         foreach ($clip as $idx => $fch) {
-            $input[] = new MetaFileInfo(__DIR__ . '/../../fixtures/' . $fch, ['start' => 3 - $idx]);
+            $input[] = new MediaFile(__DIR__ . '/../../fixtures/' . $fch, ['start' => 3 - $idx]);
         }
 
         $sut = new VideoConcat();
-        $ret = $sut->execute($input);
+        $vid = $sut->execute($input);
 
-        $this->assertCount(1, $ret);
-        $vid = $ret[0];
+        $this->assertTrue($vid->isLeaf());
         $this->assertEquals('blue-cut-over-compil.mp4', (string) $vid);
         $this->assertFileExists((string) $vid);
         $this->assertTrue($vid->isVideo());
         // clean
-        unlink($vid);
+        $vid->unlink();
     }
 
 }
