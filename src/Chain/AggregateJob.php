@@ -27,10 +27,13 @@ class AggregateJob implements JobInterface {
         $this->logger = new NullLogger();
     }
 
-    public function execute(array $filename, array $context = array()): array {
-        $output = [];
+    public function execute(Media $filename): Media {
+        $output = new MediaList([], $filename->getMetadataSet());
         foreach ($this->delegated as $child) {
-            $output = array_merge($output, $child->execute($filename, $context));
+            $ret = $child->execute($filename);
+            foreach ($ret as $fch) {
+                $output[] = $fch;
+            }
         }
 
         return $output;
