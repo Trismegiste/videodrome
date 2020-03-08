@@ -4,7 +4,9 @@ namespace Trismegiste\Videodrome\Chain\Job;
 
 use Symfony\Component\Process\Process;
 use Trismegiste\Videodrome\Chain\FileJob;
-use Trismegiste\Videodrome\Chain\MetaFileInfo;
+use Trismegiste\Videodrome\Chain\Media;
+use Trismegiste\Videodrome\Chain\MediaFile;
+use Trismegiste\Videodrome\Chain\MediaList;
 
 /**
  * A cutter of video
@@ -13,15 +15,15 @@ class Cutter extends FileJob {
 
     const framerate = 30;
 
-    protected function process(array $filename): array {
-        $cutted = [];
+    protected function process(Media $filename): Media {
+        $cutted = new MediaList([], $filename->getMetadataSet());
         foreach ($filename as $video) {
             if (!$video->isVideo()) {
                 continue;
             }
-            $meta = $video->getMetadata();
+            $meta = $video->getMetadataSet();
             $ret = $this->cut($video, $meta['width'], $meta['height'], $meta['cutBefore'], $meta['duration']);
-            $cutted[] = new MetaFileInfo($ret, $meta);
+            $cutted[] = new MediaFile($ret, $meta);
         }
 
         return $cutted;
