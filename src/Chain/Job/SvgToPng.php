@@ -5,7 +5,9 @@ namespace Trismegiste\Videodrome\Chain\Job;
 use Symfony\Component\Process\Process;
 use Trismegiste\Videodrome\Chain\FileJob;
 use Trismegiste\Videodrome\Chain\JobException;
-use Trismegiste\Videodrome\Chain\MetaFileInfo;
+use Trismegiste\Videodrome\Chain\Media;
+use Trismegiste\Videodrome\Chain\MediaFile;
+use Trismegiste\Videodrome\Chain\MediaList;
 
 /**
  * Converts SVG to PNG
@@ -14,13 +16,11 @@ class SvgToPng extends FileJob {
 
     /**
      * Convert SVG to PNG
-     * @param array $filename an array of MetaFileInfo pointing to SVG
-     * @return array
      */
-    protected function process(array $filename): array {
-        $result = [];
+    protected function process(Media $filename): Media {
+        $result = new MediaList([], $filename->getMetadataSet());
         foreach ($filename as $vector) {
-            $result[] = new MetaFileInfo($this->convert($vector), $vector->getMetadata());
+            $result[] = new MediaFile($this->convert($vector), $vector->getMetadataSet());
         }
 
         return $result;
