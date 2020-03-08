@@ -11,6 +11,7 @@ use Trismegiste\Videodrome\Chain\MediaFile;
 class AnimatedGif extends FileJob {
 
     protected function process(Media $filename): Media {
+        $this->logger->info("Generating GIF...");
         if ($filename->isLeaf()) {
             throw new JobException("Multiple pictures must be provided");
         }
@@ -34,6 +35,8 @@ class AnimatedGif extends FileJob {
         foreach ($filename as $idx => $picture) {
             unlink("tmp-{$idx}.png");
         }
+
+        $this->logger->info("$output generated.");
 
         return new MediaFile($output, $filename->getMetadataSet());
     }
