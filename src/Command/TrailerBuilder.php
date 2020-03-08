@@ -2,6 +2,7 @@
 
 namespace Trismegiste\Videodrome\Command;
 
+use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
@@ -13,7 +14,8 @@ use Trismegiste\Videodrome\Chain\Job\ImageExtender;
 use Trismegiste\Videodrome\Chain\Job\ImagePanning;
 use Trismegiste\Videodrome\Chain\Job\SvgOverlay;
 use Trismegiste\Videodrome\Chain\Job\VideoConcat;
-use Trismegiste\Videodrome\Chain\MetaFileInfo;
+use Trismegiste\Videodrome\Chain\MediaFile;
+use Trismegiste\Videodrome\Chain\MediaList;
 use Trismegiste\Videodrome\Command\Trailer;
 use Trismegiste\Videodrome\Util\AudacityMarker;
 use Trismegiste\Videodrome\Util\CutterCfg;
@@ -30,7 +32,7 @@ class TrailerBuilder extends Trailer {
         $marker = new AudacityMarker($input->getArgument('marker'));
         $panningCfg = new PanningCfg($input->getArgument('picture') . '/' . $input->getOption('pixcfg'));
         $cutterCfg = new CutterCfg($input->getArgument('video') . '/' . $input->getOption('vidcfg'));
-        $media = [];
+        $media = new MediaList([], ['sound' => $input->getArgument('sound')]);
 
         foreach ($marker as $key => $entry) {
             $search = new Finder();
@@ -59,10 +61,8 @@ class TrailerBuilder extends Trailer {
                 } else {
                     throw new RuntimeException("No SVG found for key '$key");
                 }
-                // adding sound file :
-                $meta['sound'] = $input->getArgument('sound');
                 // create MetaFileInfo
-                $media[] = new MetaFileInfo((string) $found, $meta);
+                $media[] = new MediaFile((string) $found, $meta);
             }
         }
 

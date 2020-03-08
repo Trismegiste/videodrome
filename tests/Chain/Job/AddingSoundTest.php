@@ -7,7 +7,6 @@ use Trismegiste\Videodrome\Chain\Job\PdfToPng;
 use Trismegiste\Videodrome\Chain\Job\PngToVideo;
 use Trismegiste\Videodrome\Chain\Job\VideoConcat;
 use Trismegiste\Videodrome\Chain\MediaFile;
-use Trismegiste\Videodrome\Chain\MediaList;
 
 class AddingSoundTest extends TestCase {
 
