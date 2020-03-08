@@ -2,13 +2,16 @@
 
 use PHPUnit\Framework\TestCase;
 use Trismegiste\Videodrome\Chain\Job\ImageExtender;
-use Trismegiste\Videodrome\Chain\MetaFileInfo;
+use Trismegiste\Videodrome\Chain\MediaFile;
+use Trismegiste\Videodrome\Chain\MediaList;
 
 class ImageExtenderTest extends TestCase {
 
     public function testExecute() {
         $sut = new ImageExtender();
-        $ret = $sut->execute([new MetaFileInfo(__DIR__ . '/../../fixtures/picture1.jpg', ['width' => 800, 'height' => 400])]);
+        $ret = $sut->execute(new MediaList([
+            new MediaFile(__DIR__ . '/../../fixtures/picture1.jpg', ['width' => 800, 'height' => 400])
+        ]));
 
         $this->assertCount(1, $ret);
         $img = $ret[0];
