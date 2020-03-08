@@ -4,9 +4,11 @@ namespace Trismegiste\Videodrome\Chain\Job;
 
 use Symfony\Component\Process\Process;
 use Trismegiste\Videodrome\Chain\FileJob;
-use Trismegiste\Videodrome\Chain\JobException;
-use Trismegiste\Videodrome\Chain\MetaFileInfo;
 use Trismegiste\Videodrome\Chain\Job\SvgToPng;
+use Trismegiste\Videodrome\Chain\JobException;
+use Trismegiste\Videodrome\Chain\Media;
+use Trismegiste\Videodrome\Chain\MediaFile;
+use Trismegiste\Videodrome\Chain\MediaList;
 
 /**
  * Overlay a SVG above a video
@@ -15,28 +17,25 @@ class SvgOverlay extends FileJob {
 
     /**
      * Puts an overlay on a video
-     * @param array $filename an array of MetaFileInfo pointing to a video file
-     * @return array of MetaFileInfo pointing to the resulting video
      */
-    protected function process(array $filename): array {
+    protected function process(Media $filename): Media {
         // convert all SVG from metadata of each video :
-        $vector = [];
+        $vector = new MediaList();
         foreach ($filename as $vid) {
-            $vector[] = new MetaFileInfo($vid->getData('svg'));
+            $vector[] = new MediaFile($vid->getMeta('svg'));
         }
         $cor = new SvgToPng();
         $cor->setLogger($this->logger);
         $pixeled = $cor->execute($vector);
 
         // now overlay the generated PNG on the video : the indexed order is kept unchanged
-        $result = [];
+        $result = new MediaList([], $filename->getMetadataSet());
         foreach ($filename as $idx => $video) {
-            $meta = $video->getMetadata();
             $png = $pixeled[$idx];
             $ret = $this->overlay($png, $video);
-            unlink($png);
-            $result[] = new MetaFileInfo($ret, $meta);
+            $result[] = new MediaFile($ret, $video->getMetadataSet());
         }
+        $pixeled->unlink();
 
         return $result;
     }
