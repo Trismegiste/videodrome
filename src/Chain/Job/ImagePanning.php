@@ -5,7 +5,9 @@ namespace Trismegiste\Videodrome\Chain\Job;
 use Symfony\Component\Process\Process;
 use Trismegiste\Videodrome\Chain\FileJob;
 use Trismegiste\Videodrome\Chain\JobException;
-use Trismegiste\Videodrome\Chain\MetaFileInfo;
+use Trismegiste\Videodrome\Chain\Media;
+use Trismegiste\Videodrome\Chain\MediaFile;
+use Trismegiste\Videodrome\Chain\MediaList;
 
 /**
  * This class creates a video panning from a picture
@@ -17,12 +19,12 @@ class ImagePanning extends FileJob {
     private $blankCanvas = "tmp-canvas.png";
     private $blankVideo = "tmp-blank.avi";
 
-    protected function process(array $filename): array {
-        $panned = [];
+    protected function process(Media $filename): Media {
+        $panned = new MediaList([], $filename->getMetadataSet());
         foreach ($filename as $picture) {
-            $meta = $picture->getMetadata();
+            $meta = $picture->getMetadataSet();
             $ret = $this->pan($picture, $meta['width'], $meta['height'], $meta['duration'], $meta['direction']);
-            $panned[] = new MetaFileInfo($ret, $meta);
+            $panned[] = new MediaFile($ret, $meta);
         }
 
         return $panned;

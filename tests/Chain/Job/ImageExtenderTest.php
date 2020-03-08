@@ -21,7 +21,7 @@ class ImageExtenderTest extends TestCase {
         $size = getimagesize($img);
         $this->assertGreaterThanOrEqual(800, $size[0]);
         $this->assertGreaterThanOrEqual(400, $size[1]);
-        unlink($img);
+        $ret->unlink();
     }
 
 }

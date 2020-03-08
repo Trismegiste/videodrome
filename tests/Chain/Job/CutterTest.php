@@ -24,7 +24,7 @@ class CutterTest extends TestCase {
         $this->assertEquals('cutter-cut.avi', (string) $vid);
         $this->assertFileExists((string) $vid);
         $this->assertTrue($vid->isVideo());
-        $vid->unlink();
+        $ret->unlink();
     }
 
 }
