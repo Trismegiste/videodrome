@@ -8,7 +8,8 @@ class FfprobeTest extends TestCase {
     public function testInfo() {
         $filename = __DIR__ . '/../fixtures/cutter.mkv';
         $sut = new Ffprobe($filename);
-        var_dump($sut);
+        $this->assertEquals(960, $sut->getWidth());
+        $this->assertEquals(540, $sut->getHeight());
     }
 
 }

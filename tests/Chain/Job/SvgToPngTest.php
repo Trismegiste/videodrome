@@ -10,7 +10,10 @@ class SvgToPngTest extends TestCase {
     public function testConvert() {
         $sut = new SvgToPng();
         $ret = $sut->execute(new MediaList([
-            new MediaFile(__DIR__ . '/../../fixtures/picture1.svg')
+            new MediaFile(__DIR__ . '/../../fixtures/picture1.svg', [
+                'width' => 500,
+                'height' => 300
+                    ])
         ]));
 
         $this->assertCount(1, $ret);
