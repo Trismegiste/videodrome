@@ -20,18 +20,21 @@ class SvgToPng extends FileJob {
     protected function process(Media $filename): Media {
         $result = new MediaList([], $filename->getMetadataSet());
         foreach ($filename as $vector) {
-            $result[] = new MediaFile($this->convert($vector), $vector->getMetadataSet());
+            $png = $this->convert($vector, $vector->getMeta('width'), $vector->getMeta('height'));
+            $result[] = new MediaFile($png, $vector->getMetadataSet());
         }
 
         return $result;
     }
 
-    protected function convert(string $vector): string {
+    protected function convert(string $vector, int $width, int $height): string {
         $this->logger->info("Converting $vector");
         $output = pathinfo($vector, PATHINFO_FILENAME) . '.png';
         $ink = new Process([
             'inkscape',
             '-e', $output,
+            '-w', $width,
+            '-h', $height,
             $vector
         ]);
         $ink->mustRun();

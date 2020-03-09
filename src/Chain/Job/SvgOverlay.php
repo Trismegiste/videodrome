@@ -9,6 +9,7 @@ use Trismegiste\Videodrome\Chain\JobException;
 use Trismegiste\Videodrome\Chain\Media;
 use Trismegiste\Videodrome\Chain\MediaFile;
 use Trismegiste\Videodrome\Chain\MediaList;
+use Trismegiste\Videodrome\Util\Ffprobe;
 
 /**
  * Overlay a SVG above a video
@@ -22,7 +23,8 @@ class SvgOverlay extends FileJob {
         // convert all SVG from metadata of each video :
         $vector = new MediaList();
         foreach ($filename as $vid) {
-            $vector[] = new MediaFile($vid->getMeta('svg'));
+            $info = new Ffprobe($vid);
+            $vector[] = new MediaFile($vid->getMeta('svg'), ['width' => $info->getWidth(), 'height' => $info->getHeight()]);
         }
         $cor = new SvgToPng();
         $cor->setLogger($this->logger);
