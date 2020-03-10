@@ -47,7 +47,7 @@ No sound nor timecode are required. Each frame has a default duration of 5 secon
 flo@spin5:~$ php app.php conference:gif --delay=10 --width=600 --height=400 presentation.odp
 ```
 
-### Trailer
+### Trailer creation
 This set of commands is inteded to rapidly build a trailer-like movie with pictures, movie clips, sound and captions.
 It's very convenient for creating an avertising message on Youtube, for example.
 You need to provide 7 types of assets :
@@ -64,7 +64,23 @@ flo@spin5:~$ php app.php trailer:build ./clip ./slide ./svg epicmusic.ogg timeco
 ```
 
 Launch the command and wait. You need a lot of temporary disk space as it uses uncompressed video codec to ensure
-the best quality before final encoding into mpeg4 format. The video is fully compatible with Youtube (n reencoding needed).
+the best quality before final encoding into mpeg4 format. The video is fully compatible with Youtube (no reencoding needed).
+
+### Trailer dummy build
+This command generates dummy assets (svg, png and config files) to test your video. You only need the marker file from Audacity.
+It's useful to control if the rythm of the trailer is ok and how many text you can put in your captions.
+It checks if files already exist and generates only missing assets.
+
+```
+flo@spin5:~$ php app.php trailer:dummy ./clip ./slide ./svg timecode.txt
+```
+
+### Trailer assets check
+Checks if all assets, config files are ok and if there is no missing file need for building the trailer.
+
+```
+flo@spin5:~$ php app.php trailer:check ./clip ./slide ./svg sound.mp3 timecode.txt
+```
 
 ### Trailer, other commands
 Each step of trailer building could be launch separately :
@@ -76,7 +92,15 @@ Each step of trailer building could be launch separately :
 
 ## Internals
 Each command use the same pattern for atomic conversion of one (or many) media file into one (or many) other media file.
-It's loosely based of a Chain of Responsibilities design pattern. You can easily use the atomic component to create another movie builder.
+It's loosely based of a Chain of Responsibilities design pattern. You can easily re-use the atomic component to create another movie builder.
+The only thing you need to care is the metadata needed for the FileJob subclass (such as width, height, duration...).
+Don't panic, if a metadata is missing, it raises a JobException.
 
 This app is very strict and ensure no files are missing or lost in the process. 2 classes (MediaList and MediaFile) implement a
-Composite Design Pattern (with only one level of children). It's easier to manipulate a set of files or one single file.
+Composite Design Pattern (with only one level of children). It's easier to manipulate a set of files or one single file. To explore this app,
+start wth the 2 interfaces 'JobInterface' (and its implementation FileJob) and 'Media' (and its 2 implementations MediaList and MediaFile).
+
+## Todo
+Calling external software uses the Process component from Symfony. Since those softwares could change, it can brake this CLI.
+I think a more abstract creation of process is needed.
+Perhaps an Abstract Factory design pattern with an injected external config could do the job...
