@@ -10,7 +10,7 @@ use Trismegiste\Videodrome\Chain\MediaFile;
 use Trismegiste\Videodrome\Chain\MediaList;
 
 /**
- * Overelay a PNG above a video
+ * Overelay a PNG above a video : no resize of whatsoever. This is a dumb overlay
  */
 class PngOverlay extends FileJob {
 
