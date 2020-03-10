@@ -7,6 +7,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Trismegiste\Videodrome\Chain\ConsoleLogger;
 use Trismegiste\Videodrome\Chain\Job\AddingSound;
 use Trismegiste\Videodrome\Chain\Job\ImpressToPdf;
@@ -34,11 +35,12 @@ class Conference extends Command {
     }
 
     protected function execute(InputInterface $input, OutputInterface $output) {
+        $io = new SymfonyStyle($input, $output);
         $impress = $input->getArgument('impress');
         $voix = $input->getArgument('voice');
         $timecode = new AudacityMarker($input->getArgument('marker'));
 
-        $output->writeln("Conference Video Generator");
+        $io->title("Conference Video Generator");
         $duration = [];
         foreach ($timecode as $key => $detail) {
             $duration[] = $timecode->getDuration($key);
