@@ -7,10 +7,10 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Finder\Finder;
 use Trismegiste\Videodrome\Chain\ConsoleLogger;
-use Trismegiste\Videodrome\Chain\Job\PngOverlay;
-use Trismegiste\Videodrome\Chain\Job\SvgToPng;
+use Trismegiste\Videodrome\Chain\Job\SvgOverlay;
 use Trismegiste\Videodrome\Chain\MediaFile;
 use Trismegiste\Videodrome\Chain\MediaList;
 
@@ -29,7 +29,8 @@ class OverlayTitle extends Command {
     }
 
     protected function execute(InputInterface $input, OutputInterface $output) {
-        $output->writeln("Video overlay with SVG");
+        $io = new SymfonyStyle($input, $output);
+        $io->title("Video overlay with SVG");
         $vectorFolder = $input->getArgument('vector');
         $videoFolder = $input->getArgument('video');
         $suffix = $input->getOption('suffix');
@@ -44,10 +45,10 @@ class OverlayTitle extends Command {
             $tmp->rewind();
 
             if ($tmp->valid()) {
-                $listing[] = new MediaFile((string) $svg, ['video' => $tmp->current()]);
+                $listing[] = new MediaFile($tmp->current(), ['svg' => (string) $svg]);
             }
         }
-        $cor = new PngOverlay(new SvgToPng());
+        $cor = new SvgOverlay();
         $cor->setLogger(new ConsoleLogger($output));
         $cor->execute($listing);
     }

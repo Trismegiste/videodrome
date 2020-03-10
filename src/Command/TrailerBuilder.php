@@ -5,6 +5,7 @@ namespace Trismegiste\Videodrome\Command;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Finder\Finder;
 use Trismegiste\Videodrome\Chain\AggregateJob;
 use Trismegiste\Videodrome\Chain\ConsoleLogger;
@@ -34,6 +35,7 @@ class TrailerBuilder extends Trailer {
     }
 
     protected function execute(InputInterface $input, OutputInterface $output) {
+        $io = new SymfonyStyle($input, $output);
         $marker = new AudacityMarker($input->getArgument('marker'));
         $panningCfg = new PanningCfg($input->getArgument('picture') . '/' . $input->getOption('pixcfg'));
         $cutterCfg = new CutterCfg($input->getArgument('video') . '/' . $input->getOption('vidcfg'));
@@ -75,7 +77,7 @@ class TrailerBuilder extends Trailer {
             throw new RuntimeException("Marker has " . count($marker) . " clips and " . count($media) . " was found");
         }
 
-        $output->writeln("Build a trailer");
+        $io->title("Build a trailer");
         $cor = new AddingSound(new VideoConcat(new SvgOverlay(new AggregateJob([
             new ImagePanning(new ImageExtender()),
             new Cutter()
