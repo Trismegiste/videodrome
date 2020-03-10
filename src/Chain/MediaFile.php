@@ -22,7 +22,7 @@ class MediaFile extends \SplFileInfo implements Media {
      * @return bool
      */
     public function isPicture(): bool {
-        return in_array($this->getExtension(), ['png', 'jpg', 'jpeg']);
+        return preg_match('/^image\//', mime_content_type((string) $this));
     }
 
     /**
@@ -30,7 +30,7 @@ class MediaFile extends \SplFileInfo implements Media {
      * @return bool
      */
     public function isVideo(): bool {
-        return in_array($this->getExtension(), ['avi', 'mkv', 'mp4', 'webm']);
+        return preg_match('/^video\//', mime_content_type((string) $this));
     }
 
     /**
