@@ -10,6 +10,7 @@ class util_test extends \PHPUnit\Framework\TestCase {
         $this->assertEquals('a/b', join_paths('a/', '/b'));
         $this->assertEquals('/a/b', join_paths('/a', '/b'));
         $this->assertEquals('/a/b', join_paths('/a/', '/b'));
+        $this->assertEquals('./b', join_paths('.', 'b'));
     }
 
 }

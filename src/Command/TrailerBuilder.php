@@ -37,8 +37,8 @@ class TrailerBuilder extends Trailer {
     protected function execute(InputInterface $input, OutputInterface $output) {
         $io = new SymfonyStyle($input, $output);
         $marker = new AudacityMarker($input->getArgument('marker'));
-        $panningCfg = new PanningCfg($input->getArgument('picture') . '/' . $input->getOption('pixcfg'));
-        $cutterCfg = new CutterCfg($input->getArgument('video') . '/' . $input->getOption('vidcfg'));
+        $panningCfg = new PanningCfg(join_paths($input->getArgument('picture'), $input->getOption('pixcfg')));
+        $cutterCfg = new CutterCfg(join_paths($input->getArgument('video'), $input->getOption('vidcfg')));
         $media = new MediaList([], ['sound' => $input->getArgument('sound')]);
 
         foreach ($marker as $key => $entry) {
@@ -62,7 +62,7 @@ class TrailerBuilder extends Trailer {
                     $meta['cutBefore'] = $cutterCfg->getStart($key);
                 }
                 // search for SVG overlay :
-                $svgOverlay = $input->getArgument('vector') . "/$key.svg";
+                $svgOverlay = join_paths($input->getArgument('vector'), "$key.svg");
                 if (file_exists($svgOverlay)) {
                     $meta['svg'] = $svgOverlay;
                 } else {

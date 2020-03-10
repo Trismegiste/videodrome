@@ -37,12 +37,13 @@ class CreateTitlePng extends FileJob {
         imagecolordeallocate($handle, $background);
         // text
         $plotColor = imagecolorallocate($handle, 255, 255, 255);
-        imagefttext($handle, $width / strlen($key) * 1.3, 0, $width * 0.1, $height * 0.75, $plotColor, __DIR__ . '/akukamu.otf', strtoupper($key));
+        imagefttext($handle, $width / strlen($key) * 1.3, 0, $width * 0.1, $height * 0.75, $plotColor, join_paths(__DIR__, 'akukamu.otf'), strtoupper($key));
         // write
-        imagepng($handle, "$folder/$key.png");
+        $target = join_paths($folder, "$key.png");
+        imagepng($handle, $target);
         imagedestroy($handle);
 
-        return new MediaFile("$folder/$key.png");
+        return new MediaFile($target);
     }
 
     /**

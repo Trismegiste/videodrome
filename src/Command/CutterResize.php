@@ -35,7 +35,7 @@ class CutterResize extends Command {
         $output->writeln("Video extractor");
         $imageFolder = $input->getArgument('folder');
         $timecode = new AudacityMarker($input->getArgument('marker'));
-        $config = new CutterCfg($imageFolder . '/' . $input->getOption('config'));
+        $config = new CutterCfg(join_paths($imageFolder, $input->getOption('config')));
 
         $search = new Finder();
         $iter = $search->in($imageFolder)->name('/\.(mkv|avi|webm|mp4)$/')->files();

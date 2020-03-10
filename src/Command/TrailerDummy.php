@@ -35,7 +35,7 @@ class TrailerDummy extends Command {
         $marker = new AudacityMarker($input->getArgument('marker'));
 
         // panning config
-        $panningFile = $input->getArgument('picture') . '/' . 'panning.cfg';
+        $panningFile = join_paths($input->getArgument('picture'), 'panning.cfg');
         if (!file_exists($panningFile)) {
             $output->writeln("Dummy generation of panning config");
             $panningCfg = fopen($panningFile, "w");
@@ -46,7 +46,7 @@ class TrailerDummy extends Command {
         }
 
         // cutter config
-        $cutterFile = $input->getArgument('video') . '/' . 'cutter.cfg';
+        $cutterFile = join_paths($input->getArgument('video'), 'cutter.cfg');
         if (!file_exists($cutterFile)) {
             $output->writeln("Dummy generation of cutter config");
             $cutterCfg = fopen($cutterFile, "w");
@@ -59,7 +59,7 @@ class TrailerDummy extends Command {
         // Title in SVG
         $svgList = [];
         foreach ($marker as $asset => $param) {
-            $svg = $input->getArgument('vector') . "/$asset.svg";
+            $svg = join_paths($input->getArgument('vector'), "$asset.svg");
             if (!file_exists($svg)) {
                 $svgList[] = $asset;
             }

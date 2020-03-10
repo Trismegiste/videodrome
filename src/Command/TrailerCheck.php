@@ -40,16 +40,18 @@ class TrailerCheck extends Trailer {
         $marker = new AudacityMarker($input->getArgument('marker'));
 
         // check panning config
-        if (!file_exists($input->getArgument('picture') . '/' . $input->getOption('pixcfg'))) {
+        $panningFile = join_paths($input->getArgument('picture'), $input->getOption('pixcfg'));
+        if (!file_exists($panningFile)) {
             throw new RuntimeException("No panning config file found");
         }
-        $panningCfg = new PanningCfg($input->getArgument('picture') . '/' . $input->getOption('pixcfg'));
+        $panningCfg = new PanningCfg($panningFile);
 
         // check cutting config
-        if (!file_exists($input->getArgument('video') . '/' . $input->getOption('vidcfg'))) {
+        $cutterFile = join_paths($input->getArgument('video'), $input->getOption('vidcfg'));
+        if (!file_exists($cutterFile)) {
             throw new RuntimeException("No cutting config file found");
         }
-        $cutterCfg = new CutterCfg($input->getArgument('video') . '/' . $input->getOption('vidcfg'));
+        $cutterCfg = new CutterCfg($cutterFile);
 
         foreach ($marker as $key => $entry) {
             $search = new Finder();
@@ -60,7 +62,7 @@ class TrailerCheck extends Trailer {
                 $error++;
             }
             // check if svg
-            $svgOverlay = $input->getArgument('vector') . "/$key.svg";
+            $svgOverlay = join_paths($input->getArgument('vector'), "$key.svg");
             if (!file_exists($svgOverlay)) {
                 $io->caution("No SVG found for key '$key'");
                 $error++;

@@ -36,7 +36,7 @@ class CreateSvg extends FileJob {
         ];
         // $data is used into the template below :
         ob_start();
-        include __DIR__ . '/title.svg';
+        include join_paths(__DIR__, 'title.svg');
         $result = ob_get_clean();
         file_put_contents("$folder/$key.svg", $result);
 

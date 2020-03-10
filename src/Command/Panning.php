@@ -36,7 +36,7 @@ class Panning extends Command {
         $output->writeln("Panning generator");
         $imageFolder = $input->getArgument('folder');
         $timecode = new AudacityMarker($input->getArgument('marker'));
-        $config = new PanningCfg($imageFolder . '/' . $input->getOption('config'));
+        $config = new PanningCfg(join_paths($imageFolder, $input->getOption('config')));
 
         $search = new Finder();
         $iter = $search->in($imageFolder)->name('/\.(jpg|png)$/')->files();
