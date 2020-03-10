@@ -41,7 +41,8 @@ interface Media {
 
 
     /**
-     * The source of this Media. Useful for metadata fallback
+     * The source of this Media. Useful for metadata fallback, it may prevent the lost of metadata during FileJob::process()
+     * @todo Needs further thinking
      */
     //public function getSource() : Media;
 }

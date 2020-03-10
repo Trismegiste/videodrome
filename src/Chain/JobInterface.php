@@ -5,7 +5,7 @@ namespace Trismegiste\Videodrome\Chain;
 use Psr\Log\LoggerInterface;
 
 /**
- * Job contract : Transforms a set of Media into another set of Media
+ * Job contract : Transforms a Media (File or List) into another Media (File or List)
  */
 interface JobInterface {
 
@@ -15,7 +15,7 @@ interface JobInterface {
     public function execute(Media $filename): Media;
 
     /**
-     * Sets the logger for this object and its children
+     * Sets the logger for this object and all of its children Job
      * @param LoggerInterface $log
      */
     public function setLogger(LoggerInterface $log);
