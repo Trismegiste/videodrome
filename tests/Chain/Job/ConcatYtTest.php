@@ -26,7 +26,7 @@ class ConcatYtTest extends TestCase {
         $this->assertTrue($ret->isLeaf());
         $this->assertFileExists((string) $ret);
         $info = new Ffprobe($ret);
-        $this->assertLessThan(0.1, abs($info->getDuration() - 6));  // rounding frame
+        $this->assertEquals(6, $info->getDuration(), 'Video duration', 0.1);
         $ret->unlink();
     }
 

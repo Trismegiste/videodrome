@@ -26,7 +26,7 @@ class EditingConcatYtTest extends TestCase {
 
         $this->assertFileExists($output);
         $info = new Ffprobe($output);
-        $this->assertLessThan(0.1, abs($info->getDuration() - 6));  // rounding frame
+        $this->assertEquals(6, $info->getDuration(), 'Video duration', 0.1);
         unlink($output);
     }
 
