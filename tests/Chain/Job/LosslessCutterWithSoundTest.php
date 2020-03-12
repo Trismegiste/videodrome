@@ -28,6 +28,7 @@ class LosslessCutterWithSoundTest extends TestCase {
         $this->assertEquals(200, $info->getHeight());
         $this->assertEquals(300, $info->getWidth());
         $this->assertEquals(3, $info->getDuration());
+        $ret->unlink();
     }
 
 }

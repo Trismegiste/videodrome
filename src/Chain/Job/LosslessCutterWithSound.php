@@ -30,17 +30,19 @@ class LosslessCutterWithSound extends FileJob {
     protected function cut(string $video, int $width, int $height, float $start, float $duration, float $fps, string $output): string {
         $this->logger->info("Cutting $video");
 
+        $cmd = ["ffmpeg", '-y', '-i', $video];
+        if (0 !== $duration) {
+            array_push($cmd, '-ss', $start, '-t', $duration);
+        }
+
         $info = new Ffprobe($video);
-        $resizeFilter = "";
         if (($height !== $info->getHeight()) || ($width !== $info->getWidth())) {
-            $resizeFilter = "-vf scale={$width}x$height:flags=lanczos ";
+            array_push($cmd, '-vf', "scale={$width}x$height:flags=lanczos");
         }
 
         $output .= ".avi";
-        $ffmpeg = new Process("ffmpeg -y -i $video -ss $start -t $duration " .
-                $resizeFilter .
-                "-r $fps " .
-                "-c:v libx264 -preset ultrafast -crf 0 -c:a pcm_s16le $output");
+        array_push($cmd, '-c:v', 'libx264', '-preset', 'ultrafast', '-crf', 0, '-c:a', 'pcm_s16le', $output);
+        $ffmpeg = new Process($cmd);
         $ffmpeg->mustRun();
 
         return $output;
