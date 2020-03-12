@@ -1,21 +1,26 @@
-[{
+[
+    {
         "video": "tests\/fixtures\/cutter.mkv",
         "start": 0,
         "duration": 0,
         "label": "cutter.mkv"
-    }, {
+    },
+    {
         "video": "tests\/fixtures\/red-extended-over.avi",
         "start": 0,
         "duration": 0,
         "label": "red-extended-over.avi"
-    }, {
+    },
+    {
         "video": "tests\/fixtures\/blue-cut-over.avi",
         "start": 0,
         "duration": 0,
         "label": "blue-cut-over.avi"
-    }, {
+    }, 
+    {
         "video": "tests\/fixtures\/trailer\/vid\/yellow.mp4",
         "start": 0,
         "duration": 0,
         "label": "yellow.mp4"
-    }]
+    }
+]

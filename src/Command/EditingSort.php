@@ -3,14 +3,12 @@
 namespace Trismegiste\Videodrome\Command;
 
 use RuntimeException;
+use stdClass;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Finder\Finder;
-use Symfony\Component\Finder\SplFileInfo;
-use Symfony\Component\Process\Process;
 
 /**
  * This commands sorts video in a config file for editing
@@ -34,7 +32,7 @@ class EditingSort extends Command {
 
         do {
             // print table
-            $io->table(['#', 'label', 'path', 'start', 'duration'], array_map(function($k, \stdClass $param) {
+            $io->table(['#', 'label', 'path', 'start', 'duration'], array_map(function($k, stdClass $param) {
                         return [$k, $param->label, $param->video, $param->start, $param->duration];
                     }, array_keys($config), $config));
 

@@ -41,7 +41,7 @@ class EditingConfig extends Command {
         }
 
         $search = new Finder();
-        $search->in($input->getArgument('video'))->files()->name('/\.(avi|mp4|webm|3gp|mkv)$/')->sortByName();
+        $search->in($input->getArgument('video'))->depth('< 1')->files()->name('/\.(avi|mp4|webm|3gp|mkv)$/')->sortByName();
         $video = array_values(iterator_to_array($search));
 
         do {
