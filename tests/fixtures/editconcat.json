@@ -1,0 +1,20 @@
+[
+    {
+        "video": "tests\/fixtures\/cutter.mkv",
+        "start": 1,
+        "duration": 2,
+        "label": "cutter.mkv"
+    },
+    {
+        "video": "tests\/fixtures\/cutter.mkv",
+        "start": 2,
+        "duration": 2,
+        "label": "cutter.mkv"
+    },
+    {
+        "video": "tests\/fixtures\/cutter.mkv",
+        "start": 3,
+        "duration": 2,
+        "label": "cutter.mkv"
+    }
+]
