@@ -27,6 +27,8 @@ class EditingSort extends Command {
 
     protected function execute(InputInterface $input, OutputInterface $output) {
         $io = new SymfonyStyle($input, $output);
+        $io->title('Re-ordering of video in a config files for video editing');
+
         $jsonFile = $input->getArgument('config');
         $config = json_decode(file_get_contents($jsonFile));
 

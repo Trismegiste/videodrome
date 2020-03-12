@@ -3,7 +3,6 @@
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
-use Trismegiste\Videodrome\Command\EditingConfig;
 use Trismegiste\Videodrome\Command\EditingSort;
 
 class EditingSortTest extends TestCase {

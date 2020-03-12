@@ -33,6 +33,8 @@ class EditingConfig extends Command {
     protected function execute(InputInterface $input, OutputInterface $output) {
         $this->headless = $input->getOption('headless');
         $io = new SymfonyStyle($input, $output);
+        $io->title('Creates or modifies a config files for video editing');
+
         $jsonFile = $input->getArgument('config');
         if (file_exists($jsonFile)) {
             $config = json_decode(file_get_contents($jsonFile), true);
