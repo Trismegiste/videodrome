@@ -8,7 +8,7 @@ use Trismegiste\Videodrome\Command\EditingConfig;
 class EditingConfigTest extends TestCase {
 
     public function testExecute() {
-        unlink(EditingConfig::defaultCfgName);
+        $this->assertFileNotExists(EditingConfig::defaultCfgName);
         $application = new Application();
         $application->setAutoExit(false);
         $command = new EditingConfig();
