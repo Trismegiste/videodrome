@@ -21,5 +21,6 @@ $application->add(new \Trismegiste\Videodrome\Command\TrailerCheck());
 $application->add(new \Trismegiste\Videodrome\Command\ConferenceGif());
 $application->add(new \Trismegiste\Videodrome\Command\TrailerDummy());
 $application->add(new \Trismegiste\Videodrome\Command\EditingConfig());
+$application->add(new \Trismegiste\Videodrome\Command\EditingSort());
 
 $application->run();
