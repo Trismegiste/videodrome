@@ -29,7 +29,7 @@ class LosslessCutterWithSound extends FileJob {
         $this->logger->info("Cutting $video");
 
         $cmd = ["ffmpeg", '-y', '-i', $video];
-        if (0 !== $duration) {
+        if (0 != $duration) {
             array_push($cmd, '-ss', $start, '-t', $duration);
         }
 
@@ -39,7 +39,7 @@ class LosslessCutterWithSound extends FileJob {
         }
 
         $output .= ".avi";
-        array_push($cmd, '-r', $fps, '-c:v', 'libx264', '-preset', 'ultrafast', '-crf', 0, '-c:a', 'pcm_s16le', $output);
+        array_push($cmd, '-r', $fps, '-c:v', 'libx264', '-preset', 'ultrafast', '-crf', 0, '-pix_fmt', 'yuv444p', '-c:a', 'pcm_s16le', $output);
         $ffmpeg = new Process($cmd);
         $ffmpeg->mustRun();
 
