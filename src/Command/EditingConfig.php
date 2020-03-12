@@ -18,16 +18,20 @@ use Symfony\Component\Process\Process;
 class EditingConfig extends Command {
 
     const timecodePattern = "/^(((?'hour'\\d{1,2}):)?((?'minute'\\d{1,2}):))?(?'second'\\d{1,2}(\\.\\d+)?)$/";
+    const defaultCfgName = "editing.json";
 
     protected static $defaultName = 'edit:config';
+    protected $headless = false;
 
     protected function configure() {
         $this->setDescription("Generates a config file for cut, crop and concat a set of movies")
                 ->addArgument('video', InputArgument::REQUIRED, 'A folder full of movies')
-                ->addArgument('config', InputArgument::OPTIONAL, 'A json config file', "editing.json");
+                ->addArgument('config', InputArgument::OPTIONAL, 'A json config file', self::defaultCfgName)
+                ->addOption('headless', 'x', \Symfony\Component\Console\Input\InputOption::VALUE_NONE, 'No player is lauch - Text mode only');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output) {
+        $this->headless = $input->getOption('headless');
         $io = new SymfonyStyle($input, $output);
         $jsonFile = $input->getArgument('config');
         if (file_exists($jsonFile)) {
@@ -82,11 +86,13 @@ class EditingConfig extends Command {
     }
 
     private function launchPlayer(string $path, float $beginAt = 0) {
-        $ffplay = new Process('ffplay -vf '
-                . '"drawtext=text=\'%{pts\:hms}\':box=1:x=(w-tw)/2:y=h-(2*lh):fontsize=42"'
-                . " -ss $beginAt \"$path\"");
-        $ffplay->setTimeout(null);
-        $ffplay->mustRun();
+        if (!$this->headless) {
+            $ffplay = new Process('ffplay -vf '
+                    . '"drawtext=text=\'%{pts\:hms}\':box=1:x=(w-tw)/2:y=h-(2*lh):fontsize=42"'
+                    . " -ss $beginAt \"$path\"");
+            $ffplay->setTimeout(null);
+            $ffplay->mustRun();
+        }
     }
 
 }
