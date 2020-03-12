@@ -11,8 +11,6 @@ use Trismegiste\Videodrome\Util\Ffprobe;
 
 class LosslessCutterWithSound extends FileJob {
 
-    const framerate = 30;
-
     protected function process(Media $filename): Media {
         $cutted = new MediaList([], $filename->getMetadataSet());
         foreach ($filename as $video) {
