@@ -2,7 +2,7 @@
 
 namespace Trismegiste\Videodrome\Command;
 
-use InvalidArgumentException;
+use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -16,6 +16,8 @@ use Symfony\Component\Process\Process;
  * This commands generates a config file for cut & crop a set of movies
  */
 class EditingConfig extends Command {
+
+    const timecodePattern = "/^(((?'hour'\\d{1,2}):)?((?'minute'\\d{1,2}):))?(?'second'\\d{1,2}(\\.\\d+)?)$/";
 
     protected static $defaultName = 'edit:config';
 
@@ -36,22 +38,38 @@ class EditingConfig extends Command {
 
         $search = new Finder();
         $search->in($input->getArgument('video'))->files()->name('/\.(avi|mp4|webm|3gp|mkv)$/')->sortByName();
-        $video = [];
-        foreach ($search as $item) {
-            $video[] = $item;
-        }
+        $video = array_values(iterator_to_array($search));
 
         do {
+            // print table
             $io->table(['#', 'name'], array_map(function($k, SplFileInfo $v) {
                         return [$k, $v->getBasename()];
                     }, array_keys($video), $video));
 
-            $choice = $io->ask("You choice", 'q');
+            $choice = $io->ask("You choice", 'q', function($a) use ($video) {
+                if (($a === 'q') || (array_key_exists($a, $video))) {
+                    return $a;
+                }
+                throw new RuntimeException('Bad choice');
+            });
+
             if ($choice !== 'q') {
+                // a valid nuber a video
+                $validator = function($timecode): float {
+                    $result = [];
+                    if (!preg_match(self::timecodePattern, $timecode, $result)) {
+                        throw new RuntimeException("Unknown format");
+                    }
+
+                    return $result['hour'] * 3600 + $result['minute'] * 60 + $result['second'];
+                };
+
                 $this->launchPlayer($video[$choice]);
-                $begin = $this->convertToSeconds($io->ask("Start time", 0));
+                $begin = $io->ask("Start time", 0, $validator);
+
                 $this->launchPlayer($video[$choice], $begin);
-                $delta = $this->convertToSeconds($io->ask("End time")) - $begin;
+                $delta = $io->ask("End time", null, $validator) - $begin;
+
                 $config[] = [
                     'video' => (string) $video[$choice],
                     'start' => $begin,
@@ -65,24 +83,10 @@ class EditingConfig extends Command {
 
     private function launchPlayer(string $path, float $beginAt = 0) {
         $ffplay = new Process('ffplay -vf '
-                . '"drawtext=text=\'%{pts\:hms}\':box=1:x=(w-tw)/2:y=h-(2*lh):fontsize=42:fontfile=/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"'
+                . '"drawtext=text=\'%{pts\:hms}\':box=1:x=(w-tw)/2:y=h-(2*lh):fontsize=42"'
                 . " -ss $beginAt \"$path\"");
+        $ffplay->setTimeout(null);
         $ffplay->mustRun();
-    }
-
-    private function convertToSeconds(string $input): float {
-        $timecode = explode(':', $input);
-        switch (count($timecode)) {
-            case 1: $timing = $timecode[0];
-                break;
-            case 2 : $timing = 60 * $timecode[0] + $timecode[1];
-                break;
-            case 3 : $timing = 3600 * $timecode[0] + 60 * $timecode[1] + $timecode[2];
-                break;
-            default : throw new InvalidArgumentException("Unknown format");
-        }
-
-        return $timing;
     }
 
 }
