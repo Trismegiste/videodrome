@@ -55,7 +55,7 @@ class TrailerCheck extends Trailer {
 
         foreach ($marker as $key => $entry) {
             $search = new Finder();
-            $iter = $search->in([$input->getArgument('picture'), $input->getArgument('video')])->name("/^$key\./")->files()->getIterator();
+            $iter = $search->in([$input->getArgument('picture'), $input->getArgument('video')])->name("/^$key\./")->files();
             // asset for key
             if (count($iter) !== 1) {
                 $io->caution("No picture of movie clip for '$key'");
