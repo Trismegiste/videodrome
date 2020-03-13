@@ -13,8 +13,8 @@ class MediaFileTest extends TestCase {
         $this->assertEquals(['meta' => 555], $sut->getMetadataSet());
     }
 
-    /** @expectedException OutOfBoundsException */
     public function testUnknownMetadata() {
+        $this->expectException(OutOfBoundsException::class);
         $sut = new MediaFile(__FILE__);
         $sut->getMeta('width');
     }
@@ -24,8 +24,8 @@ class MediaFileTest extends TestCase {
         $this->assertTrue($sut->isLeaf());
     }
 
-    /** @expectedException \RuntimeException */
     public function testNonExistingFileException() {
+        $this->expectException(RuntimeException::class);
         new MediaFile('zogzog');
     }
 
