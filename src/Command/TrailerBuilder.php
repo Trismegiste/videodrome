@@ -74,7 +74,7 @@ class TrailerBuilder extends Trailer {
         }
 
         if (count($media) !== count($marker->getIterator())) {
-            throw new RuntimeException("Marker has " . count($marker) . " clips and " . count($media) . " was found");
+            throw new RuntimeException("Marker has " . count($marker->getIterator()) . " clips and " . count($media) . " was found");
         }
 
         $io->title("Build a trailer");

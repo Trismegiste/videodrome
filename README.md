@@ -17,6 +17,12 @@ flo@spin5:~$ git clone https://github.com/Trismegiste/videodrome
 flo@spin5:~$ composer.phar install
 ```
 
+## Tests & code coverage
+```
+flo@spin5:~$ phpdbg -qrr ./vendor/bin/phpunit
+```
+All code coverage generated html goes into the ./doc folder.
+
 ## Documentation
 
 ### List of available commands
