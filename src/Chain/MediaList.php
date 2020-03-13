@@ -7,8 +7,9 @@ namespace Trismegiste\Videodrome\Chain;
  */
 class MediaList implements \ArrayAccess, \Countable, \IteratorAggregate, Media {
 
+    use MetaImpl;
+
     protected $list = [];
-    protected $metadata;
 
     public function __construct(array $group = [], array $metadata = []) {
         foreach ($group as $key => $fch) {
@@ -55,24 +56,6 @@ class MediaList implements \ArrayAccess, \Countable, \IteratorAggregate, Media {
     /** @see \IteratorAggregate */
     public function getIterator(): \Traversable {
         return new \ArrayIterator($this->list);
-    }
-
-    public function getMeta(string $key) {
-        if (!array_key_exists($key, $this->metadata)) {
-            throw new \OutOfBoundsException("Unknown metadata '$key'");
-        }
-
-        return $this->metadata[$key];
-    }
-
-    /** @see Media */
-    public function hasMeta(string $key): bool {
-        return array_key_exists($key, $this->metadata);
-    }
-
-    /** @see Media */
-    public function getMetadataSet(): array {
-        return $this->metadata;
     }
 
     /** @see Media */

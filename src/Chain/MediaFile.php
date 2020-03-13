@@ -7,7 +7,7 @@ namespace Trismegiste\Videodrome\Chain;
  */
 class MediaFile extends \SplFileInfo implements Media {
 
-    protected $metadata;
+    use MetaImpl;
 
     public function __construct(string $file_name, array $meta = []) {
         if (!file_exists($file_name)) {
@@ -49,25 +49,6 @@ class MediaFile extends \SplFileInfo implements Media {
      */
     public function getFilenameNoExtension(): string {
         return $this->getBasename('.' . $this->getExtension());
-    }
-
-    /** @see Media */
-    public function getMeta(string $key) {
-        if (!array_key_exists($key, $this->metadata)) {
-            throw new \OutOfBoundsException("Unknown key '$key'");
-        }
-
-        return $this->metadata[$key];
-    }
-
-    /** @see Media */
-    public function getMetadataSet(): array {
-        return $this->metadata;
-    }
-
-    /** @see Media */
-    public function hasMeta(string $key): bool {
-        return array_key_exists($key, $this->metadata);
     }
 
     /** @see Media */
