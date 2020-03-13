@@ -61,7 +61,7 @@ class MediaListTest extends TestCase {
     }
 
     /** @dataProvider simpleFixture 
-     * @expectedException OutOfBoundsException */
+     * @expectedException \OutOfBoundsException */
     public function testUnknownMetadata($file) {
         $sut = new MediaList([$file]);
         $sut->getMeta('width');
@@ -77,6 +77,11 @@ class MediaListTest extends TestCase {
     /** @expectedException \UnexpectedValueException */
     public function testCheckType() {
         new MediaList([new stdClass()]);
+    }
+
+    public function testLeaf() {
+        $sut = new MediaList();
+        $this->assertFalse($sut->isLeaf());
     }
 
 }

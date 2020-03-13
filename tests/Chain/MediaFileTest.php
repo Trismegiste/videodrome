@@ -7,7 +7,21 @@ class MediaFileTest extends TestCase {
 
     public function testMeta() {
         $sut = new MediaFile(__FILE__, ['meta' => 555]);
+        $this->assertTrue($sut->hasMeta('meta'));
+        $this->assertFalse($sut->hasMeta('yolo'));
         $this->assertEquals(555, $sut->getMeta('meta'));
+        $this->assertEquals(['meta' => 555], $sut->getMetadataSet());
+    }
+
+    /** @expectedException OutOfBoundsException */
+    public function testUnknownMetadata() {
+        $sut = new MediaFile(__FILE__);
+        $sut->getMeta('width');
+    }
+
+    public function testLeaf() {
+        $sut = new MediaFile(__FILE__);
+        $this->assertTrue($sut->isLeaf());
     }
 
     /** @expectedException \RuntimeException */
@@ -36,6 +50,14 @@ class MediaFileTest extends TestCase {
         $sut = new MediaFile(join_paths(__DIR__, '../fixtures/picture1.jpg'));
         $this->assertFalse($sut->isVideo());
         $this->assertTrue($sut->isPicture());
+    }
+
+    public function testDelete() {
+        shell_exec("touch tmp");
+        $sut = new MediaFile('tmp');
+        $this->assertFileExists('tmp');
+        $sut->unlink();
+        $this->assertFileNotExists('tmp');
     }
 
 }
