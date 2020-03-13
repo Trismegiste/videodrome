@@ -1,8 +1,11 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
+use Psr\Log\NullLogger;
 use Trismegiste\Videodrome\Chain\AggregateJob;
 use Trismegiste\Videodrome\Chain\FileJob;
+use Trismegiste\Videodrome\Chain\JobException;
+use Trismegiste\Videodrome\Chain\JobInterface;
 use Trismegiste\Videodrome\Chain\MediaFile;
 use Trismegiste\Videodrome\Chain\MediaList;
 
@@ -38,6 +41,29 @@ class AggregateJobTest extends TestCase {
         // clean
         $clean = new MediaList($media);
         $clean->unlink();
+    }
+
+    public function testEmptyList() {
+        $this->expectException(JobException::class);
+        new AggregateJob([]);
+    }
+
+    public function testBadObject() {
+        $this->expectException(JobException::class);
+        new AggregateJob([new stdClass()]);
+    }
+
+    public function testPropagateLogger() {
+        $delegate1 = $this->getMockForAbstractClass(JobInterface::class);
+        $delegate1->expects($this->once())
+                ->method('setLogger');
+
+        $delegate2 = $this->getMockForAbstractClass(JobInterface::class);
+        $delegate2->expects($this->once())
+                ->method('setLogger');
+
+        $sut = new AggregateJob([$delegate1, $delegate2]);
+        $sut->setLogger(new NullLogger());
     }
 
 }

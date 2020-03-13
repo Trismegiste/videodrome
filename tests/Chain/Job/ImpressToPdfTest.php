@@ -2,7 +2,9 @@
 
 use PHPUnit\Framework\TestCase;
 use Trismegiste\Videodrome\Chain\Job\ImpressToPdf;
+use Trismegiste\Videodrome\Chain\JobException;
 use Trismegiste\Videodrome\Chain\MediaFile;
+use Trismegiste\Videodrome\Chain\MediaList;
 
 class ImpressToPdfTest extends TestCase {
 
@@ -13,6 +15,12 @@ class ImpressToPdfTest extends TestCase {
         $this->assertEquals('fixtures1.pdf', (string) $ret);
         $this->assertFileExists((string) $ret);
         $ret->unlink();
+    }
+
+    public function testFailNotLeaf() {
+        $this->expectException(JobException::class);
+        $sut = new ImpressToPdf();
+        $ret = $sut->execute(new MediaList());
     }
 
 }

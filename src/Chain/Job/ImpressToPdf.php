@@ -25,7 +25,7 @@ class ImpressToPdf extends FileJob {
         try {
             $generated = new MediaFile($pdf, $impress->getMetadataSet());
         } catch (RuntimeException $ex) {
-            throw new JobException("ImpressToPdf : creation of $pdf failed");
+            throw new JobException("ImpressToPdf : creation of $pdf failed. Perhaps LibreOffice is currently running ?");
         }
 
         $this->logger->info("$pdf generated");

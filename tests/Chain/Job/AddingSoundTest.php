@@ -6,7 +6,9 @@ use Trismegiste\Videodrome\Chain\Job\ImpressToPdf;
 use Trismegiste\Videodrome\Chain\Job\PdfToPng;
 use Trismegiste\Videodrome\Chain\Job\PngToVideo;
 use Trismegiste\Videodrome\Chain\Job\VideoConcat;
+use Trismegiste\Videodrome\Chain\JobException;
 use Trismegiste\Videodrome\Chain\MediaFile;
+use Trismegiste\Videodrome\Chain\MediaList;
 
 class AddingSoundTest extends TestCase {
 
@@ -15,8 +17,8 @@ class AddingSoundTest extends TestCase {
         $vid = $sut->execute(new MediaFile(__DIR__ . '/../../fixtures/fixtures1.odp', [
             'duration' => [1, 1, 1],
             'sound' => __DIR__ . '/../../fixtures/sound1.ogg',
-            'width' => 1920,
-            'height' => 1080
+            'width' => 192,
+            'height' => 108
         ]));
 
         $this->assertTrue($vid->isLeaf());
@@ -25,6 +27,18 @@ class AddingSoundTest extends TestCase {
         $this->assertTrue($vid->isVideo());
         // clean
         $vid->unlink();
+    }
+
+    public function testFailNotLeaf() {
+        $this->expectException(JobException::class);
+        $sut = new AddingSound();
+        $sut->execute(new MediaList());
+    }
+
+    public function testMissingSound() {
+        $this->expectException(JobException::class);
+        $sut = new AddingSound();
+        $sut->execute(new MediaFile(join_paths(__DIR__, '../../fixtures/cutter.mkv'), ['sound' => 'missing.wav']));
     }
 
 }

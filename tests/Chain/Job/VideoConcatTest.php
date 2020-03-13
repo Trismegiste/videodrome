@@ -5,6 +5,7 @@ use Trismegiste\Videodrome\Chain\Job\ImpressToPdf;
 use Trismegiste\Videodrome\Chain\Job\PdfToPng;
 use Trismegiste\Videodrome\Chain\Job\PngToVideo;
 use Trismegiste\Videodrome\Chain\Job\VideoConcat;
+use Trismegiste\Videodrome\Chain\JobException;
 use Trismegiste\Videodrome\Chain\MediaFile;
 use Trismegiste\Videodrome\Chain\MediaList;
 
@@ -14,17 +15,15 @@ class VideoConcatTest extends TestCase {
         $sut = new VideoConcat(new PngToVideo(new PdfToPng(new ImpressToPdf())));
         $vid = $sut->execute(new MediaFile(__DIR__ . '/../../fixtures/fixtures1.odp', [
             'duration' => [1, 1, 1],
-            'width' => 1920,
-            'height' => 1080
+            'width' => 192,
+            'height' => 108
         ]));
 
         $this->assertTrue($vid->isLeaf());
         $this->assertEquals('fixtures1-0-compil.mp4', (string) $vid);
         $this->assertFileExists((string) $vid);
         $this->assertTrue($vid->isVideo());
-        $this->assertEquals(1920, $vid->getMeta('width'));
-
-        //    $this->assertEquals(3, $vid->getData('duration'));
+        $this->assertEquals(192, $vid->getMeta('width'));
         // clean
         $vid->unlink();
     }
@@ -45,6 +44,12 @@ class VideoConcatTest extends TestCase {
         $this->assertTrue($vid->isVideo());
         // clean
         $vid->unlink();
+    }
+
+    public function testEmptyList() {
+        $this->expectException(JobException::class);
+        $sut = new VideoConcat();
+        $sut->execute(new MediaList([]));
     }
 
 }

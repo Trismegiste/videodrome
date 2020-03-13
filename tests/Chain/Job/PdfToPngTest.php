@@ -3,7 +3,9 @@
 use PHPUnit\Framework\TestCase;
 use Trismegiste\Videodrome\Chain\Job\ImpressToPdf;
 use Trismegiste\Videodrome\Chain\Job\PdfToPng;
+use Trismegiste\Videodrome\Chain\JobException;
 use Trismegiste\Videodrome\Chain\MediaFile;
+use Trismegiste\Videodrome\Chain\MediaList;
 
 class PdfToPngTest extends TestCase {
 
@@ -25,6 +27,12 @@ class PdfToPngTest extends TestCase {
         }
         // clean
         $ret->unlink();
+    }
+
+    public function testFailNotLeaf() {
+        $this->expectException(JobException::class);
+        $sut = new PdfToPng();
+        $sut->execute(new MediaList());
     }
 
 }
