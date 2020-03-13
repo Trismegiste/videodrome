@@ -24,8 +24,8 @@ class ConcatYt extends FileJob {
             array_push($cmd, '-i', $entry);
         }
 
-        array_push($cmd, '-filter_complex', '"concat=n=' . count($filename) . ':v=1:a=1 [v] [a]"'
-                , '-map', '"[v]"', '-map', '"[a]"'
+        array_push($cmd, '-filter_complex', 'concat=n=' . count($filename) . ':v=1:a=1 [v] [a]'
+                , '-map', '[v]', '-map', '[a]'
                 , '-codec:v', 'libx264', '-crf', 20, '-pix_fmt', 'yuv420p'
                 , '-bf', 2, '-flags', '+cgop'
                 , '-codec:a', 'aac', '-strict', -2, '-b:a', '384k', '-ar', 48000
@@ -33,7 +33,7 @@ class ConcatYt extends FileJob {
                 , $output);
 
         $this->logger->info('Concat video');
-        $cmd = implode(' ', $cmd); // FIX : escaping in Process seems to bug (hint: the '=' character ?)
+     //   $cmd = implode(' ', $cmd); // FIX : escaping in Process seems to bug (hint: the '=' character ?)
         $ffmpeg = new Process($cmd);
         $ffmpeg->setTimeout(null);
         $ffmpeg->mustRun();

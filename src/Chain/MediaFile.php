@@ -30,7 +30,17 @@ class MediaFile extends \SplFileInfo implements Media {
      * @return bool
      */
     public function isVideo(): bool {
-        return preg_match('/^video\//', mime_content_type((string) $this));
+        $mime = mime_content_type((string) $this);
+
+        if (preg_match('/^video\//', $mime)) {
+            return true;
+        }
+        // this is a patch for non-specified mimetypes in some linux :
+        if (($mime === 'application/octet-stream') && in_array($this->getExtension(), ['3gp'])) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
