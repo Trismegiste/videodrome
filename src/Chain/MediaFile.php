@@ -22,7 +22,7 @@ class MediaFile extends \SplFileInfo implements Media {
      * @return bool
      */
     public function isPicture(): bool {
-        return preg_match('/^image\//', mime_content_type((string) $this));
+        return preg_match('#^image/.+#', mime_content_type((string) $this));
     }
 
     /**
@@ -32,7 +32,7 @@ class MediaFile extends \SplFileInfo implements Media {
     public function isVideo(): bool {
         $mime = mime_content_type((string) $this);
 
-        if (preg_match('/^video\//', $mime)) {
+        if (preg_match('#^video/.+#', $mime)) {
             return true;
         }
         // this is a patch for non-specified mimetypes in some linux :

@@ -26,4 +26,16 @@ class MediaFileTest extends TestCase {
         $this->assertFalse($sut->isPicture());
     }
 
+    public function testVideoType() {
+        $sut = new MediaFile(join_paths(__DIR__, '../fixtures/cutter.mkv'));
+        $this->assertTrue($sut->isVideo());
+        $this->assertFalse($sut->isPicture());
+    }
+
+    public function testImageType() {
+        $sut = new MediaFile(join_paths(__DIR__, '../fixtures/picture1.jpg'));
+        $this->assertFalse($sut->isVideo());
+        $this->assertTrue($sut->isPicture());
+    }
+
 }
