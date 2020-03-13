@@ -67,7 +67,7 @@ class EditingConfig extends Command {
                         throw new RuntimeException("Unknown format");
                     }
 
-                    return $result['hour'] * 3600 + $result['minute'] * 60 + $result['second'];
+                    return floatval($result['hour']) * 3600 + floatval($result['minute']) * 60 + floatval($result['second']);
                 };
 
                 $this->launchPlayer($video[$choice]);

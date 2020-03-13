@@ -26,7 +26,7 @@ class ConcatYtTest extends TestCase {
         $this->assertTrue($ret->isLeaf());
         $this->assertFileExists((string) $ret);
         $info = new Ffprobe($ret);
-        $this->assertEquals(6, $info->getDuration(), 'Video duration', 0.1);
+        $this->assertEqualsWithDelta(6, $info->getDuration(), 0.1);
         $ret->unlink();
     }
 
