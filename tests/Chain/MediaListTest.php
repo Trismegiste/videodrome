@@ -38,6 +38,19 @@ class MediaListTest extends TestCase {
     }
 
     /** @dataProvider simpleFixture */
+    public function testSetter($file) {
+        $sut = new MediaList([]);
+        $sut[3] = $file;
+        $this->assertEquals($file, $sut[3]);
+    }
+
+    public function testSetterBadType() {
+        $this->expectException(UnexpectedValueException::class);
+        $sut = new MediaList([]);
+        $sut[] = new stdClass();
+    }
+
+    /** @dataProvider simpleFixture */
     public function testIterator($file) {
         $sut = new MediaList([$file, $file, $file]);
         foreach ($sut as $item) {
@@ -82,6 +95,13 @@ class MediaListTest extends TestCase {
     public function testLeaf() {
         $sut = new MediaList();
         $this->assertFalse($sut->isLeaf());
+    }
+
+    public function testUnlink() {
+        shell_exec('touch tmp');
+        $sut = new MediaList([new MediaFile('tmp')]);
+        $sut->unlink();
+        $this->assertFileNotExists('tmp');
     }
 
 }
