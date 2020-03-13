@@ -9,6 +9,9 @@ use Trismegiste\Videodrome\Chain\MediaFile;
 use Trismegiste\Videodrome\Chain\MediaList;
 use Trismegiste\Videodrome\Util\Ffprobe;
 
+/**
+ * Video croping and encoding in lossless codecs for further editing
+ */
 class LosslessCutterWithSound extends FileJob {
 
     protected function process(Media $filename): Media {

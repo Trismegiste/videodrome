@@ -33,7 +33,6 @@ class ConcatYt extends FileJob {
                 , $output);
 
         $this->logger->info('Concat video');
-     //   $cmd = implode(' ', $cmd); // FIX : escaping in Process seems to bug (hint: the '=' character ?)
         $ffmpeg = new Process($cmd);
         $ffmpeg->setTimeout(null);
         $ffmpeg->mustRun();
