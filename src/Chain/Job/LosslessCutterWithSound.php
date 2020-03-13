@@ -44,6 +44,7 @@ class LosslessCutterWithSound extends FileJob {
         $output .= ".avi";
         array_push($cmd, '-r', $fps, '-c:v', 'libx264', '-preset', 'ultrafast', '-crf', 0, '-pix_fmt', 'yuv444p', '-c:a', 'pcm_s16le', $output);
         $ffmpeg = new Process($cmd);
+        $ffmpeg->setTimeout(null);
         $ffmpeg->mustRun();
 
         return $output;

@@ -90,6 +90,25 @@ Each step of trailer building could be launch separately :
 * Concatenation of a set of clips
 * Muxing a sound into a video
 
+### Editing movie for Youtube
+This commmand is intended to create a movie from various sources and encode it for Youtube format.
+
+```
+flo@spin5:~$ php app.php edit:youtube movie.json
+```
+
+It uses a configuration file in json format containing timecode and duration for each clip. 
+This file could be manually created or with the help of the commands 'edit:config' and 'edit:sort'
+
+### Editing configuration
+This commmand is using 'ffplay' (from ffmpeg) to easily select timecode and duration from a clip. It creates a new entry in a json configuration.
+
+```
+flo@spin5:~$ php app.php edit:config ./myvideo
+```
+
+With the command 'edit:sort', you can re-order the queue in the json configuration file.
+
 ## Internals
 Each command use the same pattern for atomic conversion of one (or many) media file into one (or many) other media file.
 It's loosely based of a Chain of Responsibilities design pattern. You can easily re-use the atomic component to create another movie builder.

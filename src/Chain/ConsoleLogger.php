@@ -7,7 +7,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Logger to Symfony Console
- * Design pattern : Adapter
+ * Design pattern : Bridge
  */
 class ConsoleLogger extends AbstractLogger {
 
