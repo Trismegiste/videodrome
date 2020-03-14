@@ -65,6 +65,8 @@ class EditingSort extends Command {
         if ($choice === 's') {
             file_put_contents($jsonFile, json_encode($config));
         }
+
+        return 0;
     }
 
 }

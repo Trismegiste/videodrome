@@ -20,8 +20,8 @@ class VideoConcat extends FileJob {
         if (count($filename) <= 1) {
             throw new JobException("VideoConcat : Not enough video to concat");
         }
-        
-        $tmpArray= iterator_to_array($filename);
+
+        $tmpArray = iterator_to_array($filename);
         // sorting ?
         if ($tmpArray[0]->hasMeta('start')) {
             usort($tmpArray, function(Media $a, Media $b) {
@@ -30,7 +30,11 @@ class VideoConcat extends FileJob {
         }
         $output = $tmpArray[0]->getFilenameNoExtension() . '-compil.mp4';
 
-        $ffmpeg = new Process('ffmpeg -y -i "concat:' . implode('|', $tmpArray) . '" ' . $output);
+        $ffmpeg = new Process([
+            'ffmpeg', '-y',
+            '-i', 'concat:' . implode('|', $tmpArray),
+            $output
+        ]);
         $ffmpeg->setTimeout(null);
         $ffmpeg->run();
 

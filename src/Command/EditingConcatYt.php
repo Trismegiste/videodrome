@@ -51,6 +51,8 @@ class EditingConcatYt extends Command {
         $cor = new ConcatYt(new LosslessCutterWithSound());
         $cor->setLogger(new ConsoleLogger($output));
         $cor->execute($media);
+
+        return 0;
     }
 
 }

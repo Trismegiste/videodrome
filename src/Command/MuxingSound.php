@@ -31,6 +31,8 @@ class MuxingSound extends Command {
         $cor = new AddingSound();
         $cor->setLogger(new ConsoleLogger($output));
         $cor->execute(new MediaFile($video, ['sound' => $sound]));
+
+        return 0;
     }
 
 }

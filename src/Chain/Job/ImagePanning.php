@@ -35,7 +35,12 @@ class ImagePanning extends FileJob {
         $output = pathinfo($picture, PATHINFO_FILENAME) . '.avi';
 
         // creating the canvas
-        $imagick = new Process("convert -size {$vidWidth}x$vidHeight canvas:black " . $this->blankCanvas);
+        $imagick = new Process([
+            'convert',
+            '-size', "{$vidWidth}x$vidHeight",
+            "canvas:black",
+            $this->blankCanvas
+        ]);
         $imagick->mustRun();
 
         // Animating the black canvas
@@ -52,7 +57,13 @@ class ImagePanning extends FileJob {
         unlink($this->blankCanvas);
 
         $equation = $this->getEquation($picture, $vidWidth, $vidHeight, $duration, $dir);
-        $ffmpeg = new Process("ffmpeg -y -i {$this->blankVideo} -i $picture -filter_complex \"[0:v][1:v]overlay=$equation:enable='between(t,0,$duration)'\" -c:v huffyuv $output");
+        $ffmpeg = new Process(['ffmpeg', '-y',
+            '-i', $this->blankVideo,
+            '-i', $picture,
+            '-filter_complex', "[0:v][1:v]overlay=$equation:enable='between(t,0,$duration)'",
+            '-c:v', 'huffyuv',
+            $output
+        ]);
         $ffmpeg->mustRun();
         unlink($this->blankVideo);
 

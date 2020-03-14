@@ -59,6 +59,8 @@ class Panning extends Command {
         $cor = new ImagePanning(new ImageExtender());
         $cor->setLogger(new ConsoleLogger($output));
         $cor->execute($listing);
+
+        return 0;
     }
 
 }

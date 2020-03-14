@@ -45,7 +45,14 @@ class SvgOverlay extends FileJob {
     protected function overlay(string $png, string $video): string {
         $output = pathinfo($video, PATHINFO_FILENAME) . '-over.avi';
         $this->logger->info("Generating $output");
-        $ffmpeg = new Process('ffmpeg -y -i ' . $video . ' -i ' . $png . ' -filter_complex "[0:v][1:v]overlay" -c:v huffyuv ' . $output);
+        $ffmpeg = new Process(['ffmpeg', '-y',
+            '-i', $video,
+            '-i', $png,
+            '-filter_complex',
+            '[0:v][1:v]overlay',
+            '-c:v', 'huffyuv',
+            $output
+        ]);
         $ffmpeg->mustRun();
 
         if (!file_exists($output)) {

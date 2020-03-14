@@ -58,6 +58,8 @@ class CutterResize extends Command {
         $cor = new Cutter();
         $cor->setLogger(new ConsoleLogger($output));
         $cor->execute($listing);
+
+        return 0;
     }
 
 }

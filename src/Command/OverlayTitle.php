@@ -51,6 +51,8 @@ class OverlayTitle extends Command {
         $cor = new SvgOverlay();
         $cor->setLogger(new ConsoleLogger($output));
         $cor->execute($listing);
+
+        return 0;
     }
 
 }

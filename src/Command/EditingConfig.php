@@ -85,6 +85,8 @@ class EditingConfig extends Command {
                 file_put_contents($jsonFile, json_encode($config));
             }
         } while ($choice !== 'q');
+
+        return 0;
     }
 
     private function launchPlayer(string $path, float $beginAt = 0) {

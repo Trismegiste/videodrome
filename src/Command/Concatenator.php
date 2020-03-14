@@ -50,6 +50,8 @@ class Concatenator extends Command {
         $cor = new VideoConcat();
         $cor->setLogger(new ConsoleLogger($output));
         $cor->execute($concat);
+
+        return 0;
     }
 
 }

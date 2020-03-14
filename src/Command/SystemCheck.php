@@ -35,6 +35,8 @@ class SystemCheck extends Command {
             $check->run();
             $output->writeln($check->isSuccessful() ? "OK" : "FAIL");
         }
+        
+        return 0;
     }
 
 }

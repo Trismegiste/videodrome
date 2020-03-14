@@ -19,7 +19,11 @@ class AnimatedGif extends FileJob {
         $output = "generated.gif";
 
         foreach ($filename as $idx => $picture) {
-            $magick = new Process("convert {$picture} tmp-{$idx}.png");
+            $magick = new Process([
+                'convert',
+                $picture,
+                "tmp-{$idx}.png"
+            ]);
             $magick->mustRun();
         }
 
