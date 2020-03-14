@@ -91,9 +91,11 @@ class EditingConfig extends Command {
 
     private function launchPlayer(string $path, float $beginAt = 0) {
         if (!$this->headless) {
-            $ffplay = new Process('ffplay -vf '
-                    . '"drawtext=text=\'%{pts\:hms}\':box=1:x=(w-tw)/2:y=h-(2*lh):fontsize=42"'
-                    . " -ss $beginAt \"$path\"");
+            $ffplay = new Process(['ffplay',
+                '-vf', 'drawtext=text=\'%{pts\:hms}\':box=1:x=(w-tw)/2:y=h-(2*lh):fontsize=42',
+                '-ss', $beginAt,
+                $path
+            ]);
             $ffplay->setTimeout(null);
             $ffplay->mustRun();
         }
