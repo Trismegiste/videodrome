@@ -21,7 +21,9 @@ class TrailerBuilderTest extends TestCase {
                     'picture' => $dir . '/pix/',
                     'video' => $dir . '/vid/',
                     'sound' => $dir . '/../sound1.ogg',
-                    'marker' => $dir . '/marker.txt'
+                    'marker' => $dir . '/marker.txt',
+                    '--width' => 192,
+                    '--height' => 108
         ]));
 
         $this->assertRegExp("/Build a trailer/", $tester->getDisplay());

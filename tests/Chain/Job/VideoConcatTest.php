@@ -1,7 +1,6 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Trismegiste\Videodrome\Chain\Job\ImpressToPdf;
 use Trismegiste\Videodrome\Chain\Job\PdfToPng;
 use Trismegiste\Videodrome\Chain\Job\PngToVideo;
 use Trismegiste\Videodrome\Chain\Job\VideoConcat;
@@ -12,11 +11,11 @@ use Trismegiste\Videodrome\Chain\MediaList;
 class VideoConcatTest extends TestCase {
 
     public function testExecute() {
-        $sut = new VideoConcat(new PngToVideo(new PdfToPng(new ImpressToPdf())));
-        $vid = $sut->execute(new MediaFile(__DIR__ . '/../../fixtures/fixtures1.odp', [
-            'duration' => [1, 1, 1],
-            'width' => 192,
-            'height' => 108
+        $sut = new VideoConcat(new PngToVideo(new PdfToPng()));
+        $vid = $sut->execute(new MediaFile(__DIR__ . '/../../fixtures/fixtures1.pdf', [
+                    'duration' => [1, 1, 1],
+                    'width' => 192,
+                    'height' => 108
         ]));
 
         $this->assertTrue($vid->isLeaf());

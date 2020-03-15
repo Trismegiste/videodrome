@@ -17,7 +17,9 @@ class ConferenceTest extends TestCase {
         $this->assertEquals(0, $tester->execute([
                     'impress' => __DIR__ . '/../fixtures/fixtures1.odp',
                     'voice' => __DIR__ . '/../fixtures/sound1.ogg',
-                    'marker' => __DIR__ . '/../fixtures/sound1.txt'
+                    'marker' => __DIR__ . '/../fixtures/sound1.txt',
+                    '--width' => 192,
+                    '--height' => 108
         ]));
 
         $generated = 'fixtures1-0-compil-sound.mp4';

@@ -15,7 +15,9 @@ class ConferenceGifTest extends TestCase {
         $tester = new CommandTester($application->find('conference:gif'));
 
         $this->assertEquals(0, $tester->execute([
-                    'impress' => __DIR__ . '/../fixtures/fixtures1.odp'
+                    'impress' => __DIR__ . '/../fixtures/fixtures1.odp',
+                    '--width' => 192,
+                    '--height' => 108
         ]));
 
         $generated = 'generated.gif';

@@ -2,7 +2,6 @@
 
 use PHPUnit\Framework\TestCase;
 use Trismegiste\Videodrome\Chain\Job\AddingSound;
-use Trismegiste\Videodrome\Chain\Job\ImpressToPdf;
 use Trismegiste\Videodrome\Chain\Job\PdfToPng;
 use Trismegiste\Videodrome\Chain\Job\PngToVideo;
 use Trismegiste\Videodrome\Chain\Job\VideoConcat;
@@ -13,12 +12,12 @@ use Trismegiste\Videodrome\Chain\MediaList;
 class AddingSoundTest extends TestCase {
 
     public function testExecute() {
-        $sut = new AddingSound(new VideoConcat(new PngToVideo(new PdfToPng(new ImpressToPdf()))));
-        $vid = $sut->execute(new MediaFile(__DIR__ . '/../../fixtures/fixtures1.odp', [
-            'duration' => [1, 1, 1],
-            'sound' => __DIR__ . '/../../fixtures/sound1.ogg',
-            'width' => 192,
-            'height' => 108
+        $sut = new AddingSound(new VideoConcat(new PngToVideo(new PdfToPng())));
+        $vid = $sut->execute(new MediaFile(__DIR__ . '/../../fixtures/fixtures1.pdf', [
+                    'duration' => [1, 1, 1],
+                    'sound' => __DIR__ . '/../../fixtures/sound1.ogg',
+                    'width' => 192,
+                    'height' => 108
         ]));
 
         $this->assertTrue($vid->isLeaf());
