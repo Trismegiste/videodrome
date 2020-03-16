@@ -15,6 +15,8 @@ class MediaPdf extends MediaFile {
     public function __construct(string $file_name, array $meta = []) {
         parent::__construct($file_name, $meta);
         $this->info = new PdfInfo($file_name);
+        // @todo Checking between count($meta['duration']) and 
+        // $info->getPageCount() IF there is a duration but maybe it's too specific for PdfToPng
     }
 
     /**
