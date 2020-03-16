@@ -37,7 +37,12 @@ class MediaPdfTest extends TestCase {
     public function testNoDurationMetadataForPage() {
         $sut = new MediaPdf($this->sut, ['duration' => [1, 1, 1]]);
         $this->expectException(OutOfRangeException::class);
-        $sut->getDurationForPage(4);
+        $sut->getDurationForPage(3);
+    }
+
+    public function testGetDurationMetadataForPage() {
+        $sut = new MediaPdf($this->sut, ['duration' => [1, 2, 3]]);
+        $this->assertEquals(3.0, $sut->getDurationForPage(2));
     }
 
 }
