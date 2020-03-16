@@ -8,12 +8,13 @@ use Trismegiste\Videodrome\Chain\Job\VideoConcat;
 use Trismegiste\Videodrome\Chain\JobException;
 use Trismegiste\Videodrome\Chain\MediaFile;
 use Trismegiste\Videodrome\Chain\MediaList;
+use Trismegiste\Videodrome\Chain\MediaType\MediaPdf;
 
 class AddingSoundTest extends TestCase {
 
     public function testExecute() {
         $sut = new AddingSound(new VideoConcat(new PngToVideo(new PdfToPng())));
-        $vid = $sut->execute(new MediaFile(__DIR__ . '/../../fixtures/fixtures1.pdf', [
+        $vid = $sut->execute(new MediaPdf(__DIR__ . '/../../fixtures/fixtures1.pdf', [
                     'duration' => [1, 1, 1],
                     'sound' => __DIR__ . '/../../fixtures/sound1.ogg',
                     'width' => 192,
@@ -36,6 +37,7 @@ class AddingSoundTest extends TestCase {
 
     public function testMissingSound() {
         $this->expectException(JobException::class);
+        $this->expectExceptionMessage('AddingSound');
         $sut = new AddingSound();
         $sut->execute(new MediaFile(join_paths(__DIR__, '../../fixtures/cutter.mkv'), ['sound' => 'missing.wav']));
     }
