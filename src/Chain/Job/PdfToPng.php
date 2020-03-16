@@ -48,7 +48,7 @@ class PdfToPng extends FileJob {
                 // explode duration metadata for each PNG
                 $metadataPng = $metadataPdf;
                 if ($pdf->hasMeta('duration')) {
-                    $metadataPng['duration'] = $metadataPdf['duration'][$k];
+                    $metadataPng['duration'] = $pdf->getDurationForPage($k);
                 }
                 $result[] = new MediaFile($tmpname, $metadataPng);
             }
