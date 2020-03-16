@@ -5,12 +5,13 @@ use Trismegiste\Videodrome\Chain\Job\PdfToPng;
 use Trismegiste\Videodrome\Chain\JobException;
 use Trismegiste\Videodrome\Chain\MediaFile;
 use Trismegiste\Videodrome\Chain\MediaList;
+use Trismegiste\Videodrome\Chain\MediaType\MediaPdf;
 
 class PdfToPngTest extends TestCase {
 
     public function testExecute() {
         $sut = new PdfToPng();
-        $ret = $sut->execute(new MediaFile(__DIR__ . '/../../fixtures/fixtures1.pdf', [
+        $ret = $sut->execute(new MediaPdf(__DIR__ . '/../../fixtures/fixtures1.pdf', [
                     'duration' => [1, 1, 1],
                     'width' => 192,
                     'height' => 108
@@ -28,10 +29,18 @@ class PdfToPngTest extends TestCase {
         $ret->unlink();
     }
 
-    public function testFailNotLeaf() {
+    public function testFailNotPdf1() {
         $this->expectException(JobException::class);
+        $this->expectExceptionMessage('PDF');
         $sut = new PdfToPng();
         $sut->execute(new MediaList());
+    }
+
+    public function testFailNotPdf2() {
+        $this->expectException(JobException::class);
+        $this->expectExceptionMessage('PDF');
+        $sut = new PdfToPng();
+        $sut->execute(new MediaFile(__FILE__));
     }
 
 }

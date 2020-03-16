@@ -9,7 +9,7 @@ use Trismegiste\Videodrome\Chain\JobException;
 use Trismegiste\Videodrome\Chain\Media;
 use Trismegiste\Videodrome\Chain\MediaFile;
 use Trismegiste\Videodrome\Chain\MediaList;
-use Trismegiste\Videodrome\Util\PdfInfo;
+use Trismegiste\Videodrome\Chain\MediaType\MediaPdf;
 
 /**
  * PdfToPng converts a PDF file to a set of PNG
@@ -19,12 +19,14 @@ class PdfToPng extends FileJob {
     const antialiasFactor = 1.3;
 
     protected function process(Media $pdf): Media {
-        if (!$pdf->isLeaf()) {
-            throw new JobException("Not a single file");
+        if (!($pdf instanceof MediaPdf)) {
+            throw new JobException("Not a PDF");
         }
 
-        $info = new PdfInfo($pdf);
-        $dpi = $info->getMinDensityFor($pdf->getMeta('width'), $pdf->getMeta('height')) * self::antialiasFactor;
+        // note : why I don't use internal metadata from this PDF ? Because width and height are external data specific for this process.
+        // Think as an "output" width and height in pixels for PNG. If there is a FileJob subclass which converts PDF to SVG for example,
+        // pixels are irrelevant.
+        $dpi = $pdf->getMinDensityFor($pdf->getMeta('width'), $pdf->getMeta('height')) * self::antialiasFactor;
 
         $exportName = $pdf->getFilenameNoExtension();
         $magick = new Process([
@@ -37,7 +39,7 @@ class PdfToPng extends FileJob {
         $magick->setTimeout(null);
         $magick->mustRun();
 
-        $card = $info->getPageCount();
+        $card = $pdf->getPageCount();
         try {
             $metadataPdf = $pdf->getMetadataSet();
             $result = new MediaList([], $metadataPdf);
