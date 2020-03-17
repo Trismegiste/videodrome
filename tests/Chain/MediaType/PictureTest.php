@@ -1,14 +1,14 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Trismegiste\Videodrome\Chain\MediaType\Video;
+use Trismegiste\Videodrome\Chain\MediaType\Picture;
 
 class PictureTest extends TestCase {
 
     protected $sut;
 
     protected function setUp(): void {
-        $this->sut = new Video(join_paths(__DIR__, '../../fixtures/picture1.jpg'));
+        $this->sut = new Picture(join_paths(__DIR__, '../../fixtures/picture1.jpg'));
     }
 
     protected function tearDown(): void {
