@@ -5,8 +5,8 @@ namespace Trismegiste\Videodrome\Chain\Job;
 use Symfony\Component\Process\Process;
 use Trismegiste\Videodrome\Chain\FileJob;
 use Trismegiste\Videodrome\Chain\Media;
-use Trismegiste\Videodrome\Chain\MediaFile;
 use Trismegiste\Videodrome\Chain\MediaList;
+use Trismegiste\Videodrome\Chain\MediaType\Picture;
 
 /**
  * Ths class resizes an image to be larger as an output format as its format fits into the extended image
@@ -21,7 +21,7 @@ class ImageExtender extends FileJob {
             }
             $this->logger->info("Extending $picture");
             $ret = $this->resize($picture, $picture->getMeta('width'), $picture->getMeta('height'));
-            $output[] = new MediaFile($ret, $picture->getMetadataSet());
+            $output[] = new Picture($ret, $picture->getMetadataSet());
         }
 
         return $output;

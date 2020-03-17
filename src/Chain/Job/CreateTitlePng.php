@@ -7,6 +7,8 @@ use Trismegiste\Videodrome\Chain\JobException;
 use Trismegiste\Videodrome\Chain\Media;
 use Trismegiste\Videodrome\Chain\MediaFile;
 use Trismegiste\Videodrome\Chain\MediaList;
+use Trismegiste\Videodrome\Chain\MediaType\Picture;
+use function join_paths;
 
 /**
  * CreateTitlePng creates a title in PNG
@@ -43,7 +45,7 @@ class CreateTitlePng extends FileJob {
         imagepng($handle, $target);
         imagedestroy($handle);
 
-        return new MediaFile($target);
+        return new Picture($target);
     }
 
     /**

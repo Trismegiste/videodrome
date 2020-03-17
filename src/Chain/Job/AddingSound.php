@@ -6,7 +6,7 @@ use Symfony\Component\Process\Process;
 use Trismegiste\Videodrome\Chain\FileJob;
 use Trismegiste\Videodrome\Chain\JobException;
 use Trismegiste\Videodrome\Chain\Media;
-use Trismegiste\Videodrome\Chain\MediaFile;
+use Trismegiste\Videodrome\Chain\MediaType\Video;
 
 /**
  * Muxing video and sound
@@ -40,7 +40,7 @@ class AddingSound extends FileJob {
         }
         $this->logger->info("Video with sound $output generated");
 
-        return new MediaFile($output, $video->getMetadataSet());
+        return new Video($output, $video->getMetadataSet());
     }
 
 }

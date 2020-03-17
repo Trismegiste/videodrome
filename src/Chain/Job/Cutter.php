@@ -5,8 +5,8 @@ namespace Trismegiste\Videodrome\Chain\Job;
 use Symfony\Component\Process\Process;
 use Trismegiste\Videodrome\Chain\FileJob;
 use Trismegiste\Videodrome\Chain\Media;
-use Trismegiste\Videodrome\Chain\MediaFile;
 use Trismegiste\Videodrome\Chain\MediaList;
+use Trismegiste\Videodrome\Chain\MediaType\Video;
 
 /**
  * A cutter of video
@@ -23,7 +23,7 @@ class Cutter extends FileJob {
             }
             $meta = $video->getMetadataSet();
             $ret = $this->cut($video, $meta['width'], $meta['height'], $meta['cutBefore'], $meta['duration']);
-            $cutted[] = new MediaFile($ret, $meta);
+            $cutted[] = new Video($ret, $meta);
         }
 
         return $cutted;
