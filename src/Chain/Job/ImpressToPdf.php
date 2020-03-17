@@ -7,7 +7,7 @@ use Symfony\Component\Process\Process;
 use Trismegiste\Videodrome\Chain\FileJob;
 use Trismegiste\Videodrome\Chain\JobException;
 use Trismegiste\Videodrome\Chain\Media;
-use Trismegiste\Videodrome\Chain\MediaType\MediaPdf;
+use Trismegiste\Videodrome\Chain\MediaType\Pdf;
 
 /**
  * ImpressToPdf convert a LibreOffice Impress file into a PDF
@@ -23,7 +23,7 @@ class ImpressToPdf extends FileJob {
         $proc->mustRun();
 
         try {
-            $generated = new MediaPdf($pdf, $impress->getMetadataSet());
+            $generated = new Pdf($pdf, $impress->getMetadataSet());
         } catch (RuntimeException $ex) {
             throw new JobException("ImpressToPdf : creation of $pdf failed. Perhaps LibreOffice is currently running ?");
         }

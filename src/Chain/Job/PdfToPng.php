@@ -9,7 +9,7 @@ use Trismegiste\Videodrome\Chain\JobException;
 use Trismegiste\Videodrome\Chain\Media;
 use Trismegiste\Videodrome\Chain\MediaFile;
 use Trismegiste\Videodrome\Chain\MediaList;
-use Trismegiste\Videodrome\Chain\MediaType\MediaPdf;
+use Trismegiste\Videodrome\Chain\MediaType\Pdf;
 
 /**
  * PdfToPng converts a PDF file to a set of PNG
@@ -19,7 +19,7 @@ class PdfToPng extends FileJob {
     const antialiasFactor = 1.3;
 
     protected function process(Media $pdf): Media {
-        if (!($pdf instanceof MediaPdf)) {
+        if (!($pdf instanceof Pdf)) {
             throw new JobException("Not a PDF");
         }
 

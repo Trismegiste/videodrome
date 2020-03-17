@@ -8,7 +8,7 @@ use Trismegiste\Videodrome\Util\PdfInfo;
 /**
  * A PDF Media
  */
-class MediaPdf extends MediaFile {
+class Pdf extends MediaFile {
 
     protected $info;
 

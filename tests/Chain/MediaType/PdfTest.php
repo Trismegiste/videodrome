@@ -1,14 +1,14 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Trismegiste\Videodrome\Chain\MediaType\MediaPdf;
+use Trismegiste\Videodrome\Chain\MediaType\Pdf;
 
-class MediaPdfTest extends TestCase {
+class PdfTest extends TestCase {
 
     protected $sut;
 
     protected function setUp(): void {
-        $this->sut = new MediaPdf(join_paths(__DIR__, '../../fixtures/fixtures1.pdf'));
+        $this->sut = new Pdf(join_paths(__DIR__, '../../fixtures/fixtures1.pdf'));
     }
 
     protected function tearDown(): void {
@@ -29,19 +29,19 @@ class MediaPdfTest extends TestCase {
     }
 
     public function testNotAnArrayDurationMetadata() {
-        $sut = new MediaPdf($this->sut, ['duration' => 1]);
+        $sut = new Pdf($this->sut, ['duration' => 1]);
         $this->expectException(OutOfRangeException::class);
         $sut->getDurationForPage(2);
     }
 
     public function testNoDurationMetadataForPage() {
-        $sut = new MediaPdf($this->sut, ['duration' => [1, 1, 1]]);
+        $sut = new Pdf($this->sut, ['duration' => [1, 1, 1]]);
         $this->expectException(OutOfRangeException::class);
         $sut->getDurationForPage(3);
     }
 
     public function testGetDurationMetadataForPage() {
-        $sut = new MediaPdf($this->sut, ['duration' => [1, 2, 3]]);
+        $sut = new Pdf($this->sut, ['duration' => [1, 2, 3]]);
         $this->assertEquals(3.0, $sut->getDurationForPage(2));
     }
 
