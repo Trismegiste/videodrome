@@ -7,9 +7,9 @@ use Symfony\Component\Process\Process;
 use Trismegiste\Videodrome\Chain\FileJob;
 use Trismegiste\Videodrome\Chain\JobException;
 use Trismegiste\Videodrome\Chain\Media;
-use Trismegiste\Videodrome\Chain\MediaFile;
 use Trismegiste\Videodrome\Chain\MediaList;
 use Trismegiste\Videodrome\Chain\MediaType\Pdf;
+use Trismegiste\Videodrome\Chain\MediaType\Picture;
 
 /**
  * PdfToPng converts a PDF file to a set of PNG
@@ -50,7 +50,7 @@ class PdfToPng extends FileJob {
                 if ($pdf->hasMeta('duration')) {
                     $metadataPng['duration'] = $pdf->getDurationForPage($k);
                 }
-                $result[] = new MediaFile($tmpname, $metadataPng);
+                $result[] = new Picture($tmpname, $metadataPng);
             }
         } catch (RuntimeException $ex) {
             throw new JobException("PdfToPng : " . $ex->getMessage());

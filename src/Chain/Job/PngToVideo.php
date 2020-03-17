@@ -6,8 +6,8 @@ use Symfony\Component\Process\Process;
 use Trismegiste\Videodrome\Chain\FileJob;
 use Trismegiste\Videodrome\Chain\JobException;
 use Trismegiste\Videodrome\Chain\Media;
-use Trismegiste\Videodrome\Chain\MediaFile;
 use Trismegiste\Videodrome\Chain\MediaList;
+use Trismegiste\Videodrome\Chain\MediaType\Video;
 
 /**
  * Convert PNG into Video
@@ -21,7 +21,7 @@ class PngToVideo extends FileJob {
         foreach ($filename as $png) {
             $vidName = $png->getFilenameNoExtension() . '.avi';
             $this->createVid($png, $png->getMeta('duration'), $vidName);
-            $result[] = new MediaFile($vidName, $png->getMetadataSet());
+            $result[] = new Video($vidName, $png->getMetadataSet());
         }
 
         return $result;
