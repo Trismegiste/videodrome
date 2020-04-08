@@ -17,22 +17,25 @@ use Trismegiste\Videodrome\Chain\MediaList;
 /**
  * Concat video from an editing config and compress it for youtube
  */
-class EditingConcatYt extends Command {
+class EditingConcatYt extends Command
+{
 
     protected static $defaultName = 'edit:youtube';
 
-    protected function configure() {
-        $this->setDescription("Reorder video in a config file for ediiting")
-                ->addArgument('config', InputArgument::REQUIRED, 'A json config file')
-                ->addArgument('target', InputArgument::OPTIONAL, 'output filename (mp4)', 'output.mp4')
-                ->addOption('width', NULL, InputOption::VALUE_REQUIRED, 'Width of the final video', 1920)
-                ->addOption('height', NULL, InputOption::VALUE_REQUIRED, 'Height of the final video', 1080)
-                ->addOption('fps', NULL, InputOption::VALUE_REQUIRED, 'Framerate of the final video', 30);
+    protected function configure()
+    {
+        $this->setDescription('Concat videos from a config and compress for Youtube')
+            ->addArgument('config', InputArgument::REQUIRED, 'A json config file')
+            ->addArgument('target', InputArgument::OPTIONAL, 'output filename (mp4)', 'output.mp4')
+            ->addOption('width', NULL, InputOption::VALUE_REQUIRED, 'Width of the final video', 1920)
+            ->addOption('height', NULL, InputOption::VALUE_REQUIRED, 'Height of the final video', 1080)
+            ->addOption('fps', NULL, InputOption::VALUE_REQUIRED, 'Framerate of the final video', 30);
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output) {
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
         $io = new SymfonyStyle($input, $output);
-        $io->title('Concat video and compress for Youtube');
+        $io->title($this->getDescription());
 
         $config = json_decode(file_get_contents($input->getArgument('config')));
 

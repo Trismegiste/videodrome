@@ -23,5 +23,6 @@ $application->add(new \Trismegiste\Videodrome\Command\TrailerDummy());
 $application->add(new \Trismegiste\Videodrome\Command\EditingConfig());
 $application->add(new \Trismegiste\Videodrome\Command\EditingSort());
 $application->add(new \Trismegiste\Videodrome\Command\EditingConcatYt());
+$application->add(new \Trismegiste\Videodrome\Command\MiscConcatYt());
 
 $application->run();
