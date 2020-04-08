@@ -12,6 +12,7 @@ class Ffprobe {
     protected $height;
 
     public function __construct(string $filename) {
+        // @todo Use Process, this line bugs when $filename contains a whitespace
         $tmp = shell_exec("ffprobe -v quiet -i $filename -select_streams v:0 -print_format json -show_entries stream=width,height:format=duration");
         $probe = json_decode($tmp);
         $this->width = $probe->streams[0]->width;

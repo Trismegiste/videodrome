@@ -14,6 +14,7 @@ class PdfInfo {
     protected $height; // in pts
 
     public function __construct(string $filename) {
+        // @todo Use Process, this line bugs when $filename contains a whitespace    
         $tmp = shell_exec("pdfinfo " . $filename);
 
         $result = [];

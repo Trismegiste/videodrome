@@ -37,6 +37,7 @@ class PngToVideo extends FileJob {
             '-c:v', 'huffyuv',
             $output
         ]);
+        $animate->setTimeout(null);
         $animate->run();
         if (!$animate->isSuccessful()) {
             throw new JobException("PngToVideo : Error when generating " . $output);
