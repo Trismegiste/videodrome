@@ -12,13 +12,13 @@ This is a PHP symfony console command line interface that uses extensively many 
 like LibreOffice, Plopper, ImageMagick, ffmpeg and Inkscape, depending of what do you want to run.
 
 ## Installation
-```
+```bash
 flo@spin5:~$ git clone https://github.com/Trismegiste/videodrome
 flo@spin5:~$ composer.phar install
 ```
 
 ## Tests & code coverage
-```
+```bash
 flo@spin5:~$ phpdbg -qrr ./vendor/bin/phpunit
 ```
 All code coverage generated html goes into the ./doc folder.
@@ -26,12 +26,12 @@ All code coverage generated html goes into the ./doc folder.
 ## Documentation
 
 ### List of available commands
-```
+```bash
 flo@spin5:~$ php app.php list
 ```
 
 ### Check for installed softwares
-```
+```bash
 flo@spin5:~$ php app.php system:check
 ```
 
@@ -41,7 +41,7 @@ This command builds a mpeg4 movie with low framerate from 3 files :
 * a sound file with a recorded voice for example
 * an Audacity marker file for timing each slide
 
-```
+```bash
 flo@spin5:~$ php app.php conference:build presentation.odp myvoice.mp3 timecode.txt
 ```
 
@@ -49,7 +49,7 @@ flo@spin5:~$ php app.php conference:build presentation.odp myvoice.mp3 timecode.
 This command is almost the same as Conference except it generates an animated GIF. 
 No sound nor timecode are required. Each frame has a default duration of 5 seconds (can be changed with option '--delay').
 
-```
+```bash
 flo@spin5:~$ php app.php conference:gif --delay=10 --width=600 --height=400 presentation.odp
 ```
 
@@ -65,7 +65,7 @@ You need to provide 7 types of assets :
 * a sound file (any format readable by ffmpeg)
 * an Audacity marker file for time each clip
 
-```
+```bash
 flo@spin5:~$ php app.php trailer:build ./clip ./slide ./svg epicmusic.ogg timecode.txt
 ```
 
@@ -77,14 +77,14 @@ This command generates dummy assets (svg, png and config files) to test your vid
 It's useful to control if the rythm of the trailer is ok and how many text you can put in your captions.
 It checks if files already exist and generates only missing assets.
 
-```
+```bash
 flo@spin5:~$ php app.php trailer:dummy ./clip ./slide ./svg timecode.txt
 ```
 
 ### Trailer assets check
 Checks if all assets, config files are ok and if there is no missing file need for building the trailer.
 
-```
+```bash
 flo@spin5:~$ php app.php trailer:check ./clip ./slide ./svg sound.mp3 timecode.txt
 ```
 
@@ -98,8 +98,7 @@ Each step of trailer building could be launch separately :
 
 ### Editing movie for Youtube
 This commmand is intended to create a movie from various sources and encode it for Youtube format.
-
-```
+```bash
 flo@spin5:~$ php app.php edit:youtube movie.json
 ```
 
@@ -108,8 +107,7 @@ This file could be manually created or with the help of the commands 'edit:confi
 
 ### Editing configuration
 This commmand is using 'ffplay' (from ffmpeg) to easily select timecode and duration from a clip. It creates a new entry in a json configuration.
-
-```
+```bash
 flo@spin5:~$ php app.php edit:config ./myvideo
 ```
 
@@ -126,6 +124,6 @@ Composite Design Pattern (with only one level of children). It's easier to manip
 start wth the 2 interfaces 'JobInterface' (and its implementation FileJob) and 'Media' (and its 2 implementations MediaList and MediaFile).
 
 ## Todo
-Calling external software uses the Process component from Symfony. Since those softwares could change, it can brake this CLI.
+Calling external software uses the Process component from Symfony. Since those softwares could change, it can break this CLI.
 I think a more abstract creation of process is needed.
 Perhaps an Abstract Factory design pattern with an injected external config could do the job...

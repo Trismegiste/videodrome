@@ -6,7 +6,7 @@ use Symfony\Component\Process\Process;
 use Trismegiste\Videodrome\Chain\FileJob;
 use Trismegiste\Videodrome\Chain\JobException;
 use Trismegiste\Videodrome\Chain\Media;
-use Trismegiste\Videodrome\Chain\MediaFile;
+use Trismegiste\Videodrome\Chain\MediaType\Video;
 
 /**
  * Concat video with sound for youtube
@@ -37,7 +37,7 @@ class ConcatYt extends FileJob {
         $ffmpeg->setTimeout(null);
         $ffmpeg->mustRun();
 
-        return new MediaFile($output, $filename->getMetadataSet());
+        return new Video($output, $filename->getMetadataSet());
     }
 
 }
