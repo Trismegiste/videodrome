@@ -20,6 +20,7 @@ class ImpressToPdf extends FileJob {
         }
         $pdf = $impress->getFilenameNoExtension() . '.pdf';
         $proc = new Process(['libreoffice6.0', '--convert-to', 'pdf', $impress]);
+        $proc->setTimeout(600);
         $proc->mustRun();
 
         try {

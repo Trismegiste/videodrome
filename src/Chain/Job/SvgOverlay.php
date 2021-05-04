@@ -53,6 +53,7 @@ class SvgOverlay extends FileJob {
             '-c:v', 'huffyuv',
             $output
         ]);
+        $ffmpeg->setTimeout(600);
         $ffmpeg->mustRun();
 
         if (!file_exists($output)) {
